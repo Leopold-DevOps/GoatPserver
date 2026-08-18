@@ -27,6 +27,7 @@ namespace App
         public readonly List<ushort> PlayerClasses;
         public readonly Dictionary<ushort, string> _classes;
         public readonly Dictionary<string, string> _classAvailability;
+        public readonly HashSet<string> _hiddenClasses;
         public readonly XElement ItemCostsXml;
 
         public CoreService()
@@ -60,7 +61,16 @@ namespace App
 
             PlayerClasses = Resources.GameData.ObjectDescs.Values.Where(objDesc => objDesc.Player).Select(objDesc => objDesc.ObjectType).ToList();
             _classes = Resources.GameData.ObjectDescs.Values.Where(objDesc => objDesc.Player).ToDictionary(objDesc => objDesc.ObjectType, objDesc => objDesc.IdName);
-            _classAvailability = _classes.ToDictionary(@class => @class.Value, @class => "available");
+            _hiddenClasses = Resources.GameData.ObjectDescs.Values
+                .Where(objDesc => objDesc.Player && objDesc.HiddenClass)
+                .Select(objDesc => objDesc.IdName)
+                .ToHashSet();
+            // "unavailable" makes the client skip the class entirely on the
+            // character-select screen (see NewCharacterScreen.as), rather than
+            // drawing it locked.
+            _classAvailability = _classes.ToDictionary(
+                @class => @class.Value,
+                @class => _hiddenClasses.Contains(@class.Value) ? "unavailable" : "available");
 
             var elem = new XElement("ItemCosts");
             foreach (var skin in Resources.GameData.Skins.Values)

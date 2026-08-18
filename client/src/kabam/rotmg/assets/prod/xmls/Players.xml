@@ -1,4 +1,4 @@
-<Objects>
+﻿<Objects>
 
 	<Object type="0x0300" id="Rogue">
 		<Class>Player</Class>
@@ -7,6 +7,7 @@
 		<HitSound>player/rogue_hit</HitSound>
 		<DeathSound>player/rogue_death</DeathSound>
 		<Player/>
+		<HiddenClass/>
 		<BloodProb>1.0</BloodProb>
 		<SlotTypes>2, 13, 6, 9, 0, 0, 0, 0, 0, 0, 0, 0</SlotTypes>
 		<Equipment>0xa14, 0xa56, -1, -1, 0xa22, -1, -1, -1, -1, -1, -1, -1</Equipment>
@@ -36,6 +37,7 @@
 		<HitSound>player/archer_hit</HitSound>
 		<DeathSound>player/archer_death</DeathSound>
 		<Player/>
+		<HiddenClass/>
 		<BloodProb>1.0</BloodProb>
 		<SlotTypes>3, 15, 6, 9, 0, 0, 0, 0, 0, 0, 0, 0</SlotTypes>
 		<Equipment>0xa1a, 0xa61, -1, -1, 0xa22, -1, -1, -1, -1, -1, -1, -1</Equipment>
@@ -65,6 +67,7 @@
 		<HitSound>player/wizard_hit</HitSound>
 		<DeathSound>player/wizard_death</DeathSound>
 		<Player/>
+		<HiddenClass/>
 		<BloodProb>1.0</BloodProb>
 		<SlotTypes>17, 11, 14, 9, 0, 0, 0, 0, 0, 0, 0, 0</SlotTypes>
 		<Equipment>0xa97, 0xa2e, -1, -1, 0xa22, -1, -1, -1, -1, -1, -1, -1</Equipment>
@@ -93,6 +96,7 @@
 		<HitSound>player/priest_hit</HitSound>
 		<DeathSound>player/priest_death</DeathSound>
 		<Player/>
+		<HiddenClass/>
 		<BloodProb>1.0</BloodProb>
 		<SlotTypes>8, 4, 14, 9, 0, 0, 0, 0, 0, 0, 0, 0</SlotTypes>
 		<Equipment>0xa04, 0xa31, -1, -1, 0xa22, -1, -1, -1, -1, -1, -1, -1</Equipment>
@@ -122,6 +126,7 @@
 		<HitSound>player/warrior_hit</HitSound>
 		<DeathSound>player/warrior_death</DeathSound>
 		<Player/>
+		<HiddenClass/>
 		<BloodProb>1.0</BloodProb>
 		<SlotTypes>1, 16, 7, 9, 0, 0, 0, 0, 0, 0, 0, 0</SlotTypes>
 		<Equipment>0xa00, 0x0a66, -1, -1, 0xa22, -1, -1, -1, -1, -1, -1, -1</Equipment>
@@ -151,6 +156,7 @@
 		<HitSound>player/knight_hit</HitSound>
 		<DeathSound>player/knight_death</DeathSound>
 		<Player/>
+		<HiddenClass/>
 		<BloodProb>1.0</BloodProb>
 		<SlotTypes>1, 5, 7, 9, 0, 0, 0, 0, 0, 0, 0, 0</SlotTypes>
 		<Equipment>0xa00, 0x0a08, -1, -1, 0xa22, -1, -1, -1, -1, -1, -1, -1</Equipment>
@@ -180,6 +186,7 @@
 		<HitSound>player/paladin_hit</HitSound>
 		<DeathSound>player/paladin_death</DeathSound>
 		<Player/>
+		<HiddenClass/>
 		<BloodProb>1.0</BloodProb>
 		<SlotTypes>1, 12, 7, 9, 0, 0, 0, 0, 0, 0, 0, 0</SlotTypes>
 		<Equipment>0xa00, 0xa52, -1, -1, 0xa22, -1, -1, -1, -1, -1, -1, -1</Equipment>
@@ -210,6 +217,7 @@
 		<HitSound>player/rogue_hit</HitSound>
 		<DeathSound>player/rogue_death</DeathSound>
 		<Player/>
+		<HiddenClass/>
 		<BloodProb>1.0</BloodProb>
 		<SlotTypes>2, 18, 6, 9, 0, 0, 0, 0, 0, 0, 0, 0</SlotTypes>
 		<Equipment>0xa14, 0xaa3, -1, -1, 0xa22, -1, -1, -1, -1, -1, -1, -1</Equipment>
@@ -240,6 +248,7 @@
 		<HitSound>player/wizard_hit</HitSound>
 		<DeathSound>player/wizard_death</DeathSound>
 		<Player/>
+		<HiddenClass/>
 		<BloodProb>1.0</BloodProb>
 		<SlotTypes>17, 19, 14, 9, 0, 0, 0, 0, 0, 0, 0, 0</SlotTypes>
 		<Equipment>0xa97, 0xaaa, -1, -1, 0xa22, -1, -1, -1, -1, -1, -1, -1</Equipment>
@@ -270,6 +279,7 @@
 		<HitSound>player/archer_hit</HitSound>
 		<DeathSound>player/archer_death</DeathSound>
 		<Player/>
+		<HiddenClass/>
 		<BloodProb>1.0</BloodProb>
 		<SlotTypes>3, 20, 6, 9, 0, 0, 0, 0, 0, 0, 0, 0</SlotTypes>
 		<Equipment>0xa1a, 0xab1, -1, -1, 0xa22, -1, -1, -1, -1, -1, -1, -1</Equipment>
@@ -300,6 +310,7 @@
 		<HitSound>player/wizard_hit</HitSound>
 		<DeathSound>player/wizard_death</DeathSound>
 		<Player/>
+		<HiddenClass/>
 		<BloodProb>1.0</BloodProb>
 		<SlotTypes>17, 21, 14, 9, 0, 0, 0, 0, 0, 0, 0, 0</SlotTypes>
 		<Equipment>0xa97, 0xae4, -1, -1, 0xa22, -1, -1, -1, -1, -1, -1, -1</Equipment>
@@ -330,6 +341,7 @@
 		<HitSound>player/rogue_hit</HitSound>
 		<DeathSound>player/rogue_death</DeathSound>
 		<Player/>
+		<HiddenClass/>
 		<BloodProb>1.0</BloodProb>
 		<SlotTypes>2, 22, 6, 9, 0, 0, 0, 0, 0, 0, 0, 0</SlotTypes>
 		<Equipment>0xa14, 0xae3, -1, -1, 0xa22, -1, -1, -1, -1, -1, -1, -1</Equipment>
@@ -360,6 +372,7 @@
 		<HitSound>player/priest_hit</HitSound>
 		<DeathSound>player/priest_death</DeathSound>
 		<Player/>
+		<HiddenClass/>
 		<BloodProb>1.0</BloodProb>
 		<SlotTypes>8, 23, 14, 9, 0, 0, 0, 0, 0, 0, 0, 0</SlotTypes>
 		<Equipment>0xa04, 0xae5, -1, -1, 0xa22, -1, -1, -1, -1, -1, -1, -1</Equipment>
@@ -391,6 +404,7 @@
 		<HitSound>player/rogue_hit</HitSound>
 		<DeathSound>player/rogue_death</DeathSound>
 		<Player/>
+		<HiddenClass/>
 		<BloodProb>1.0</BloodProb>
 		<SlotTypes>24, 25, 6, 9, 0, 0, 0, 0, 0, 0, 0, 0</SlotTypes>
 		<Equipment>0xc44, 0xc53, -1, -1, 0xa22, -1, -1, -1, -1, -1, -1, -1</Equipment>
@@ -424,6 +438,7 @@
 		<HitSound>player/warrior_hit</HitSound>
 		<DeathSound>player/warrior_death</DeathSound>
 		<Player/>
+		<HiddenClass/>
 		<BloodProb>1.0</BloodProb>
 		<SlotTypes>24, 27, 7, 9, 0, 0, 0, 0, 0, 0, 0, 0</SlotTypes>
 		<Equipment>0xc44, 0x1aaa, -1, -1, 0xa22, -1, -1, -1, -1, -1, -1, -1</Equipment>
@@ -457,6 +472,7 @@
 		<HitSound>player/archer_hit</HitSound>
 		<DeathSound>player/archer_death</DeathSound>
 		<Player/>
+		<HiddenClass/>
 		<BloodProb>1.0</BloodProb>
 		<SlotTypes>3, 28, 14, 9, 0, 0, 0, 0, 0, 0, 0, 0</SlotTypes>
 		<Equipment>0xa1a, 0xcff1, -1, -1, 0xa22, -1, -1, -1, -1, -1, -1, -1</Equipment>
@@ -479,5 +495,43 @@
 		<UnlockLevel level="20" type="0x0322">Huntress</UnlockLevel>
 		<UnlockLevel level="20" type="0x031f">Paladin</UnlockLevel>
 		<UnlockCost>999</UnlockCost>
+	</Object>
+	<!-- ============================================================
+	     ADVENTURER - new class progression, work in progress.
+	     PLACEHOLDER ART + STATS: the AnimatedTexture below points at
+	     the Rogue sprite (players index 0) purely so the class renders.
+	     Replace <AnimatedTexture>, <Description> and the stat blocks
+	     once the real sprite sheet and specs exist.
+	     No <UnlockLevel> = free from the start (like Wizard was).
+	     ============================================================ -->
+	<Object type="0x0327" id="Adventurer">
+		<Class>Player</Class>
+		<Description>PLACEHOLDER - the adventurer sets out with nothing but resolve.</Description>
+		<AnimatedTexture>
+			<File>players</File>
+			<Index>0</Index>
+		</AnimatedTexture>
+		<HitSound>player/warrior_hit</HitSound>
+		<DeathSound>player/warrior_death</DeathSound>
+		<Player/>
+		<BloodProb>1.0</BloodProb>
+		<SlotTypes>1, 16, 7, 9, 0, 0, 0, 0, 0, 0, 0, 0</SlotTypes>
+		<Equipment>0xa00, 0x0a66, -1, -1, 0xa22, -1, -1, -1, -1, -1, -1, -1</Equipment>
+		<MaxHitPoints max="700">180</MaxHitPoints>
+		<MaxMagicPoints max="252">100</MaxMagicPoints>
+		<Attack max="60">12</Attack>
+		<Defense max="25">0</Defense>
+		<Speed max="55">12</Speed>
+		<Dexterity max="55">12</Dexterity>
+		<HpRegen max="50">12</HpRegen>
+		<MpRegen max="50">10</MpRegen>
+		<LevelIncrease min="20" max="30">MaxHitPoints</LevelIncrease>
+		<LevelIncrease min="2" max="8">MaxMagicPoints</LevelIncrease>
+		<LevelIncrease min="1" max="2">Attack</LevelIncrease>
+		<LevelIncrease min="0" max="0">Defense</LevelIncrease>
+		<LevelIncrease min="0" max="2">Speed</LevelIncrease>
+		<LevelIncrease min="0" max="2">Dexterity</LevelIncrease>
+		<LevelIncrease min="0" max="2">HpRegen</LevelIncrease>
+		<LevelIncrease min="0" max="2">MpRegen</LevelIncrease>
 	</Object>
 </Objects>

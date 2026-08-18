@@ -474,7 +474,14 @@ namespace App
             var cs = db.ReadClassStats(acc);
             foreach (string c in cs.AllKeys
                 .Select(key => core._classes[(ushort)(int)key]))
+            {
+                // don't resurrect a hidden class just because this account has
+                // played it before - hidden always wins.
+                if (core._hiddenClasses.Contains(c))
+                    continue;
+
                 classes[c] = "unrestricted";
+            }
 
             return new ClassAvailability()
             {

@@ -41,6 +41,7 @@ namespace Shared.resources
         public readonly int PerRealmMax;
         public readonly bool PetrifyImmune;
         public readonly bool Player;
+        public readonly bool HiddenClass;
         public readonly bool ProtectFromGroundDamage;
         public readonly bool ProtectFromSink;
         public readonly bool Quest;
@@ -139,6 +140,10 @@ namespace Shared.resources
             Cube = e.HasElement("Cube");
             Oryx = e.HasElement("Oryx");
             Player = e.HasElement("Player");
+            // HiddenClass: class exists and works, but is not offered on the
+            // character-select screen and cannot be created. Not the same as
+            // locked - locked classes are still shown, greyed out.
+            HiddenClass = e.HasElement("HiddenClass");
             KeepDamageRecord = e.HasElement("KeepDamageRecord");
             Connects = e.HasElement("Connects");
             ProtectFromGroundDamage = e.HasElement("ProtectFromGroundDamage");

@@ -352,6 +352,15 @@ namespace Shared.database
 
             var objDesc = _resources.GameData.ObjectDescs[type];
             var playerDesc = _resources.GameData.Classes[type];
+
+            // hidden classes aren't offered by the client, so a request for one
+            // is either a stale client or a crafted packet.
+            if (objDesc.HiddenClass)
+            {
+                character = null;
+                return DbCreateStatus.Locked;
+            }
+
             var classStats = ReadClassStats(acc);
             var unlockClass = playerDesc.Unlock?.Type;
 
