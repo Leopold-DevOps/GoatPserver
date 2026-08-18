@@ -12,6 +12,7 @@ package com.company.assembleegameclient.ui.panels.itemgrids
    import com.company.assembleegameclient.ui.tooltip.ToolTip;
    import flash.events.MouseEvent;
    import kabam.rotmg.constants.ItemConstants;
+   import kabam.rotmg.constants.UiMetrics;
    
    public class ItemGrid extends Panel
    {
@@ -25,9 +26,11 @@ package com.company.assembleegameclient.ui.panels.itemgrids
       };
        
       
-      private const padding:uint = 4;
+      private const padding:uint = UiMetrics.ITEM_GRID_PADDING_X;
       
-      private const rowLength:uint = 4;
+      private const paddingY:uint = UiMetrics.ITEM_GRID_PADDING_Y;
+      
+      private const rowLength:uint = UiMetrics.ITEM_GRID_COLUMNS;
       
       public var owner:GameObject;
       
@@ -107,7 +110,7 @@ package com.company.assembleegameclient.ui.panels.itemgrids
          tile.drawBackground(CutsByNum[numRows][tileIndex]);
          tile.addEventListener(MouseEvent.ROLL_OVER,this.onTileHover);
          tile.x = int(tileIndex % this.rowLength) * (ItemTile.WIDTH + this.padding);
-         tile.y = int(tileIndex / this.rowLength) * (ItemTile.HEIGHT + this.padding);
+         tile.y = int(tileIndex / this.rowLength) * (ItemTile.HEIGHT + this.paddingY);
          addChild(tile);
       }
       

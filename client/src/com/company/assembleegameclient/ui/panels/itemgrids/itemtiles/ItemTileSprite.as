@@ -15,6 +15,7 @@ import flash.filters.ColorMatrixFilter;
 import flash.utils.Timer;
 
 import kabam.rotmg.constants.ItemConstants;
+import kabam.rotmg.constants.UiMetrics;
    
    public class ItemTileSprite extends Sprite
    {
@@ -58,7 +59,7 @@ import kabam.rotmg.constants.ItemConstants;
          this.itemData = data;
          if(this.itemId != ItemConstants.NO_ITEM)
          {
-            texture = ObjectLibrary.getRedrawnTextureFromType(this.itemId,80,true);
+            texture = ObjectLibrary.getRedrawnTextureFromType(this.itemId,UiMetrics.ITEM_ICON_SIZE,true);
             eqXML = ObjectLibrary.xmlLibrary_[this.itemId];
 
              if(eqXML == null){

@@ -20,6 +20,7 @@ import com.company.assembleegameclient.objects.Player;
    import flash.events.Event;
    import flash.geom.Point;
 
+import kabam.rotmg.constants.UiMetrics;
 import kabam.rotmg.game.view.components.TabStripView;
    import kabam.rotmg.messaging.impl.incoming.TradeAccepted;
    import kabam.rotmg.messaging.impl.incoming.TradeChanged;
@@ -31,12 +32,12 @@ import kabam.rotmg.game.view.components.TabStripView;
 
 
       private const BG_POSITION:Point = new Point(0, 0);
-      private const MAP_POSITION:Point = new Point(4, 4);
-      private const CHARACTER_DETAIL_PANEL_POSITION:Point = new Point(0, 198);
-      private const STAT_METERS_POSITION:Point = new Point(12, 230);
-      private const EQUIPMENT_INVENTORY_POSITION:Point = new Point(14, 304);
-      private const TAB_STRIP_POSITION:Point = new Point(7, 346);
-      private const INTERACT_PANEL_POSITION:Point = new Point(0, 500);
+      private const MAP_POSITION:Point = new Point(UiMetrics.HUD_MINIMAP_X, UiMetrics.HUD_MINIMAP_Y);
+      private const CHARACTER_DETAIL_PANEL_POSITION:Point = new Point(0, UiMetrics.HUD_DETAILS_Y);
+      private const STAT_METERS_POSITION:Point = new Point(UiMetrics.HUD_BAR_X, UiMetrics.HUD_STAT_METERS_Y);
+      private const EQUIPMENT_INVENTORY_POSITION:Point = new Point(UiMetrics.ITEM_GRID_X, UiMetrics.HUD_EQUIPMENT_Y);
+      private const TAB_STRIP_POSITION:Point = new Point(UiMetrics.ITEM_GRID_X - UiMetrics.HUD_CONTENT_INSET, UiMetrics.HUD_TAB_STRIP_Y);
+      private const INTERACT_PANEL_POSITION:Point = new Point(0, UiMetrics.HUD_INTERACT_Y);
       private const NEXUS_INDICATOR_POSITION:Point = new Point(200, 355);
 
       private var background:CharacterWindowBackground;
@@ -78,8 +79,8 @@ import kabam.rotmg.game.view.components.TabStripView;
       private function createAssets() : void
       {
          this.background = new CharacterWindowBackground();
-         this.miniMap = new MiniMap(192,192);
-         this.tabStrip = new TabStripView(186,153, this.gs_);
+         this.miniMap = new MiniMap(UiMetrics.HUD_MINIMAP_WIDTH,UiMetrics.HUD_MINIMAP_HEIGHT);
+         this.tabStrip = new TabStripView(UiMetrics.gridWidth(UiMetrics.ITEM_GRID_COLUMNS) + UiMetrics.HUD_CONTENT_INSET * 2,UiMetrics.HUD_TAB_STRIP_HEIGHT, this.gs_);
          this.characterDetails = new CharacterDetailsView();
          this.statMeters = new StatMetersView();
          var bitmapData:BitmapData = AssetLibrary.getImageFromSet("lofiInterfaceBig",6);
@@ -118,6 +119,7 @@ import kabam.rotmg.game.view.components.TabStripView;
       {
          var player:Player = gs.map.player_;
 
+         /* The pane art already paints the equipment recesses. */
          this.createEquippedGridBackground();
          this.equippedGrid = new EquippedGrid(player, player.slotTypes_, player);
          this.equippedGrid.x = this.EQUIPMENT_INVENTORY_POSITION.x;
@@ -150,6 +152,9 @@ import kabam.rotmg.game.view.components.TabStripView;
          this.equippedGridBG.y = (this.EQUIPMENT_INVENTORY_POSITION.y - 3);
          this.equippedGridBG.graphics.drawGraphicsData(box1);
          this.equippedGridBG.graphics.drawGraphicsData(box2);
+         /* Kept for the code that toggles its visibility, but the pane art
+            paints the equipment recesses so it must not draw over them. */
+         this.equippedGridBG.alpha = 0;
          addChild(this.equippedGridBG);
       }
 

@@ -8,6 +8,7 @@ import flash.display.BitmapData;
 import flash.display.Sprite;
    import kabam.rotmg.assets.services.IconFactory;
    import kabam.rotmg.constants.GeneralConstants;
+   import kabam.rotmg.constants.UiMetrics;
    import kabam.rotmg.ui.model.HUDModel;
    import kabam.rotmg.ui.model.TabStripModel;
 import kabam.rotmg.ui.signals.StatsTabHotKeyInputSignal;
@@ -105,7 +106,9 @@ import kabam.rotmg.ui.signals.UpdateBackpackTabSignal;
          var storage:InventoryGrid = new InventoryGrid(player,player,4);
          storageContent.addChild(storage);
          var potionsInventory:PotionInventoryView = new PotionInventoryView();
-         potionsInventory.y = storage.height + 4;
+         /* Land on the potion recess painted at UiMetrics.HUD_POTIONS_Y, measured
+            from where this content sits inside the tab strip. */
+         potionsInventory.y = UiMetrics.HUD_POTIONS_Y - (UiMetrics.HUD_TAB_STRIP_Y + TabStripView.TAB_TOP_OFFSET + 7);
          storageContent.addChild(potionsInventory);
          var icon:Bitmap = this.iconFactory.makeIconBitmap(24);
          this.view.addTab(icon,storageContent);

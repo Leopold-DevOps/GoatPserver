@@ -144,6 +144,10 @@ package kabam.rotmg.minimap.view
          this.zoomButtons.zoom.add(this.onZoomChanged);
          this.zoomButtons.setZoomLevels(this.zoomLevels.length);
          addChild(this.zoomButtons);
+         /* The ground and character layers draw outward from the centre with
+            nothing bounding them, so without this the map spills over the
+            surrounding frame art. */
+         scrollRect = new Rectangle(0,0,this._width,this._height);
       }
       
       private function addMouseListeners() : void

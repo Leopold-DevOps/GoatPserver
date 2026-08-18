@@ -25,8 +25,8 @@ package kabam.rotmg.ui.view.components
    
    public class PotionSlotView extends Sprite
    {
-      public static var BUTTON_WIDTH:int = 84;
-      private static var BUTTON_HEIGHT:int = 24;
+      public static var BUTTON_WIDTH:int = 108;
+      private static var BUTTON_HEIGHT:int = 32;
       private static var SMALL_SIZE:int = 4;
       private static var CENTER_ICON_X:int = 13;
       private static var LEFT_ICON_X:int = -6;

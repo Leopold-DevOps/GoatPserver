@@ -44,6 +44,7 @@ import flash.utils.setTimeout;
 import kabam.lib.loopedprocs.LoopedCallback;
 import kabam.lib.loopedprocs.LoopedProcess;
 import kabam.rotmg.constants.GeneralConstants;
+import kabam.rotmg.constants.UiMetrics;
 import kabam.rotmg.core.model.MapModel;
 import kabam.rotmg.core.model.PlayerModel;
 import kabam.rotmg.core.view.Layers;
@@ -102,7 +103,7 @@ public class GameSprite extends Sprite
       addChild(this.map);
       this.gsc_ = new GameServerConnection(this,server,gameId,createCharacter,charId,keyTime,key,mapJSON);
       this.mui_ = new MapUserInput(this);
-      this.textBox_ = new TextBox(this,600,600);
+      this.textBox_ = new TextBox(this,UiMetrics.PLAY_WIDTH,600);
       addChild(this.textBox_);
       this.textBox_.addEventListener(MouseEvent.MOUSE_DOWN,this.onChatDown);
       this.textBox_.addEventListener(MouseEvent.MOUSE_UP,this.onChatUp);
@@ -172,7 +173,7 @@ public class GameSprite extends Sprite
    public function hudModelInitialized() : void
    {
       this.hudView = new HUDView(this);
-      this.hudView.x = 600;
+      this.hudView.x = UiMetrics.PLAY_WIDTH;
       addChild(this.hudView);
 
       this.scaledLayer = new Sprite();
@@ -363,7 +364,7 @@ public class GameSprite extends Sprite
             this.hudView.scaleX = sWidth;
             this.hudView.scaleY = sHeight;
          }
-         this.hudView.x = (800 - (200 * this.hudView.scaleX));
+         this.hudView.x = (UiMetrics.STAGE_WIDTH - (UiMetrics.HUD_WIDTH * this.hudView.scaleX));
          if (this.creditDisplay_ != null)
          {
             this.creditDisplay_.x = (this.hudView.x - (6 * this.creditDisplay_.scaleX));

@@ -2,6 +2,8 @@ package kabam.rotmg.ui.view
 {
 import com.company.assembleegameclient.objects.Player;
 import com.company.assembleegameclient.ui.StatusBar;
+
+import kabam.rotmg.constants.UiMetrics;
 import flash.display.Sprite;
 import flash.events.Event;
 
@@ -20,12 +22,14 @@ public class StatMetersView extends Sprite
    public function StatMetersView()
    {
       super();
-      this.expBar_ = new StatusBar(176,16,5931045,5526612,"Lvl X");
-      this.fameBar_ = new StatusBar(176,16,14835456,5526612,"Fame");
-      this.hpBar_ = new StatusBar(176,16,14693428,5526612,"HP");
-      this.mpBar_ = new StatusBar(176,16,6325472,5526612,"MP");
-      this.hpBar_.y = 24;
-      this.mpBar_.y = 48;
+      /* Sized and spaced to sit inside the grooves painted on the pane art:
+         216x17 tracks on a 29px pitch. See UiMetrics.HUD_BAR_Y. */
+      this.expBar_ = new StatusBar(UiMetrics.HUD_BAR_WIDTH,UiMetrics.HUD_BAR_HEIGHT,5931045,5526612,"Lvl X");
+      this.fameBar_ = new StatusBar(UiMetrics.HUD_BAR_WIDTH,UiMetrics.HUD_BAR_HEIGHT,14835456,5526612,"Fame");
+      this.hpBar_ = new StatusBar(UiMetrics.HUD_BAR_WIDTH,UiMetrics.HUD_BAR_HEIGHT,14693428,5526612,"HP");
+      this.mpBar_ = new StatusBar(UiMetrics.HUD_BAR_WIDTH,UiMetrics.HUD_BAR_HEIGHT,6325472,5526612,"MP");
+      this.hpBar_.y = UiMetrics.HUD_BAR_Y[1] - UiMetrics.HUD_BAR_Y[0];
+      this.mpBar_.y = UiMetrics.HUD_BAR_Y[2] - UiMetrics.HUD_BAR_Y[0];
       this.expBar_.visible = true;
       this.fameBar_.visible = false;
       addChild(this.expBar_);

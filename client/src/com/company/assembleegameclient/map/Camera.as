@@ -4,6 +4,7 @@ import com.company.assembleegameclient.objects.GameObject;
 import com.company.assembleegameclient.parameters.Parameters;
 import com.company.assembleegameclient.util.RandomUtil;
 import com.company.util.Trig;
+import kabam.rotmg.constants.UiMetrics;
 import flash.geom.Matrix3D;
 import flash.geom.PerspectiveProjection;
 import flash.geom.Rectangle;
@@ -13,8 +14,8 @@ public class Camera
 {
 
    public static const lN_:Vector3D = new Vector3D(0,0,1);
-   public static var CENTER_SCREEN_RECT:Rectangle = new Rectangle(-300,-325,600,600);
-   public static var OFFSET_SCREEN_RECT:Rectangle = new Rectangle(-300,-450,600,600);
+   public static var CENTER_SCREEN_RECT:Rectangle = new Rectangle(-UiMetrics.PLAY_WIDTH / 2,-325,UiMetrics.PLAY_WIDTH,600);
+   public static var OFFSET_SCREEN_RECT:Rectangle = new Rectangle(-UiMetrics.PLAY_WIDTH / 2,-450,UiMetrics.PLAY_WIDTH,600);
 
    public var x_:Number;
    public var y_:Number;
@@ -67,7 +68,11 @@ public class Camera
       var mscale:Number = Parameters.data_.mscale;
       var scaleW:Number = WebMain.sWidth / mscale;
       var scaleH:Number = WebMain.sHeight / mscale;
-      var p:Number = Number(scaleH / 3);
+      /* Shift the view left by the width of the HUD pane so the player sits in
+         the middle of the *visible* play area rather than the whole stage. This
+         was written as scaleH / 3, which is only the same thing while the pane
+         is 200 wide on a 600 tall design space. */
+      var p:Number = Number(UiMetrics.HUD_WIDTH * (scaleH / UiMetrics.STAGE_HEIGHT));
       CENTER_SCREEN_RECT = new Rectangle((p - scaleW) / 2,-scaleH * 13 / 24,scaleW,scaleH);
       OFFSET_SCREEN_RECT = new Rectangle((p - scaleW) / 2,-scaleH * 3 / 4,scaleW,scaleH);
    }

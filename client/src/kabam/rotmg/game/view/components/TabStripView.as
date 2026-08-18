@@ -13,12 +13,12 @@ import com.company.util.GraphicsUtil;
    
    public class TabStripView extends Sprite
    {
-      public static const TAB_WIDTH:Number = 28;
+      public static const TAB_WIDTH:Number = 29;
       public static const TAB_HEIGHT:Number = 35;
       public static const TAB_CORNER_RADIUS:int = 9;
       public static const CONTENT_CORNER_RADIUS:int = 25;
       public static const TAB_TOP_OFFSET:int = 27;
-      public static const TAB_X_PADDING:Number = 2;
+      public static const TAB_X_PADDING:Number = 9;
       public static const TAB_Y_PADDING:Number = 8;
       public static const BACKGROUND_COLOR:uint = 2368034;
       public static const TAB_COLOR:uint = 7039594;
@@ -45,6 +45,8 @@ import com.company.util.GraphicsUtil;
          this.tabs = new Vector.<TabView>();
          this.contents = new Vector.<Sprite>();
          this.tabSprite = new Sprite();
+         /* Line the tabs up with the recesses carved into the pane art. */
+         this.tabSprite.x = 5;
          this.tabSprite.addEventListener(MouseEvent.CLICK,this.onTabSelected);
          addChild(this.tabSprite);
          this.containerSprite = new Sprite();
@@ -92,7 +94,8 @@ import com.company.util.GraphicsUtil;
          this.bgSprite = new Sprite();
          var g:Graphics = this.bgSprite.graphics;
          g.clear();
-         var contentFill:GraphicsSolidFill = new GraphicsSolidFill(BACKGROUND_COLOR,1);
+         /* Transparent: the pane art paints the inventory recesses itself. */
+         var contentFill:GraphicsSolidFill = new GraphicsSolidFill(BACKGROUND_COLOR,0);
          var contentPath:GraphicsPath = new GraphicsPath(new Vector.<int>(),new Vector.<Number>());
          var contentGraphicsData:Vector.<IGraphicsData> = new <IGraphicsData>[contentFill,contentPath,GraphicsUtil.END_FILL];
          GraphicsUtil.drawCutEdgeRect(0,0,this.w,this.h - TAB_TOP_OFFSET,6,[1,1,1,1],contentPath);
@@ -105,7 +108,9 @@ import com.company.util.GraphicsUtil;
          var tabBG:Sprite = new Sprite();
          tabBG.name = "tabBG";
          var g:Graphics = tabBG.graphics;
-         g.beginFill(TAB_COLOR);
+         /* Alpha 0: the pane art carves the tab recesses. The fill is kept so
+            the tab still has a hit area, and TabView tints it on selection. */
+         g.beginFill(TAB_COLOR,0);
          g.drawRoundRect(0,0,TAB_WIDTH,TAB_HEIGHT,TAB_CORNER_RADIUS,TAB_CORNER_RADIUS);
          g.endFill();
          var index:int = this.tabs.length;

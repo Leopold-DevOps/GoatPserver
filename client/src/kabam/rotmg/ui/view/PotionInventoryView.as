@@ -10,7 +10,7 @@ package kabam.rotmg.ui.view
       
       private static const RIGHT_BUTTON_CUTS:Array = [0,1,1,0];
       
-      private static const BUTTON_SPACE:int = 4;
+      private static const BUTTON_SPACE:int = 7;
        
       
       private const cuts:Array = [LEFT_BUTTON_CUTS,RIGHT_BUTTON_CUTS];

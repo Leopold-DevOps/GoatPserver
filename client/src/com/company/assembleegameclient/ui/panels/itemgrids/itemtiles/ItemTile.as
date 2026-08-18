@@ -17,15 +17,16 @@ import flash.display.Shape;
 import flash.display.Sprite;
 
 import kabam.rotmg.constants.ItemConstants;
+import kabam.rotmg.constants.UiMetrics;
 
 public class ItemTile extends Sprite
 {
    public static const TILE_DOUBLE_CLICK:String = "TILE_DOUBLE_CLICK";
    public static const TILE_SINGLE_CLICK:String = "TILE_SINGLE_CLICK";
 
-   public static const WIDTH:int = 40;
+   public static const WIDTH:int = UiMetrics.ITEM_TILE_WIDTH;
 
-   public static const HEIGHT:int = 40;
+   public static const HEIGHT:int = UiMetrics.ITEM_TILE_HEIGHT;
 
    public static const BORDER:int = 3;
 
@@ -55,7 +56,10 @@ public class ItemTile extends Sprite
       addChild(this.restrictedUseIndicator);
       this.setItemSprite(new ItemTileSprite());
 
-      fill_ = new GraphicsSolidFill(getBackgroundColor(),1);
+      /* Alpha 0 rather than a grey plate: the pane art already paints a recess
+         behind every slot. A zero-alpha fill still hit-tests in Flash, so the
+         tile keeps its mouse target for hover, drag and tooltips. */
+      fill_ = new GraphicsSolidFill(getBackgroundColor(),0);
       graphicsData_ = new <IGraphicsData>[fill_,path_,GraphicsUtil.END_FILL];
    }
 
