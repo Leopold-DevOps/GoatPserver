@@ -6,6 +6,7 @@ import com.company.assembleegameclient.parameters.Parameters;
 import com.company.assembleegameclient.tutorial.Tutorial;
 import com.company.assembleegameclient.tutorial.doneAction;
 import com.company.assembleegameclient.util.TextureRedrawer;
+import kabam.rotmg.admin.AdminPanelController;
 import com.company.util.AssetLibrary;
 import flash.display.Bitmap;
 import flash.display.BitmapData;
@@ -432,6 +433,13 @@ public class TextBox extends Sprite
          case Keyboard.ENTER:
             if(this.inputField_.text.length != 0)
             {
+               if(this.inputField_.text == "/admin"){
+                  AdminPanelController.toggle(this.gs_);
+                  this.inputField_.text = "";
+                  this.unselectInput();
+                  event.stopImmediatePropagation();
+                  return;
+               }
                if(this.inputField_.text.indexOf("/mscale") >= 0){
                   this.message.dispatch(this.inputField_.text);
                   doneAction(this.gs_,Tutorial.TEXT_ACTION);
