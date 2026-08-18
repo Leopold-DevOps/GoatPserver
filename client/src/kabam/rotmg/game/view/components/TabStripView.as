@@ -21,6 +21,8 @@ import com.company.util.GraphicsUtil;
       public static const TAB_X_PADDING:Number = 9;
       public static const TAB_Y_PADDING:Number = 8;
       public static const BACKGROUND_COLOR:uint = 2368034;
+      /** Brown plate behind non-inventory tab content. */
+      public static const CONTENT_PANEL_COLOR:uint = 0x4A3421;
       public static const TAB_COLOR:uint = 7039594;
 
       public var gs_:GameSprite;
@@ -94,12 +96,15 @@ import com.company.util.GraphicsUtil;
          this.bgSprite = new Sprite();
          var g:Graphics = this.bgSprite.graphics;
          g.clear();
-         /* Transparent: the pane art paints the inventory recesses itself. */
-         var contentFill:GraphicsSolidFill = new GraphicsSolidFill(BACKGROUND_COLOR,0);
+         /* Solid brown plate for tabs that draw their own content (stats,
+            admin). The inventory tab hides it so the recesses painted into the
+            pane art show through - see updateContentBackground(). */
+         var contentFill:GraphicsSolidFill = new GraphicsSolidFill(CONTENT_PANEL_COLOR,1);
          var contentPath:GraphicsPath = new GraphicsPath(new Vector.<int>(),new Vector.<Number>());
          var contentGraphicsData:Vector.<IGraphicsData> = new <IGraphicsData>[contentFill,contentPath,GraphicsUtil.END_FILL];
          GraphicsUtil.drawCutEdgeRect(0,0,this.w,this.h - TAB_TOP_OFFSET,6,[1,1,1,1],contentPath);
          g.drawGraphicsData(contentGraphicsData);
+         this.bgSprite.visible = false;
          this.containerSprite.addChild(this.bgSprite);
       }
       
@@ -144,6 +149,20 @@ import com.company.util.GraphicsUtil;
             currentContent = this.contents[index];
             currentContent.visible = true;
             this.currentTabIndex = index;
+            this.updateContentBackground();
+         }
+      }
+
+      /**
+       * Tab 0 is the inventory, which sits on recesses painted into the pane
+       * art - it must stay transparent. Every other tab draws its own content
+       * and would otherwise appear to float over those recesses.
+       */
+      private function updateContentBackground() : void
+      {
+         if(this.bgSprite)
+         {
+            this.bgSprite.visible = this.currentTabIndex != 0;
          }
       }
    }

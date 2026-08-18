@@ -75,6 +75,15 @@ public class StatusBar extends Sprite
 
    private var disableText_:Boolean = false;
 
+   /* Opt-in rounded track + border. Off by default because StatusBar is also
+      used for the vault, boost panel and vertical meters, which should keep
+      their square styling. Enable with setRoundedStyle(). */
+   private var cornerRadius_:Number = 0;
+
+   private var borderColor_:uint = 0;
+
+   private var borderThickness_:Number = 0;
+
    public function StatusBar(w:int, h:int, color:uint, backColor:uint, label:String = null, forceNumText:Boolean = false, isProgressBar:Boolean = false, vertical:Boolean = false, size:int = 14, visibleLabel:Boolean = true)
    {
       this.isVert_ = vertical;
@@ -145,6 +154,18 @@ public class StatusBar extends Sprite
 
    public function setBarColor(color:uint):void{
       this.color_ = color;
+   }
+
+   /**
+    * Give the bar a rounded track with a coloured border (used by the HUD
+    * hp/mp/xp meters). Radius is clamped to half the bar height so it can't
+    * invert on short bars.
+    */
+   public function setRoundedStyle(cornerRadius:Number, borderColor:uint, borderThickness:Number = 2):void{
+      this.cornerRadius_ = Math.min(cornerRadius, this.h_ / 2);
+      this.borderColor_ = borderColor;
+      this.borderThickness_ = borderThickness;
+      this.internalDraw();
    }
 
    public function disableText(value:Boolean):void{
@@ -237,24 +258,37 @@ public class StatusBar extends Sprite
       if (this.textColor_ != textColor) {
          this.setTextColor(textColor);
       }
+      var r:Number = this.cornerRadius_;
       graphics.beginFill(this.backColor_);
-      graphics.drawRect(0, 0, this.w_, this.h_);
+      if (r > 0) {
+         graphics.drawRoundRect(0, 0, this.w_, this.h_, r * 2, r * 2);
+      } else {
+         graphics.drawRect(0, 0, this.w_, this.h_);
+      }
       graphics.endFill();
       if (this.isPulsing) {
          this.colorSprite.graphics.beginFill(this.pulseBackColor);
-         this.colorSprite.graphics.drawRect(0, 0, this.w_, this.h_);
+         this.drawTrack(this.colorSprite, this.w_, r);
       }
       this.colorSprite.graphics.beginFill(this.color_);
       if (this.max_ > 0) {
          if (this.isVert_) {
             this.colorSprite.graphics.drawRect(0, this.h_, this.w_, -this.h_ * (this.val_ / this.max_));
          } else {
-            this.colorSprite.graphics.drawRect(0, 0, this.w_ * (this.val_ / this.max_), this.h_);
+            this.drawTrack(this.colorSprite, this.w_ * (this.val_ / this.max_), r);
          }
       } else {
-         this.colorSprite.graphics.drawRect(0, 0, this.w_, this.h_);
+         this.drawTrack(this.colorSprite, this.w_, r);
       }
       this.colorSprite.graphics.endFill();
+      /* Border last so it sits over the fill rather than being covered by it. */
+      if (r > 0 && this.borderThickness_ > 0) {
+         graphics.lineStyle(this.borderThickness_, this.borderColor_, 1, true);
+         graphics.drawRoundRect(this.borderThickness_ / 2, this.borderThickness_ / 2,
+                                this.w_ - this.borderThickness_, this.h_ - this.borderThickness_,
+                                r * 2, r * 2);
+         graphics.lineStyle();
+      }
       if (!this.disableText_) {
          if (this.bTextEnabled(Parameters.data_.toggleBarText) || this.mouseOver_ && this.h_ > 4 || this.forceNumText_) {
 
@@ -311,6 +345,24 @@ public class StatusBar extends Sprite
             }
          }
       }
+   }
+
+   /**
+    * Fill segment of the track. A rounded rect narrower than its own diameter
+    * renders as a lens shape, so the radius is clamped to half the segment
+    * width - a nearly-empty bar then reads as a small pill instead.
+    */
+   private function drawTrack(target:Sprite, width:Number, radius:Number) : void
+   {
+      if (width <= 0) {
+         return;
+      }
+      if (radius <= 0) {
+         target.graphics.drawRect(0, 0, width, this.h_);
+         return;
+      }
+      var r:Number = Math.min(radius, width / 2);
+      target.graphics.drawRoundRect(0, 0, width, this.h_, r * 2, r * 2);
    }
 
    public function startPulse(repetitions:Number, foregroundColor:Number, backgroundColor:Number) : void

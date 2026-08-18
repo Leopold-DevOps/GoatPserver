@@ -61,9 +61,12 @@ package kabam.rotmg.ui.view.components
       
       public function PotionSlotView(cuts:Array, position:int)
       {
-         this.lightGrayFill = new GraphicsSolidFill(5526612,1);
-         this.midGrayFill = new GraphicsSolidFill(4078909,1);
-         this.darkGrayFill = new GraphicsSolidFill(2368034,1);
+         /* Alpha 0 - the pane art already paints the potion recesses. Same
+            trick as ItemTile: a zero-alpha fill still hit-tests, so the slot
+            keeps its mouse target for click, drag and buy. */
+         this.lightGrayFill = new GraphicsSolidFill(0x6B4A2B,0);
+         this.midGrayFill = new GraphicsSolidFill(0x4A3421,0);
+         this.darkGrayFill = new GraphicsSolidFill(0x2B1D11,0);
          this.outerPath = new GraphicsPath(new Vector.<int>(),new Vector.<Number>());
          this.innerPath = new GraphicsPath(new Vector.<int>(),new Vector.<Number>());
          this.useGraphicsData = new <IGraphicsData>[this.lightGrayFill,this.outerPath,GraphicsUtil.END_FILL];

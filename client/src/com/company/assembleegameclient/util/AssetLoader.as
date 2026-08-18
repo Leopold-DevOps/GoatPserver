@@ -1,4 +1,4 @@
-// Decompiled by AS3 Sorcerer 6.08
+﻿// Decompiled by AS3 Sorcerer 6.08
 // www.as3sorcerer.com
 
 //com.company.assembleegameclient.util.AssetLoader
@@ -165,6 +165,7 @@ public class AssetLoader
       AssetLibrary.addImageSet("animEmotes", new EmbeddedAssets.animEmotes().bitmapData, 32, 32);
       AssetLibrary.addImageSet("customAssets8x8", new EmbeddedAssets.customAssets8x8().bitmapData, 8, 8);
       AssetLibrary.addImageSet("customUV128x128", new EmbeddedAssets.customUV128x128().bitmapData, 128, 128);
+      AssetLibrary.addImageSet("vaultPortalAnim", new EmbeddedAssets.vaultPortalAnim().bitmapData, 87, 164);
    }
 
    private function addAnimatedCharacters():void

@@ -1,4 +1,4 @@
-package com.company.assembleegameclient.game
+﻿package com.company.assembleegameclient.game
 {
 import com.company.assembleegameclient.game.GameStatistics;
 import com.company.assembleegameclient.map.Camera;
@@ -173,6 +173,9 @@ public class GameSprite extends Sprite
    public function hudModelInitialized() : void
    {
       this.hudView = new HUDView(this);
+      /* The pane is authored at HUD_DESIGN_WIDTH; HUD_SCALE shrinks the whole
+         thing on screen. onResize recomputes both below. */
+      this.hudView.scaleX = this.hudView.scaleY = UiMetrics.HUD_SCALE;
       this.hudView.x = UiMetrics.PLAY_WIDTH;
       addChild(this.hudView);
 
@@ -353,18 +356,21 @@ public class GameSprite extends Sprite
       }
       if (this.hudView != null)
       {
+         /* HUD_SCALE is folded into whichever resize mode is active, so the
+            pane keeps its reduced size at every window size. */
          if (!Parameters.data_.hudscale)
          {
-            this.hudView.scaleX = result;
-            this.hudView.scaleY = 1;
+            this.hudView.scaleX = result * UiMetrics.HUD_SCALE;
+            this.hudView.scaleY = UiMetrics.HUD_SCALE;
             this.hudView.y = 0;
          }
          else
          {
-            this.hudView.scaleX = sWidth;
-            this.hudView.scaleY = sHeight;
+            this.hudView.scaleX = sWidth * UiMetrics.HUD_SCALE;
+            this.hudView.scaleY = sHeight * UiMetrics.HUD_SCALE;
          }
-         this.hudView.x = (UiMetrics.STAGE_WIDTH - (UiMetrics.HUD_WIDTH * this.hudView.scaleX));
+         /* scaleX already carries HUD_SCALE, so measure against the design width. */
+         this.hudView.x = (UiMetrics.STAGE_WIDTH - (UiMetrics.HUD_DESIGN_WIDTH * this.hudView.scaleX));
          if (this.creditDisplay_ != null)
          {
             this.creditDisplay_.x = (this.hudView.x - (6 * this.creditDisplay_.scaleX));

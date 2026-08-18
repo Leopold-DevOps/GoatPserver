@@ -20,13 +20,9 @@ public class CharacterWindowBackground extends Sprite
          var pane:Bitmap = new Bitmap(new HudPane().bitmapData);
          addChild(pane);
 
-         /* The window is taller than the art on tall displays; carry the frame's
-            own colour down past the bottom edge rather than showing a seam. */
-         var skirt:Sprite = new Sprite();
-         skirt.graphics.beginFill(0x1B1109);
-         skirt.graphics.drawRect(0, pane.height, UiMetrics.HUD_WIDTH, 2500 - pane.height);
-         skirt.graphics.endFill();
-         addChildAt(skirt, 0);
+         /* No skirt below the pane: HUD_SCALE makes the art end above the
+            bottom of the window, and a filled rect there just reads as a stray
+            brown box. Letting the play area show through is the intent. */
       }
    }
 }

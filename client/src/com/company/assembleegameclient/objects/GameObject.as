@@ -39,6 +39,7 @@ import flash.filters.ColorMatrixFilter;
 import flash.filters.GlowFilter;
 import flash.geom.Matrix;
 import flash.geom.Point;
+import flash.geom.Rectangle;
 import flash.geom.Vector3D;
 import flash.utils.Dictionary;
 import flash.utils.getQualifiedClassName;
@@ -194,6 +195,14 @@ public class GameObject extends BasicObject {
     public var object3d_:Object3DStage3D = null;
     public var effect_:ParticleEffect = null;
     public var animations_:Animations = null;
+    /* Geometry of the last drawn texture, in map space, for world-anchored UI
+       (the portal Enter button). drawnHeight_ is the full texture height;
+       the two content values describe where the *visible* pixels sit inside
+       it, which is not the middle - TextureRedrawer pads asymmetrically and
+       plenty of source art is off-centre within its own cell. */
+    public var drawnHeight_:int = 0;
+    public var drawnContentOffsetX_:Number = 0;
+    public var drawnContentTop_:Number = 0;
     public var dead_:Boolean = false;
     public var maxHP_:int = 200;
     public var hp_:int = 200;
@@ -423,6 +432,10 @@ public class GameObject extends BasicObject {
         }
         var w:int = texture.width;
         var h:int = texture.height;
+        this.drawnHeight_ = h;
+        var contentBounds:Rectangle = contentBoundsOf(texture);
+        this.drawnContentOffsetX_ = (contentBounds.x + contentBounds.width / 2) - texture.width / 2;
+        this.drawnContentTop_ = contentBounds.y;
         var h2:int = square_.sink_ + this.sinkLevel_;
         if (h2 > 0 && (this.flying_ || square_.obj_ != null && square_.obj_.props_.protectFromSink_)) {
             h2 = 0;
@@ -1117,7 +1130,7 @@ public class GameObject extends BasicObject {
     }
 
     protected function generateNameText(name:String):SimpleText {
-        var nameText:SimpleText = new SimpleText(16, 16777215, false, 0, 0);
+        var nameText:SimpleText = new SimpleText(16, this.props_.nameColor_, false, 0, 0);
         nameText.setBold(true);
         nameText.text = name;
         nameText.updateMetrics();
@@ -1129,6 +1142,32 @@ public class GameObject extends BasicObject {
         nameBitmapData.draw(nameText, null);
         nameBitmapData.applyFilter(nameBitmapData, nameBitmapData.rect, PointUtil.ORIGIN, new GlowFilter(0, 1, 3, 3, 2, 1));
         return nameBitmapData;
+    }
+
+    /*
+     * Opaque bounds of a drawn texture, cached per BitmapData.
+     *
+     * getColorBoundsRect is not cheap enough to run per object per frame, but
+     * TextureRedrawer hands back cached bitmaps, so in practice this resolves
+     * once per distinct texture (eg. 8 times for an animated portal). The
+     * dictionary uses weak keys so it cannot pin textures in memory.
+     */
+    private static const CONTENT_BOUNDS_CACHE:Dictionary = new Dictionary(true);
+
+    private static function contentBoundsOf(bmp:BitmapData):Rectangle {
+        if (bmp == null) {
+            return new Rectangle(0, 0, 0, 0);
+        }
+        var cached:* = CONTENT_BOUNDS_CACHE[bmp];
+        if (cached != null) {
+            return Rectangle(cached);
+        }
+        var bounds:Rectangle = bmp.getColorBoundsRect(0xFF000000, 0x00000000, false);
+        if (bounds == null || bounds.width <= 0 || bounds.height <= 0) {
+            bounds = new Rectangle(0, 0, bmp.width, bmp.height);
+        }
+        CONTENT_BOUNDS_CACHE[bmp] = bounds;
+        return bounds;
     }
 
     protected function getHallucinatingTexture():BitmapData {

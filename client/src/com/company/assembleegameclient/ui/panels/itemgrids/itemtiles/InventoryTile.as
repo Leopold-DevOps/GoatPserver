@@ -26,7 +26,8 @@ package com.company.assembleegameclient.ui.panels.itemgrids.itemtiles
       
       public function buildHotKeyBMP() : void
       {
-         var tempText:SimpleText = new SimpleText(26,3552822,false,0,0);
+         /* Dark brown (was 0x363636 grey) to match the wooden slot recesses. */
+         var tempText:SimpleText = new SimpleText(26,0x3A2718,false,0,0);
          tempText.text = String(this.hotKey);
          tempText.setBold(true);
          tempText.updateMetrics();

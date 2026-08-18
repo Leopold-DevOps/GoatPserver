@@ -10,6 +10,10 @@ import flash.events.Event;
 public class StatMetersView extends Sprite
 {
 
+   /** Sampled from the gold trim in HudPane.png. */
+   public static const BAR_BORDER_COLOR:uint = 0xD49A3D;
+
+   public static const BAR_CORNER_RADIUS:Number = 8;
 
    private var expBar_:StatusBar;
 
@@ -30,6 +34,12 @@ public class StatMetersView extends Sprite
       this.mpBar_ = new StatusBar(UiMetrics.HUD_BAR_WIDTH,UiMetrics.HUD_BAR_HEIGHT,6325472,5526612,"MP");
       this.hpBar_.y = UiMetrics.HUD_BAR_Y[1] - UiMetrics.HUD_BAR_Y[0];
       this.mpBar_.y = UiMetrics.HUD_BAR_Y[2] - UiMetrics.HUD_BAR_Y[0];
+      /* Rounded track + gold border. BAR_BORDER_COLOR is sampled from the gold
+         trim in HudPane.png so the meters read as part of the frame. */
+      this.expBar_.setRoundedStyle(BAR_CORNER_RADIUS, BAR_BORDER_COLOR);
+      this.fameBar_.setRoundedStyle(BAR_CORNER_RADIUS, BAR_BORDER_COLOR);
+      this.hpBar_.setRoundedStyle(BAR_CORNER_RADIUS, BAR_BORDER_COLOR);
+      this.mpBar_.setRoundedStyle(BAR_CORNER_RADIUS, BAR_BORDER_COLOR);
       this.expBar_.visible = true;
       this.fameBar_.visible = false;
       addChild(this.expBar_);

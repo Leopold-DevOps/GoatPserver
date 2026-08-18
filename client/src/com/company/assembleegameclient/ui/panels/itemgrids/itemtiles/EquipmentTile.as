@@ -15,7 +15,9 @@ import com.company.assembleegameclient.objects.Player;
    public class EquipmentTile extends InteractiveItemTile
    {
 
-      private static const greyColorFilter:ColorMatrixFilter = new ColorMatrixFilter(MoreColorUtil.singleColorFilterMatrix(3552822));
+      /* Dark brown (was 0x363636 grey) so the empty-slot silhouettes read as
+         part of the wooden pane rather than sitting on it. */
+      private static const greyColorFilter:ColorMatrixFilter = new ColorMatrixFilter(MoreColorUtil.singleColorFilterMatrix(0x3A2718));
 
 
       public var backgroundDetail:Bitmap;

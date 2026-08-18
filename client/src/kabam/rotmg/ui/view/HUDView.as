@@ -33,11 +33,15 @@ import kabam.rotmg.game.view.components.TabStripView;
 
       private const BG_POSITION:Point = new Point(0, 0);
       private const MAP_POSITION:Point = new Point(UiMetrics.HUD_MINIMAP_X, UiMetrics.HUD_MINIMAP_Y);
-      private const CHARACTER_DETAIL_PANEL_POSITION:Point = new Point(0, UiMetrics.HUD_DETAILS_Y);
+      /* x 36 so the class portrait (drawn at -2 inside the view) lands on
+         HUD_BAR_X and the name row lines up with the bars and item grids
+         below it, instead of hanging off the pane's left frame. */
+      private const CHARACTER_DETAIL_PANEL_POSITION:Point = new Point(36, UiMetrics.HUD_DETAILS_Y);
       private const STAT_METERS_POSITION:Point = new Point(UiMetrics.HUD_BAR_X, UiMetrics.HUD_STAT_METERS_Y);
       private const EQUIPMENT_INVENTORY_POSITION:Point = new Point(UiMetrics.ITEM_GRID_X, UiMetrics.HUD_EQUIPMENT_Y);
       private const TAB_STRIP_POSITION:Point = new Point(UiMetrics.ITEM_GRID_X - UiMetrics.HUD_CONTENT_INSET, UiMetrics.HUD_TAB_STRIP_Y);
-      private const INTERACT_PANEL_POSITION:Point = new Point(0, UiMetrics.HUD_INTERACT_Y);
+      /* Centred: the panel is 200 wide inside a HUD_DESIGN_WIDTH (286) pane. */
+      private const INTERACT_PANEL_POSITION:Point = new Point(43, UiMetrics.HUD_INTERACT_Y);
       private const NEXUS_INDICATOR_POSITION:Point = new Point(200, 355);
 
       private var background:CharacterWindowBackground;

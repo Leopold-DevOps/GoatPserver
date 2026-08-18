@@ -32,6 +32,7 @@ public class ObjectProperties
    public var flying_:Boolean = false;
    public var color_:int = -1;
    public var showName_:Boolean = false;
+   public var nameColor_:uint = 0xFFFFFF;
    public var dontFaceAttacks_:Boolean = false;
    public var dontFaceMovement_:Boolean = false;
    public var bloodProb_:Number = 0;
@@ -96,6 +97,10 @@ public class ObjectProperties
       this.protectFromSink_ = _arg_1.hasOwnProperty("ProtectFromSink");
       this.flying_ = _arg_1.hasOwnProperty("Flying");
       this.showName_ = _arg_1.hasOwnProperty("ShowName");
+      if (_arg_1.hasOwnProperty("NameColor"))
+      {
+         this.nameColor_ = uint(_arg_1.NameColor);
+      }
       this.dontFaceAttacks_ = _arg_1.hasOwnProperty("DontFaceAttacks");
       this.dontFaceMovement_ = _arg_1.hasOwnProperty("DontFaceMovement");
       if (_arg_1.hasOwnProperty("Z"))

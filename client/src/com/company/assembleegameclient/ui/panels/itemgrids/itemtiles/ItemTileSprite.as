@@ -12,6 +12,7 @@ import flash.display.Bitmap;
 import flash.events.TimerEvent;
 import flash.filters.ColorMatrixFilter;
    import flash.geom.Matrix;
+import flash.geom.Rectangle;
 import flash.utils.Timer;
 
 import kabam.rotmg.constants.ItemConstants;
@@ -115,8 +116,7 @@ import kabam.rotmg.constants.UiMetrics;
              }
 
              this.itemBitmap.bitmapData = texture;
-            this.itemBitmap.x = -texture.width / 2;
-            this.itemBitmap.y = -texture.height / 2;
+            this.centreOnContent(texture);
 
              if (hasAnimatedSprites && spritePeriod != -1 && spriteFile != null && spriteArray != null && first != -1 && last != -1) {
                  this.spriteFile = spriteFile;
@@ -157,13 +157,35 @@ import kabam.rotmg.constants.UiMetrics;
            bitmapData = TextureRedrawer.redraw(bitmapData, size, true, 0, true, 5);
 
            this.itemBitmap.bitmapData = bitmapData;
-           this.itemBitmap.x = -bitmapData.width/2;
-           this.itemBitmap.y = -bitmapData.height/2;
+           this.centreOnContent(bitmapData);
 
            this.next++;
 
            if (this.next > this.last)
                this.next = this.first;
+       }
+
+       /**
+        * Centre the icon on its visible pixels rather than on the bitmap.
+        *
+        * TextureRedrawer pads asymmetrically - resize() offsets the art by
+        * `magic` (12) on the top/left but only adds 1px at the bottom when the
+        * symmetric flag is off, and outlineGlow() adds its own margin. Centring
+        * the raw bitmap therefore parks the artwork a few pixels off inside the
+        * slot. Measuring the opaque bounds is immune to whatever padding the
+        * redraw chain happened to add.
+        */
+       private function centreOnContent(bmp:BitmapData) : void
+       {
+           var bounds:Rectangle = bmp.getColorBoundsRect(0xFF000000, 0x00000000, false);
+           if (bounds == null || bounds.width <= 0 || bounds.height <= 0)
+           {
+               this.itemBitmap.x = -bmp.width / 2;
+               this.itemBitmap.y = -bmp.height / 2;
+               return;
+           }
+           this.itemBitmap.x = -(bounds.x + bounds.width / 2);
+           this.itemBitmap.y = -(bounds.y + bounds.height / 2);
        }
    }
 }

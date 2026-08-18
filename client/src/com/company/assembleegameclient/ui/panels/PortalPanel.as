@@ -36,8 +36,11 @@ package com.company.assembleegameclient.ui.panels
          this.nameText_.autoSize = TextFieldAutoSize.CENTER;
          this.nameText_.filters = [new DropShadowFilter(0,0,0)];
          addChild(this.nameText_);
+         /* The Enter button now lives in the world, above the portal itself
+            (PortalEnterButton, added by GameSprite). It is still constructed
+            here because draw() swaps it against the Locked/Full label, but it
+            is never added to the panel. */
          this.enterButton_ = new TextButton(16,"Enter");
-         addChild(this.enterButton_);
          this.fullText_ = new SimpleText(18,16711680,false,WIDTH,0);
          this.fullText_.setBold(true);
          if(this.owner_.lockedPortal_)
@@ -57,13 +60,13 @@ package com.company.assembleegameclient.ui.panels
       private function onAddedToStage(event:Event) : void
       {
          this.nameText_.y = 6;
-         this.enterButton_.x = WIDTH / 2 - this.enterButton_.width / 2;
-         this.enterButton_.y = HEIGHT - this.enterButton_.height - 4;
          this.fullText_.y = HEIGHT - this.fullText_.height - 12;
-         this.enterButton_.addEventListener(MouseEvent.CLICK,this.onEnterSpriteClick);
+         /* The Enter plaque itself is drawn in the world by Portal.draw, but
+            the interact key is handled here - this panel only exists while a
+            portal is the current interactive target. */
          stage.addEventListener(KeyboardEvent.KEY_DOWN,this.onKeyDown);
       }
-      
+
       private function onRemovedFromStage(event:Event) : void
       {
          stage.removeEventListener(KeyboardEvent.KEY_DOWN,this.onKeyDown);
@@ -105,15 +108,18 @@ package com.company.assembleegameclient.ui.panels
          {
             this.nameText_.y = 6;
          }
-         if(!this.owner_.lockedPortal_ && this.owner_.active_ && contains(this.fullText_))
+         /* Only the Locked/Full label is shown here now - the Enter button is
+            drawn in the world above the portal. Keyed off the portal state
+            directly rather than off which child is attached, since the button
+            is no longer part of this panel. */
+         var showFull:Boolean = this.owner_.lockedPortal_ || !this.owner_.active_;
+         if(showFull && !contains(this.fullText_))
+         {
+            addChild(this.fullText_);
+         }
+         else if(!showFull && contains(this.fullText_))
          {
             removeChild(this.fullText_);
-            addChild(this.enterButton_);
-         }
-         else if((this.owner_.lockedPortal_ || !this.owner_.active_) && contains(this.enterButton_))
-         {
-            removeChild(this.enterButton_);
-            addChild(this.fullText_);
          }
       }
    }

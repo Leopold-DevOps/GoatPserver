@@ -17,8 +17,25 @@ public class UiMetrics {
     public static const STAGE_WIDTH:int = 800;
     public static const STAGE_HEIGHT:int = 600;
 
-    /** Width of the HUD pane pinned to the right edge - matches the art. */
-    public static const HUD_WIDTH:int = 286;
+    /**
+     * Design/layout space of the pane. HudPane.png is authored at exactly this
+     * width, and every HUD_* constant below is measured against it, so this is
+     * the coordinate space *inside* HUDView. Do not shrink this to make the HUD
+     * smaller - use HUD_SCALE, which leaves the measured geometry intact.
+     */
+    public static const HUD_DESIGN_WIDTH:int = 286;
+
+    /**
+     * Uniform shrink applied to the whole HUD pane. HUDView is scaled by this
+     * (see GameSprite), so the art and every widget inside it come down
+     * together and stay aligned with the painted recesses.
+     */
+    public static const HUD_SCALE:Number = 0.82;
+
+    /** On-screen footprint of the pane after HUD_SCALE. */
+    public static function get HUD_WIDTH():int {
+        return Math.round(HUD_DESIGN_WIDTH * HUD_SCALE);
+    }
 
     /** Play area left of the HUD - drives the chat box and camera offset. */
     public static function get PLAY_WIDTH():int {
@@ -34,17 +51,22 @@ public class UiMetrics {
      * The painted slot recesses are wider than they are tall, so tiles are not
      * square. Icon size is limited by the shorter axis.
      */
-    public static const ITEM_TILE_WIDTH:int = 51;
-    public static const ITEM_TILE_HEIGHT:int = 41;
+    /*
+     * Re-measured directly off HudPane.png: the recesses run x 33/90/147/204,
+     * 55 wide (pitch 57), and the rows are 46 tall with a 49 pitch. The old
+     * 51x41 tiles centred 4.5px left and high of the painted recesses.
+     */
+    public static const ITEM_TILE_WIDTH:int = 55;
+    public static const ITEM_TILE_HEIGHT:int = 46;
 
-    public static const ITEM_GRID_PADDING_X:int = 6;
-    public static const ITEM_GRID_PADDING_Y:int = 8;
+    public static const ITEM_GRID_PADDING_X:int = 2;
+    public static const ITEM_GRID_PADDING_Y:int = 3;
 
     /** Cells per row. Inventory is 8 slots, equipment 4. */
     public static const ITEM_GRID_COLUMNS:int = 4;
 
-    /** Left edge of every item grid, measured from the pane's left edge. */
-    public static const ITEM_GRID_X:int = 30;
+    /** Left edge of every item grid - the painted recesses start at x 33. */
+    public static const ITEM_GRID_X:int = 33;
 
     /**
      * Size argument handed to ObjectLibrary.getRedrawnTextureFromType.
@@ -81,25 +103,33 @@ public class UiMetrics {
     public static const HUD_BAR_WIDTH:int = 216;
     public static const HUD_STAT_METERS_Y:int = 260;
 
-    /** Equipment row - four slots. */
-    public static const HUD_EQUIPMENT_Y:int = 343;
+    /** Equipment row - four slots. Painted recess runs y 345-393. */
+    public static const HUD_EQUIPMENT_Y:int = 345;
 
     /**
      * Tab strip. Its content sits TAB_TOP_OFFSET (27) below this, and the
      * mediator insets content by a further 7, so the first inventory row lands
-     * at 394 + 27 + 7 = 428 - exactly on the painted recess.
+     * at 397 + 27 + 7 = 431 - exactly on the painted recess.
      */
-    public static const HUD_TAB_STRIP_Y:int = 394;
-    public static const HUD_TAB_STRIP_HEIGHT:int = 130;
+    public static const HUD_TAB_STRIP_Y:int = 397;
+    /* Tall enough that the potion row (y 529) still fits inside the tab
+       content, which now also has to host the solid non-inventory panel. */
+    public static const HUD_TAB_STRIP_HEIGHT:int = 145;
 
     /** Potion counters along the bottom. */
     public static const HUD_POTIONS_Y:int = 529;
 
-    public static const HUD_INTERACT_Y:int = 500;
+    /**
+     * Interact panel (portal name, Locked/Full). Sits *below* the pane art,
+     * which ends at 600 - at the old 500 it overlapped the inventory rows
+     * (431-525) and the potion row, so the portal name drew on top of them.
+     */
+    public static const HUD_INTERACT_Y:int = 604;
 
     /** Usable width for content inside the pane. */
     public static function get HUD_CONTENT_WIDTH():int {
-        return HUD_WIDTH - HUD_CONTENT_INSET * 2;
+        /* design space - this is used inside the scaled HUDView */
+        return HUD_DESIGN_WIDTH - HUD_CONTENT_INSET * 2;
     }
 
     /**

@@ -1,4 +1,4 @@
-// Decompiled by AS3 Sorcerer 6.08
+﻿// Decompiled by AS3 Sorcerer 6.08
 // www.as3sorcerer.com
 
 //kabam.rotmg.assets.EmbeddedAssets
@@ -9,6 +9,8 @@ import kabam.rotmg.assets.custom.images.AnimEmotes;
 import kabam.rotmg.assets.custom.images.CustomAssets8x8;
 import kabam.rotmg.assets.custom.images.CustomUV128x128;
 import kabam.rotmg.assets.custom.images.Emotes;
+import kabam.rotmg.assets.custom.images.VaultPortalAnim;
+import kabam.rotmg.assets.custom.images.EnterButton;
 import kabam.rotmg.assets.custom.objects.japaneseSign;
 public class EmbeddedAssets
 {
@@ -17,6 +19,8 @@ public class EmbeddedAssets
    public static var emotes:Class = Emotes;
    public static var customAssets8x8:Class = CustomAssets8x8;
    public static var customUV128x128:Class = CustomUV128x128;
+   public static var vaultPortalAnim:Class = VaultPortalAnim;
+   public static var enterButton:Class = EnterButton;
 
    // production.
    private static var JapaneseSign:Class = japaneseSign;

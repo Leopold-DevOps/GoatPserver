@@ -4,6 +4,7 @@ import com.company.assembleegameclient.map.Square;
 import com.company.assembleegameclient.objects.GameObject;
 import com.company.assembleegameclient.objects.ObjectLibrary;
 import com.company.assembleegameclient.objects.Player;
+import com.company.assembleegameclient.objects.Portal;
 import com.company.assembleegameclient.parameters.Parameters;
 import com.company.assembleegameclient.tutorial.Tutorial;
 import com.company.assembleegameclient.tutorial.doneAction;
@@ -201,6 +202,16 @@ public class MapUserInput
       var player:Player = this.gs_.map.player_;
       if(player == null)
       {
+         return;
+      }
+      /* The portal Enter plaque is drawn geometry (see Portal.drawEnterButton)
+         so it has no mouse events of its own - test the click against the rect
+         it recorded this frame. Consumes the click so it does not also shoot. */
+      var portal:Portal = this.gs_.mapModel.currentInteractiveTarget as Portal;
+      if(portal != null && portal.enterButtonRect_ != null &&
+         portal.enterButtonRect_.contains(this.gs_.map.mouseX,this.gs_.map.mouseY))
+      {
+         this.gs_.gsc_.usePortal(portal.objectId_);
          return;
       }
       if(this.mouseDownTimer.running == false)
