@@ -312,7 +312,16 @@ public class ObjectLibrary
     public static function getRedrawnTextureFromType(_arg_1:int, _arg_2:int, _arg_3:Boolean, _arg_4:Boolean=true, _arg_5:Number=5):BitmapData
     {
         var _local_6:BitmapData = getBitmapData(_arg_1);
-        if (((!(Parameters.itemTypes16.indexOf(_arg_1) == -1)) || (_local_6.height == 16)))
+        if (_local_6.height > 16)
+        {
+            /* Oversized art (eg. the 128x128 custom sheet) would otherwise render
+               at height/8 times the intended size, because resize() treats its
+               size argument as a multiplier of the source dimensions. Scale the
+               base down instead of the size so nothing is lost to int rounding -
+               Projectile does the same normalisation for shots. */
+            _arg_5 = ((_arg_5 * 8) / _local_6.height);
+        }
+        else if (((!(Parameters.itemTypes16.indexOf(_arg_1) == -1)) || (_local_6.height == 16)))
         {
             _arg_2 = (_arg_2 * 0.5);
         }
