@@ -37,6 +37,12 @@ namespace App
 
             app.UseStaticFiles(new StaticFileOptions()
             {
+                FileProvider = new PhysicalFileProvider(core.Resources.ResourcePath + "/web"),
+                RequestPath = ""
+            });
+
+            app.UseStaticFiles(new StaticFileOptions()
+            {
                 FileProvider = new PhysicalFileProvider($"{core.Resources.ResourcePath}/web/sfx"),
                 RequestPath = "/sfx"
             });
