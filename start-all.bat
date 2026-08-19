@@ -4,7 +4,7 @@ REM Layout: this repo is the root; toolchain lives in tools\.
 set ROOT=%~dp0
 set SRC=%ROOT%source
 
-start "Redis"       cmd /k "cd /d %SRC%\Redis && redis-server.exe --port 6379"
+start "Redis"       cmd /k "cd /d %SRC%\Redis && redis-server.exe redis.conf"
 timeout /t 3 >nul
 start "AppEngine"   cmd /k "cd /d %SRC%\App\bin\Debug\net8.0 && App.exe"
 timeout /t 3 >nul

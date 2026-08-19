@@ -1,4 +1,4 @@
-package com.company.assembleegameclient.ui.panels
+﻿package com.company.assembleegameclient.ui.panels
 {
    import com.company.assembleegameclient.game.GameSprite;
    import com.company.assembleegameclient.objects.ObjectLibrary;
@@ -61,6 +61,7 @@ package com.company.assembleegameclient.ui.panels
       {
          this.nameText_.y = 6;
          this.fullText_.y = HEIGHT - this.fullText_.height - 12;
+         this.fullText_.x = (WIDTH - this.fullText_.width) / 2;
          /* The Enter plaque itself is drawn in the world by Portal.draw, but
             the interact key is handled here - this panel only exists while a
             portal is the current interactive target. */
@@ -100,6 +101,9 @@ package com.company.assembleegameclient.ui.panels
          }
          this.nameText_.htmlText = "<p align=\"center\">" + name + "</p>";
          this.nameText_.useTextDimensions();
+         /* autoSize CENTER only preserves the field's own centre, which drifts
+            once useTextDimensions() resizes it - centre it in the panel. */
+         this.nameText_.x = (WIDTH - this.nameText_.width) / 2;
          if(this.nameText_.height > 30)
          {
             this.nameText_.y = 0;

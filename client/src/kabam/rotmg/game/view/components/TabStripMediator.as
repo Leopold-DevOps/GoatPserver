@@ -1,4 +1,4 @@
-package kabam.rotmg.game.view.components
+﻿package kabam.rotmg.game.view.components
 {
    import com.company.assembleegameclient.objects.Player;
 import com.company.assembleegameclient.parameters.Parameters;
@@ -105,11 +105,8 @@ import kabam.rotmg.ui.signals.UpdateBackpackTabSignal;
          storageContent.x = storageContent.y = 7;
          var storage:InventoryGrid = new InventoryGrid(player,player,4);
          storageContent.addChild(storage);
-         var potionsInventory:PotionInventoryView = new PotionInventoryView();
-         /* Land on the potion recess painted at UiMetrics.HUD_POTIONS_Y, measured
-            from where this content sits inside the tab strip. */
-         potionsInventory.y = UiMetrics.HUD_POTIONS_Y - (UiMetrics.HUD_TAB_STRIP_Y + TabStripView.TAB_TOP_OFFSET + 7);
-         storageContent.addChild(potionsInventory);
+         /* Potions are no longer shown in the right-hand pane - the new art
+            has no recess for them and they are moving to a separate HUD. */
          var icon:Bitmap = this.iconFactory.makeIconBitmap(24);
          this.view.addTab(icon,storageContent);
       }
@@ -126,15 +123,11 @@ import kabam.rotmg.ui.signals.UpdateBackpackTabSignal;
 
       private function addBackPackTab(player:Player) : void
       {
-         var backpackPotionsInventory:PotionInventoryView = null;
          var backpackContent:Sprite = new Sprite();
          backpackContent.name = TabStripModel.BACKPACK;
          backpackContent.x = backpackContent.y = 7;
          var backpack:InventoryGrid = new InventoryGrid(player,player,GeneralConstants.NUM_EQUIPMENT_SLOTS + GeneralConstants.NUM_INVENTORY_SLOTS,true);
          backpackContent.addChild(backpack);
-         backpackPotionsInventory = new PotionInventoryView();
-         backpackPotionsInventory.y = backpack.height + 4;
-         backpackContent.addChild(backpackPotionsInventory);
          var icon:Bitmap = this.iconFactory.makeIconBitmap(26);
          this.view.addTab(icon,backpackContent);
       }
@@ -147,7 +140,7 @@ import kabam.rotmg.ui.signals.UpdateBackpackTabSignal;
          var modMenu:ModMenu = new ModMenu(this.view.gs_);
          modMenuContent.addChild(modMenu);
          var icon:Bitmap = this.iconFactory.makeIconBitmap(30);
-         this.view.addTab(icon, modMenuContent);
+         this.view.addTab(icon, modMenuContent, TabStripView.SLOT_ADMIN);
       }
    }
 }

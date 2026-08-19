@@ -26,16 +26,22 @@ package com.company.assembleegameclient.ui.panels.itemgrids.itemtiles
       
       public function buildHotKeyBMP() : void
       {
-         /* Dark brown (was 0x363636 grey) to match the wooden slot recesses. */
-         var tempText:SimpleText = new SimpleText(26,0x3A2718,false,0,0);
+         /* Dark brown (was 0x363636 grey) to match the wooden slot recesses.
+            Font and bitmap are sized from the tile rather than fixed at 26/30:
+            the old values were chosen for the larger 51x41 tiles and overflowed
+            the 33px cells, and centring by text width against a fixed-width
+            bitmap left the numeral off-centre. */
+         var tempText:SimpleText = new SimpleText(Math.max(10, HEIGHT * 0.5), 0x3A2718, false, 0, 0);
          tempText.text = String(this.hotKey);
          tempText.setBold(true);
          tempText.updateMetrics();
-         var bmpData:BitmapData = new BitmapData(26,30,true,0);
+         var bw:int = Math.max(1, Math.ceil(tempText.width));
+         var bh:int = Math.max(1, Math.ceil(tempText.height));
+         var bmpData:BitmapData = new BitmapData(bw, bh, true, 0);
          bmpData.draw(tempText);
          this.hotKeyBMP = new Bitmap(bmpData);
-         this.hotKeyBMP.x = WIDTH / 2 - tempText.width / 2;
-         this.hotKeyBMP.y = HEIGHT / 2 - 18;
+         this.hotKeyBMP.x = (WIDTH - bw) / 2;
+         this.hotKeyBMP.y = (HEIGHT - bh) / 2;
          addChildAt(this.hotKeyBMP,0);
       }
       

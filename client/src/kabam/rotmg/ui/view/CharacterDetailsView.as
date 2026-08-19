@@ -1,4 +1,4 @@
-package kabam.rotmg.ui.view
+﻿package kabam.rotmg.ui.view
 {
    import com.company.assembleegameclient.objects.Player;
 import com.company.assembleegameclient.ui.BoostPanelButton;
@@ -71,16 +71,26 @@ import com.company.assembleegameclient.ui.IconButton;
             this.optionsClicked = new NativeSignal(this.button,MouseEvent.CLICK,MouseEvent);
             this.optionsClicked.add(this.onOptionsClick);
          }
-         this.button.x = 172;
-         this.button.y = 4;
+         /* The wrench (idx 5) fills its whole 16x16 cell while the tab icons
+            (idx 24/25/30) use only ~10-11px of theirs, so it renders oversized
+            beside them - scale the visible art to match. The button origin is
+            then its content centre, and HUDView places that origin exactly
+            where TabView centres a tab icon. */
+         this.button.scaleX = this.button.scaleY = 11 / 16;
+         this.button.centreIconOnContent();
+         this.button.x = 0;
+         this.button.y = 0;
          addChild(this.button);
       }
       
       private function createPortrait() : void
       {
+         /* Portrait and name are no longer shown in the right-hand pane - they
+            are moving to a separate top-left HUD. The objects are still built
+            and updated so update()/draw() stay valid; they are simply never
+            added to the display list. */
          this.portrait_.x = -2;
          this.portrait_.y = -8;
-         addChild(this.portrait_);
       }
       
       private function createNameText(name:String) : void
@@ -91,7 +101,6 @@ import com.company.assembleegameclient.ui.IconButton;
          this.nameText_.filters = [new DropShadowFilter(0,0,0)];
          this.nameText_.text = name;
          this.nameText_.updateMetrics();
-         addChild(this.nameText_);
       }
       
       public function update(player:Player) : void

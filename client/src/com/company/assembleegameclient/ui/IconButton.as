@@ -1,4 +1,4 @@
-package com.company.assembleegameclient.ui
+﻿package com.company.assembleegameclient.ui
 {
    import com.company.assembleegameclient.parameters.Parameters;
    import com.company.assembleegameclient.ui.tooltip.TextToolTip;
@@ -11,6 +11,7 @@ package com.company.assembleegameclient.ui
    import flash.events.Event;
    import flash.events.MouseEvent;
    import flash.geom.ColorTransform;
+   import flash.geom.Rectangle;
    
    public class IconButton extends Sprite
    {
@@ -49,6 +50,23 @@ package com.company.assembleegameclient.ui
          addEventListener(MouseEvent.MOUSE_OUT,this.onMouseOut);
       }
       
+      /**
+       * Re-anchor the icon so its *visible pixels* are centred on this button's
+       * origin, rather than the bitmap box. Icons in lofiInterfaceBig occupy
+       * different amounts of their 16x16 cell, so a shared offset leaves them
+       * visually misaligned with each other.
+       */
+      public function centreIconOnContent() : void
+      {
+         var b:Rectangle = this.iconBitmapData_.getColorBoundsRect(0xFF000000,0x00000000,false);
+         if(b == null || b.width <= 0 || b.height <= 0)
+         {
+            return;
+         }
+         this.icon_.x = -(b.x + b.width / 2);
+         this.icon_.y = -(b.y + b.height / 2);
+      }
+
       public function setColorTransform(ct:ColorTransform) : void
       {
          if(ct == this.ct_)

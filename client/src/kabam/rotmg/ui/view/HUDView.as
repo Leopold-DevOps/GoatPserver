@@ -1,4 +1,4 @@
-package kabam.rotmg.ui.view
+﻿package kabam.rotmg.ui.view
 {
    import com.company.assembleegameclient.game.GameSprite;
 import com.company.assembleegameclient.objects.GameObject;
@@ -33,15 +33,18 @@ import kabam.rotmg.game.view.components.TabStripView;
 
       private const BG_POSITION:Point = new Point(0, 0);
       private const MAP_POSITION:Point = new Point(UiMetrics.HUD_MINIMAP_X, UiMetrics.HUD_MINIMAP_Y);
-      /* x 36 so the class portrait (drawn at -2 inside the view) lands on
-         HUD_BAR_X and the name row lines up with the bars and item grids
-         below it, instead of hanging off the pane's left frame. */
-      private const CHARACTER_DETAIL_PANEL_POSITION:Point = new Point(36, UiMetrics.HUD_DETAILS_Y);
+      /* Only the options (wrench) button remains in this view; it sits in the
+         tab row at SLOT_OPTIONS, immediately right of the divider jewel.
+         x = tabStrip.x + tabSprite.x + slotX, y = tabStrip.y + TAB_Y_PADDING. */
+      private const CHARACTER_DETAIL_PANEL_POSITION:Point = new Point(
+         UiMetrics.ITEM_GRID_X - UiMetrics.HUD_CONTENT_INSET + 5
+            + TabStripView.slotX(TabStripView.SLOT_OPTIONS) + TabStripView.TAB_WIDTH / 2,
+         UiMetrics.HUD_TAB_STRIP_Y + TabStripView.TAB_Y_PADDING + TabStripView.TAB_HEIGHT / 2);
       private const STAT_METERS_POSITION:Point = new Point(UiMetrics.HUD_BAR_X, UiMetrics.HUD_STAT_METERS_Y);
       private const EQUIPMENT_INVENTORY_POSITION:Point = new Point(UiMetrics.ITEM_GRID_X, UiMetrics.HUD_EQUIPMENT_Y);
       private const TAB_STRIP_POSITION:Point = new Point(UiMetrics.ITEM_GRID_X - UiMetrics.HUD_CONTENT_INSET, UiMetrics.HUD_TAB_STRIP_Y);
-      /* Centred: the panel is 200 wide inside a HUD_DESIGN_WIDTH (286) pane. */
-      private const INTERACT_PANEL_POSITION:Point = new Point(43, UiMetrics.HUD_INTERACT_Y);
+      /* Centred: the panel is 200 wide inside a HUD_DESIGN_WIDTH (245) pane. */
+      private const INTERACT_PANEL_POSITION:Point = new Point(22, UiMetrics.HUD_INTERACT_Y);
       private const NEXUS_INDICATOR_POSITION:Point = new Point(200, 355);
 
       private var background:CharacterWindowBackground;

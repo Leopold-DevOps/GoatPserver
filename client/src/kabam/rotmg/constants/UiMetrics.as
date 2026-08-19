@@ -1,4 +1,4 @@
-package kabam.rotmg.constants {
+﻿package kabam.rotmg.constants {
 
 /**
  * Geometry for the right-hand HUD pane and the item grids inside it.
@@ -23,14 +23,14 @@ public class UiMetrics {
      * the coordinate space *inside* HUDView. Do not shrink this to make the HUD
      * smaller - use HUD_SCALE, which leaves the measured geometry intact.
      */
-    public static const HUD_DESIGN_WIDTH:int = 286;
+    public static const HUD_DESIGN_WIDTH:int = 245;
 
     /**
      * Uniform shrink applied to the whole HUD pane. HUDView is scaled by this
      * (see GameSprite), so the art and every widget inside it come down
      * together and stay aligned with the painted recesses.
      */
-    public static const HUD_SCALE:Number = 0.82;
+    public static const HUD_SCALE:Number = 1.0;
 
     /** On-screen footprint of the pane after HUD_SCALE. */
     public static function get HUD_WIDTH():int {
@@ -48,35 +48,31 @@ public class UiMetrics {
     // ---------------------------------------------------------------- items
 
     /*
-     * The painted slot recesses are wider than they are tall, so tiles are not
-     * square. Icon size is limited by the shorter axis.
+     * Measured off HudPane.png (245x600): slot recesses are square, 33px, with
+     * columns at x 34/80/125/170 (pitch 45) and rows at y 257 / 320 / 364
+     * (pitch 44). Re-measure if the art is redrawn.
      */
-    /*
-     * Re-measured directly off HudPane.png: the recesses run x 33/90/147/204,
-     * 55 wide (pitch 57), and the rows are 46 tall with a 49 pitch. The old
-     * 51x41 tiles centred 4.5px left and high of the painted recesses.
-     */
-    public static const ITEM_TILE_WIDTH:int = 55;
-    public static const ITEM_TILE_HEIGHT:int = 46;
+    public static const ITEM_TILE_WIDTH:int = 33;
+    public static const ITEM_TILE_HEIGHT:int = 33;
 
-    public static const ITEM_GRID_PADDING_X:int = 2;
-    public static const ITEM_GRID_PADDING_Y:int = 3;
+    public static const ITEM_GRID_PADDING_X:int = 12;
+    public static const ITEM_GRID_PADDING_Y:int = 11;
 
     /** Cells per row. Inventory is 8 slots, equipment 4. */
     public static const ITEM_GRID_COLUMNS:int = 4;
 
-    /** Left edge of every item grid - the painted recesses start at x 33. */
-    public static const ITEM_GRID_X:int = 33;
+    /** Left edge of every item grid - the painted recesses start at x 34. */
+    public static const ITEM_GRID_X:int = 34;
 
     /**
      * Size argument handed to ObjectLibrary.getRedrawnTextureFromType.
      *
      * TextureRedrawer.resize renders 5 * (size/100) * sourceDimension, and
      * oversized art is normalised to an 8px equivalent first, so the on-screen
-     * icon works out to size * 0.4 px: 90 -> 36px, which clears the 41px cell
-     * height with a little margin.
+     * icon works out to size * 0.4 px: 70 -> 28px, which clears the 33px cell
+     * with a little margin.
      */
-    public static const ITEM_ICON_SIZE:int = 90;
+    public static const ITEM_ICON_SIZE:int = 70;
 
     /** Total width a grid of the given column count occupies. */
     public static function gridWidth(columns:int):int {
@@ -86,45 +82,52 @@ public class UiMetrics {
     // ------------------------------------------------------- hud vertical
 
     /* Measured from the pane art. */
-    public static const HUD_MINIMAP_X:int = 23;
-    public static const HUD_MINIMAP_Y:int = 17;
-    public static const HUD_MINIMAP_WIDTH:int = 240;
-    public static const HUD_MINIMAP_HEIGHT:int = 199;
+    public static const HUD_MINIMAP_X:int = 13;
+    public static const HUD_MINIMAP_Y:int = 26;
+    public static const HUD_MINIMAP_WIDTH:int = 212;
+    public static const HUD_MINIMAP_HEIGHT:int = 132;
 
-    /** Name plate between the minimap and the bars. */
-    public static const HUD_DETAILS_Y:int = 224;
+    /** Name + class icon. The art has no dedicated plate, so this sits at
+        the top of the empty wood panel below the inventory. */
+    public static const HUD_DETAILS_Y:int = 404;
 
-    /** The three empty bar grooves (fame, hp, mp), each 17px tall. */
-    public static const HUD_BAR_Y:Array = [260, 289, 317];
-    public static const HUD_BAR_HEIGHT:int = 17;
+    /**
+     * Reserved: the pane art has a fourth groove above the XP bar, kept
+     * empty for the adventurer rank / reputation meter. Nothing draws here
+     * yet - HUD_BAR_Y covers only the three live meters below it.
+     */
+    public static const HUD_RANK_BAR_Y:int = 166;
 
-    /** Groove interior runs x 34 - 249 on the art. */
-    public static const HUD_BAR_X:int = 34;
-    public static const HUD_BAR_WIDTH:int = 216;
-    public static const HUD_STAT_METERS_Y:int = 260;
+    public static const HUD_BAR_Y:Array = [192, 214, 234];
+    public static const HUD_BAR_HEIGHT:int = 13;
 
-    /** Equipment row - four slots. Painted recess runs y 345-393. */
-    public static const HUD_EQUIPMENT_Y:int = 345;
+    /** Groove interior runs x 37 - 200 on the art. */
+    public static const HUD_BAR_X:int = 37;
+    public static const HUD_BAR_WIDTH:int = 164;
+    public static const HUD_STAT_METERS_Y:int = 192;
+
+    /** Equipment row - four slots. Painted recess runs y 257-290. */
+    public static const HUD_EQUIPMENT_Y:int = 257;
 
     /**
      * Tab strip. Its content sits TAB_TOP_OFFSET (27) below this, and the
      * mediator insets content by a further 7, so the first inventory row lands
-     * at 397 + 27 + 7 = 431 - exactly on the painted recess.
+     * at 286 + 27 + 7 = 320 - exactly on the painted recess.
      */
-    public static const HUD_TAB_STRIP_Y:int = 397;
-    /* Tall enough that the potion row (y 529) still fits inside the tab
-       content, which now also has to host the solid non-inventory panel. */
-    public static const HUD_TAB_STRIP_HEIGHT:int = 145;
+    public static const HUD_TAB_STRIP_Y:int = 286;
+    /* Tall enough that the potion row (y 444) still fits inside the tab
+       content, and the non-inventory panel covers the empty wood area. */
+    public static const HUD_TAB_STRIP_HEIGHT:int = 170;
 
     /** Potion counters along the bottom. */
-    public static const HUD_POTIONS_Y:int = 529;
+    public static const HUD_POTIONS_Y:int = 444;
 
     /**
-     * Interact panel (portal name, Locked/Full). Sits *below* the pane art,
-     * which ends at 600 - at the old 500 it overlapped the inventory rows
-     * (431-525) and the potion row, so the portal name drew on top of them.
+     * Interact panel (portal name, Locked/Full). Sits near the top of the
+     * empty wood area, just under the second inventory row (which ends at
+     * 396), rather than sinking to the bottom of the pane.
      */
-    public static const HUD_INTERACT_Y:int = 604;
+    public static const HUD_INTERACT_Y:int = 410;
 
     /** Usable width for content inside the pane. */
     public static function get HUD_CONTENT_WIDTH():int {

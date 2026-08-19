@@ -1,4 +1,4 @@
-package kabam.rotmg.ui.view
+﻿package kabam.rotmg.ui.view
 {
    import flash.display.Sprite;
    import kabam.rotmg.ui.view.components.PotionSlotView;
@@ -10,7 +10,8 @@ package kabam.rotmg.ui.view
       
       private static const RIGHT_BUTTON_CUTS:Array = [0,1,1,0];
       
-      private static const BUTTON_SPACE:int = 7;
+      /* 29 + 12 = 41, the pitch between the two potion recesses. */
+      private static const BUTTON_SPACE:int = 12;
        
       
       private const cuts:Array = [LEFT_BUTTON_CUTS,RIGHT_BUTTON_CUTS];

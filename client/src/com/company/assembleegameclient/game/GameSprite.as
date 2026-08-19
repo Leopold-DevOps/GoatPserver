@@ -56,6 +56,7 @@ import kabam.rotmg.stage3D.Renderer;
 import kabam.rotmg.ui.UIUtils;
 import kabam.rotmg.ui.view.BossHealthBar;
 import kabam.rotmg.ui.view.HUDView;
+import kabam.rotmg.ui.view.TopLeftHudView;
 
 import org.osflash.signals.Signal;
 
@@ -76,6 +77,7 @@ public class GameSprite extends Sprite
    public var isVault_:Boolean = false;
    public var idleWatcher_:IdleWatcher;
    public var hudView:HUDView;
+   public var topLeftHud:TopLeftHudView;
    public var rankText_:RankText;
    public var guildText_:GuildText;
    public var creditDisplay_:CreditDisplay;
@@ -179,6 +181,14 @@ public class GameSprite extends Sprite
       this.hudView.x = UiMetrics.PLAY_WIDTH;
       addChild(this.hudView);
 
+      /* Class portrait, name and potions - moved out of the right-hand pane,
+         which has no room for them after the reskin. */
+      this.topLeftHud = new TopLeftHudView();
+      this.topLeftHud.scaleX = this.topLeftHud.scaleY = TopLeftHudView.SCALE;
+      this.topLeftHud.x = 0;
+      this.topLeftHud.y = 0;
+      addChild(this.topLeftHud);
+
       this.scaledLayer = new Sprite();
       addChild(this.scaledLayer);
       this.forceScaledLayer = new Sprite();
@@ -241,11 +251,13 @@ public class GameSprite extends Sprite
 
    private function showRankText() : void
    {
+      /* Star count is no longer shown - the top-left corner belongs to
+         TopLeftHudView now. The object is still built and still receives
+         draw() calls, it is just never added to the display list, so the
+         layout slot it used to occupy is freed for the guild text. */
       this.rankText_ = new RankText(-1,true,false);
       this.rankText_.x = 8;
       this.rankText_.y = this.displaysPosY;
-      this.displaysPosY = this.displaysPosY + UIUtils.NOTIFICATION_SPACE;
-      addChild(this.rankText_);
    }
 
    private function showArenaMenu():void
@@ -387,6 +399,15 @@ public class GameSprite extends Sprite
             this.textBox_.y = (600 * (1 - sHeight));
          }
          //trace("resize",chatBox_.y,chatBox_.list.y)
+      }
+      if (this.topLeftHud != null)
+      {
+         /* Deliberately uniform: the uiscale path used by the other HUD widgets
+            sets scaleX/scaleY independently, which would stretch this panel. */
+         var tlHudScale:Number = TopLeftHudView.SCALE * (uiscale ? 1 : Math.min(sWidth, sHeight));
+         this.topLeftHud.scaleX = this.topLeftHud.scaleY = tlHudScale;
+         this.topLeftHud.x = 0;
+         this.topLeftHud.y = 0;
       }
       if (this.rankText_ != null)
       {
@@ -569,6 +590,10 @@ public class GameSprite extends Sprite
       if(player != null)
       {
          this.creditDisplay_.draw(player.credits_,player.fame_);
+         if(this.topLeftHud != null)
+         {
+            this.topLeftHud.update(player);
+         }
          this.drawCharacterWindow.dispatch(player); // might be causing leak
          if(this.map.showDisplays_)
          {

@@ -1,4 +1,4 @@
-package com.company.assembleegameclient.ui.panels.itemgrids.itemtiles
+﻿package com.company.assembleegameclient.ui.panels.itemgrids.itemtiles
 {
 import com.company.assembleegameclient.objects.GameObject;
 import com.company.assembleegameclient.objects.ObjectLibrary;
@@ -10,6 +10,7 @@ import com.company.assembleegameclient.objects.Player;
    import flash.display.Bitmap;
    import flash.display.BitmapData;
    import flash.filters.ColorMatrixFilter;
+   import flash.geom.Rectangle;
    import kabam.rotmg.constants.ItemConstants;
 
    public class EquipmentTile extends InteractiveItemTile
@@ -135,10 +136,23 @@ import com.company.assembleegameclient.objects.Player;
          if(bd != null)
          {
             this.backgroundDetail = new Bitmap(bd);
-            this.backgroundDetail.x = BORDER + dx;
-            this.backgroundDetail.y = BORDER + dy;
-            this.backgroundDetail.scaleX = 4;
-            this.backgroundDetail.scaleY = 4;
+            /* Scale to fit the tile instead of a fixed 4x: the 8x8 source at
+               4x is 32px, which overflowed once tiles dropped to 33px. Integer
+               scale keeps the pixel art crisp (33 -> 3x = 24px, ~73%).
+
+               Centre on the *visible* pixels, not the cell: the helm and armour
+               sprites sit off-centre inside their 8x8 cells, so centring the
+               bitmap leaves them visibly misaligned with the other slots. */
+            var detailScale:int = Math.max(1, Math.floor((Math.min(WIDTH, HEIGHT) * 0.8) / bd.width));
+            var db:Rectangle = bd.getColorBoundsRect(0xFF000000, 0x00000000, false);
+            if(db == null || db.width <= 0 || db.height <= 0)
+            {
+               db = new Rectangle(0, 0, bd.width, bd.height);
+            }
+            this.backgroundDetail.scaleX = detailScale;
+            this.backgroundDetail.scaleY = detailScale;
+            this.backgroundDetail.x = (WIDTH - db.width * detailScale) / 2 - db.x * detailScale + dx;
+            this.backgroundDetail.y = (HEIGHT - db.height * detailScale) / 2 - db.y * detailScale + dy;
             if(darken){
                this.backgroundDetail.filters = [greyColorFilter];
             }

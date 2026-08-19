@@ -1,4 +1,4 @@
-package kabam.rotmg.ui.view.components
+﻿package kabam.rotmg.ui.view.components
 {
    import com.company.assembleegameclient.objects.ObjectLibrary;
    import com.company.assembleegameclient.util.TextureRedrawer;
@@ -19,14 +19,20 @@ package kabam.rotmg.ui.view.components
    import flash.filters.ColorMatrixFilter;
    import flash.filters.DropShadowFilter;
    import flash.geom.Point;
+   import flash.geom.Rectangle;
    import flash.utils.Timer;
    import org.osflash.signals.Signal;
    import org.osflash.signals.natives.NativeSignal;
    
    public class PotionSlotView extends Sprite
    {
-      public static var BUTTON_WIDTH:int = 108;
-      private static var BUTTON_HEIGHT:int = 32;
+      /* Square slots sized to the recesses in the top-left HUD panel art. */
+      public static var BUTTON_WIDTH:int = 29;
+      private static var BUTTON_HEIGHT:int = 25;
+      /** Count turns red once the player is carrying a full stack. */
+      public static var MAX_POTIONS:int = 6;
+      /** How far the count creeps back over the potion art. */
+      private static const TEXT_OVERLAP:int = 3;
       private static var SMALL_SIZE:int = 4;
       private static var CENTER_ICON_X:int = 13;
       private static var LEFT_ICON_X:int = -6;
@@ -76,14 +82,11 @@ package kabam.rotmg.ui.view.components
          mouseChildren = false;
          this.position = position;
          this.grayscaleMatrix = new ColorMatrixFilter(MoreColorUtil.greyscaleFilterMatrix);
-         this.text = new SimpleText(16,0xfffff,false,BUTTON_HEIGHT,BUTTON_WIDTH);
+         /* Just the amount, tucked into the corner - no "/6" limit label. */
+         this.text = new SimpleText(11,0xFFFFFF,false,BUTTON_HEIGHT,BUTTON_WIDTH);
          this.text.setBold(true);
          this.text.filters = [new DropShadowFilter(0, 0, 0, 1, 4, 4, 2)];
-         this.textTwo = new SimpleText(12,0xb3b3b3,false,BUTTON_HEIGHT,BUTTON_WIDTH);
-         this.textTwo.y = 7;
-         this.textTwo.x = (BUTTON_WIDTH / 2) + 25;
-         this.textTwo.setText("/6");
-         this.textTwo.filters = [new DropShadowFilter(0, 0, 0, 1, 4, 4, 2)];
+         this.textTwo = new SimpleText(11,0xb3b3b3,false,BUTTON_HEIGHT,BUTTON_WIDTH);
          this.bg = new Sprite();
          GraphicsUtil.clearPath(this.outerPath);
          GraphicsUtil.drawCutEdgeRect(0,0,BUTTON_WIDTH,BUTTON_HEIGHT,4,cuts,this.outerPath);
@@ -92,7 +95,6 @@ package kabam.rotmg.ui.view.components
          this.bg.graphics.drawGraphicsData(this.buyInnerGraphicsData);
          addChild(this.bg);
          addChild(this.text);
-         addChild(this.textTwo);
          this.potionIconDraggableSprite = new Sprite();
          this.doubleClickTimer = new Timer(DOUBLE_CLICK_PAUSE,1);
          this.doubleClickTimer.addEventListener(TimerEvent.TIMER_COMPLETE,this.onDoubleClickTimerComplete);
@@ -119,8 +121,10 @@ package kabam.rotmg.ui.view.components
             }
             iconBD = ObjectLibrary.getRedrawnTextureFromType(objectType, 40, false);
             this.potionIcon = new Bitmap(iconBD);
-            this.potionIcon.y = -7;
             addChild(this.potionIcon);
+            /* Re-add so the count stays above the potion it overlaps - the icon
+               is created here, after the text was added in the constructor. */
+            addChild(this.text);
             iconBD = ObjectLibrary.getRedrawnTextureFromType(objectType, 80, true);
             potionIconBig = new Bitmap(iconBD);
             potionIconBig.x = potionIconBig.x - 20;
@@ -128,31 +132,27 @@ package kabam.rotmg.ui.view.components
             this.potionIconDraggableSprite.addChild(potionIconBig);
          }
          this.setTextString(String(potions));
-         iconX = CENTER_ICON_X;
          this.bg.graphics.clear();
          this.bg.graphics.drawGraphicsData(this.useGraphicsData);
-         this.text.x = (BUTTON_WIDTH / 2) + 16;
-         if (this.potionIcon) {
-            this.potionIcon.x = iconX + 15;
-         }
-         if (potions <= 1)
-         {
-            this.text.setColor(16589603);
-         }
-         else
-         {
-            if (potions <= 4)
-            {
-               this.text.setColor(16611363);
+         if (this.potionIcon != null && this.potionIcon.bitmapData != null) {
+            /* Centre on the icon's visible pixels: getRedrawnTextureFromType
+               pads the bitmap asymmetrically, so centring the bitmap box leaves
+               the potion visibly off-centre in its recess. */
+            var ib:Rectangle = this.potionIcon.bitmapData.getColorBoundsRect(0xFF000000, 0x00000000, false);
+            if (ib == null || ib.width <= 0 || ib.height <= 0) {
+               ib = new Rectangle(0, 0, this.potionIcon.bitmapData.width, this.potionIcon.bitmapData.height);
             }
-            else
-            {
-               if (potions >= 4)
-               {
-                  this.text.setColor(3007543);
-               }
-            }
+            this.potionIcon.x = (BUTTON_WIDTH - ib.width) / 2 - ib.x;
+            this.potionIcon.y = (BUTTON_HEIGHT - ib.height) / 2 - ib.y;
+            /* Count sits on the potion's lower-right, overlapping it slightly
+               rather than floating in the slot corner. */
+            this.text.x = this.potionIcon.x + ib.x + ib.width - this.text.width + TEXT_OVERLAP;
+            this.text.y = this.potionIcon.y + ib.y + ib.height - this.text.height + TEXT_OVERLAP;
+         } else {
+            this.text.x = BUTTON_WIDTH - this.text.width - 1;
+            this.text.y = BUTTON_HEIGHT - this.text.height - 1;
          }
+         this.text.setColor(potions >= MAX_POTIONS ? 0xE04A4A : 0xFFFFFF);
       }
 
       public function setTextString(_arg1:String):void

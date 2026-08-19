@@ -1,4 +1,4 @@
-package kabam.rotmg.game.view.components
+﻿package kabam.rotmg.game.view.components
 {
 import com.company.assembleegameclient.game.GameSprite;
 import com.company.util.GraphicsUtil;
@@ -19,6 +19,26 @@ import com.company.util.GraphicsUtil;
       public static const CONTENT_CORNER_RADIUS:int = 25;
       public static const TAB_TOP_OFFSET:int = 27;
       public static const TAB_X_PADDING:Number = 9;
+
+      /**
+       * Explicit x positions for icon slots, in tabSprite space. The divider
+       * art has a jewel in the middle, so slots 0-1 sit left of it and slots
+       * 2-3 right of it rather than being evenly spaced across it.
+       * Pane-space equivalents: 32, 70, 146, 184.
+       */
+      public static const TAB_SLOT_X:Array = [0, 38, 114, 152];
+
+      /** Slot reserved for the options (wrench) button, right of the jewel. */
+      public static const SLOT_OPTIONS:int = 2;
+
+      /** Slot reserved for the admin/mod tab, far right. */
+      public static const SLOT_ADMIN:int = 3;
+
+      public static function slotX(slot:int):Number {
+         return slot < TAB_SLOT_X.length
+            ? Number(TAB_SLOT_X[slot])
+            : Number(TAB_SLOT_X[TAB_SLOT_X.length - 1]) + (slot - TAB_SLOT_X.length + 1) * (TAB_WIDTH + TAB_X_PADDING);
+      }
       public static const TAB_Y_PADDING:Number = 8;
       public static const BACKGROUND_COLOR:uint = 2368034;
       /** Brown plate behind non-inventory tab content. */
@@ -108,7 +128,7 @@ import com.company.util.GraphicsUtil;
          this.containerSprite.addChild(this.bgSprite);
       }
       
-      public function addTab(icon:Bitmap, content:Sprite) : void
+      public function addTab(icon:Bitmap, content:Sprite, slot:int = -1) : void
       {
          var tabBG:Sprite = new Sprite();
          tabBG.name = "tabBG";
@@ -120,7 +140,7 @@ import com.company.util.GraphicsUtil;
          g.endFill();
          var index:int = this.tabs.length;
          var tabView:TabView = new TabView(index,tabBG,icon);
-         tabView.x = index * (TAB_WIDTH + TAB_X_PADDING);
+         tabView.x = slotX(slot >= 0 ? slot : index);
          tabView.y = TAB_Y_PADDING;
          this.tabs.push(tabView);
          this.contents.push(content);
