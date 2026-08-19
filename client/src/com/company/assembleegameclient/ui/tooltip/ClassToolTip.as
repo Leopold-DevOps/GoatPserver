@@ -17,6 +17,7 @@ package com.company.assembleegameclient.ui.tooltip
    import flash.filters.DropShadowFilter;
    import flash.geom.ColorTransform;
    import kabam.rotmg.core.model.PlayerModel;
+   import kabam.rotmg.util.Diag;
    
    public class ClassToolTip extends ToolTip
    {
@@ -48,11 +49,16 @@ package com.company.assembleegameclient.ui.tooltip
          var numStars:int = 0;
          var nextStarFame:int = 0;
          super(3552822,1,16777215,1);
+         Diag.at("ClassToolTip: getAnimatedChar file='" + String(playerXML.AnimatedTexture.File) + "' index=" + int(playerXML.AnimatedTexture.Index));
          var animatedChar:AnimatedChar = AnimatedChars.getAnimatedChar(String(playerXML.AnimatedTexture.File),int(playerXML.AnimatedTexture.Index));
+         Diag.at("ClassToolTip: animatedChar is " + (animatedChar == null ? "NULL" : "ok"));
          var image:MaskedImage = animatedChar.imageFromDir(AnimatedChar.RIGHT,AnimatedChar.STAND,0);
+         Diag.at("ClassToolTip: image is " + (image == null ? "NULL" : "ok"));
          var size:int = 4 / image.width() * 100;
          var bd:BitmapData = TextureRedrawer.redraw(image.image_,size,true,0);
+         Diag.at("ClassToolTip: shouldShowUnlockRequirements");
          showUnlockRequirements = this.shouldShowUnlockRequirements(model,playerXML);
+         Diag.at("ClassToolTip: showUnlockRequirements=" + showUnlockRequirements);
          if(showUnlockRequirements)
          {
             bd = CachingColorTransformer.transformBitmapData(bd,new ColorTransform(0,0,0,0.5,0,0,0,0));

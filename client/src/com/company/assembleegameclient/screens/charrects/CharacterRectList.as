@@ -11,6 +11,7 @@ import flash.display.Bitmap;
    import flash.events.Event;
    import flash.events.MouseEvent;
    import kabam.rotmg.assets.services.CharacterFactory;
+   import kabam.rotmg.util.Diag;
    import kabam.rotmg.classes.model.CharacterClass;
    import kabam.rotmg.classes.model.CharacterSkin;
    import kabam.rotmg.classes.model.ClassesModel;
@@ -48,10 +49,15 @@ import flash.display.Bitmap;
          var savedChars:Vector.<SavedCharacter> = this.model.getSavedCharacters();
          for each(savedChar in savedChars)
          {
+            Diag.at("CharacterRectList: savedChar objectType=" + savedChar.objectType());
             charType = this.classes.getCharacterClass(savedChar.objectType());
+            Diag.at("CharacterRectList: charType " + (charType == null ? "NULL" : "ok"));
             charStats = charType.getStats();
+            Diag.at("CharacterRectList: charStats " + (charStats == null ? "NULL" : "ok"));
             currCharBox = new CurrentCharacterRect(charName,charType,savedChar,charStats);
+            Diag.at("CharacterRectList: CurrentCharacterRect built, calling getIcon");
             currCharBox.setIcon(this.getIcon(savedChar));
+            Diag.at("CharacterRectList: icon set");
             currCharBox.y = yOffset;
             addChild(currCharBox);
             yOffset = yOffset + (CharacterRect.HEIGHT + 4);

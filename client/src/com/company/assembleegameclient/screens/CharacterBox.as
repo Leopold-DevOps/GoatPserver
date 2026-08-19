@@ -24,6 +24,7 @@ package com.company.assembleegameclient.screens
    import flash.ui.Keyboard;
    import flash.utils.getTimer;
    import kabam.rotmg.core.model.PlayerModel;
+   import kabam.rotmg.util.Diag;
    import kabam.rotmg.util.components.LegacyBuyButton;
    import org.osflash.signals.natives.NativeSignal;
    
@@ -215,7 +216,11 @@ package com.company.assembleegameclient.screens
       private function setImage(dir:int, action:int, p:Number) : void
       {
          this.bitmap_.bitmapData = SavedCharacter.getImage(null,this.playerXML_,dir,action,p,this.available_,false);
+         Diag.at("CharacterBox.setImage: back from getImage, bitmapData="
+                 + (this.bitmap_.bitmapData == null ? "NULL" : "ok")
+                 + " graphic_=" + (this.graphic_ == null ? "NULL" : "ok"));
          this.bitmap_.x = this.graphic_.width / 2 - this.bitmap_.bitmapData.width / 2;
+         Diag.at("CharacterBox.setImage: done");
       }
       
       private function getStars(full:int, total:int) : Sprite

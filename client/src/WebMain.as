@@ -7,6 +7,9 @@ import flash.display.LoaderInfo;
 import flash.display.Sprite;
 import flash.display.Stage;
 import flash.display.StageAlign;
+import flash.events.UncaughtErrorEvent;
+import flash.text.TextField;
+import kabam.rotmg.util.Diag;
 import flash.display.StageScaleMode;
 import flash.events.Event;
 import kabam.lib.net.NetConfig;
@@ -63,6 +66,7 @@ public class WebMain extends Sprite {
 
     private function setup():void {
         this.hackParameters();
+        this.installErrorReporter();
         this.createContext();
         new AssetLoader().load();
         stage.scaleMode = StageScaleMode.NO_SCALE;
@@ -72,6 +76,65 @@ public class WebMain extends Sprite {
         STAGE = stage;
         //stage.vsyncEnabled = false;
     }
+
+    /**
+     * Draws uncaught exceptions on screen.
+     *
+     * A release Flash Player swallows them silently, which is why a failure
+     * during map load shows up as nothing but a black screen. Without the
+     * debugger player there is no flashlog.txt to read either, so the client
+     * has to report its own errors.
+     */
+    private function installErrorReporter():void {
+        if (loaderInfo == null || loaderInfo.uncaughtErrorEvents == null)
+            return;
+
+        loaderInfo.uncaughtErrorEvents.addEventListener(
+                UncaughtErrorEvent.UNCAUGHT_ERROR, this.onUncaughtError);
+    }
+
+    private function onUncaughtError(event:UncaughtErrorEvent):void {
+        var message:String;
+        if (event.error is Error) {
+            var error:Error = event.error as Error;
+            var trace:String = error.getStackTrace();
+            // a release player returns null here regardless of how the SWF was
+            // compiled, which is what the Diag breadcrumb is for
+            message = error.name + ": " + error.message
+                    + "\n\nlast step: " + Diag.step
+                    + "\n\n" + (trace == null ? "(no stack trace in release player)" : trace);
+        } else {
+            message = String(event.error) + "\n\nlast step: " + Diag.step;
+        }
+
+        if (errorReport == null) {
+            errorReport = new TextField();
+            errorReport.width = 900;
+            errorReport.height = 560;
+            errorReport.multiline = true;
+            errorReport.wordWrap = true;
+            errorReport.selectable = true;
+            errorReport.background = true;
+            errorReport.backgroundColor = 0x330000;
+            errorReport.textColor = 0xFFCCCC;
+            errorReport.mouseEnabled = true;
+        }
+
+        // Keep several: the first error is often an unrelated screen glitch,
+        // while the one that matters (eg. the failure during map load) comes
+        // later. Each carries the breadcrumb from when it was thrown.
+        if (errorCount < 6) {
+            errorCount++;
+            errorReport.appendText((errorReport.text.length == 0 ? "" : "\n------\n")
+                    + "#" + errorCount + "  " + message);
+        }
+
+        if (stage != null && errorReport.parent == null)
+            stage.addChild(errorReport);
+    }
+
+    private static var errorReport:TextField;
+    private static var errorCount:int = 0;
 
     private function hackParameters():void {
         Parameters.root = stage.root;

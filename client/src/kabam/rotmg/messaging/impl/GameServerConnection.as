@@ -80,6 +80,7 @@ import kabam.rotmg.classes.model.ClassesModel;
 import kabam.rotmg.constants.GeneralConstants;
 import kabam.rotmg.constants.ItemConstants;
 import kabam.rotmg.core.StaticInjectorContext;
+import kabam.rotmg.util.Diag;
 import kabam.rotmg.core.model.PlayerModel;
 import kabam.rotmg.death.control.HandleDeathSignal;
 import kabam.rotmg.dialogs.control.OpenDialogSignal;
@@ -1199,18 +1200,25 @@ public class GameServerConnection
       private function addObject(obj:ObjectData) : void
       {
          var map:Map = this.gs_.map;
+         Diag.at("addObject: creating type=0x" + obj.objectType_.toString(16));
          var go:GameObject = ObjectLibrary.getObjectFromType(obj.objectType_);
          if(go == null) {
             trace("unhandled object type: " + obj.objectType_);
             return;
          }
          var status:ObjectStatusData = obj.status_;
+         Diag.at("addObject: type=0x" + obj.objectType_.toString(16) + " setObjectId");
          go.setObjectId(status.objectId_);
+         Diag.at("addObject: type=0x" + obj.objectType_.toString(16) + " map.addObj");
          map.addObj(go,status.pos_.x_,status.pos_.y_);
+         Diag.at("addObject: type=0x" + obj.objectType_.toString(16) + " added");
          if(go is Player) {
+            Diag.at("addObject: handleNewPlayer for 0x" + obj.objectType_.toString(16));
             this.handleNewPlayer(go as Player,map);
+            Diag.at("addObject: handleNewPlayer done");
          }
          this.processObjectStatus(status,0,-1);
+         Diag.at("addObject: processObjectStatus done for 0x" + obj.objectType_.toString(16));
          if(go.props_.static_ && go.props_.occupySquare_ && !go.props_.noMiniMap_) {
             this.updateGameObjectTileSignal.dispatch(new UpdateGameObjectTileVO(go.x_,go.y_,go));
          }

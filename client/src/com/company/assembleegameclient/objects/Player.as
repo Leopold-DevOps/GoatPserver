@@ -41,6 +41,7 @@ import kabam.rotmg.constants.ActivationType;
 import kabam.rotmg.constants.GeneralConstants;
 import kabam.rotmg.constants.UseType;
 import kabam.rotmg.core.StaticInjectorContext;
+import kabam.rotmg.util.Diag;
 import kabam.rotmg.game.model.AddTextLineVO;
 import kabam.rotmg.game.model.PotionInventoryModel;
 import kabam.rotmg.game.signals.AddTextLineSignal;
@@ -95,6 +96,7 @@ public class Player extends Character {
     }
 
     public function Player(objectXML:XML) {
+        Diag.at("Player ctor: objectXML=" + (objectXML == null ? "NULL" : "ok"));
         this.ip_ = new IntPoint();
         var injector:Injector = StaticInjectorContext.getInjector();
         this.addTextLine = injector.getInstance(AddTextLineSignal);
@@ -109,6 +111,7 @@ public class Player extends Character {
         this.maxHPMax_ = int(objectXML.MaxHitPoints.@max);
         this.maxMPMax_ = int(objectXML.MaxMagicPoints.@max);
         texturingCache_ = new Dictionary();
+        Diag.at("Player ctor: complete for type " + objectXML.@type);
     }
 
     private var famePortrait_:BitmapData = null;
@@ -984,6 +987,13 @@ public class Player extends Character {
     }
 
     private function makeSkinTexture():void {
+        /* Belt and braces: isDefaultAnimatedChar false with a null skin is a
+           guaranteed crash here, once per frame. Fall back rather than take
+           the whole render loop down. */
+        if (this.skin == null) {
+            this.isDefaultAnimatedChar = true;
+            return;
+        }
         var image:MaskedImage = this.skin.imageFromAngle(0, AnimatedChar.STAND, 0);
         animatedChar_ = this.skin;
         texture_ = image.image_;

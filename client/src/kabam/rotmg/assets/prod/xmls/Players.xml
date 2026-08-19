@@ -504,12 +504,12 @@
 	     once the real sprite sheet and specs exist.
 	     No <UnlockLevel> = free from the start (like Wizard was).
 	     ============================================================ -->
-	<Object type="0x0327" id="Adventurer">
+	<Object type="0x032c" id="Adventurer">
 		<Class>Player</Class>
 		<Description>PLACEHOLDER - the adventurer sets out with nothing but resolve.</Description>
 		<AnimatedTexture>
 			<File>players</File>
-			<Index>0</Index>
+			<Index>16</Index>
 		</AnimatedTexture>
 		<HitSound>player/warrior_hit</HitSound>
 		<DeathSound>player/warrior_death</DeathSound>

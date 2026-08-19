@@ -1,4 +1,4 @@
-﻿<Worlds>
+<Worlds>
 	<World id="Testing">
 		<Width>256</Width>
 		<Height>256</Height>
@@ -19,7 +19,7 @@
 		<Width>256</Width>
 		<Height>256</Height>
 		<Capacity>300</Capacity>
-		<MapJM>Exalt/Nexus.jm</MapJM>
+		<MapJM>Exalt/WinterNexus.jm</MapJM>
 		<Instance enum="nexus"/>
 		<Music>
 			<Track>wanderlust</Track>

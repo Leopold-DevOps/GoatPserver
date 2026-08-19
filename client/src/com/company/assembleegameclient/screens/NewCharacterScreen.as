@@ -18,6 +18,7 @@ import io.decagames.rotmg.ui.sliceScaling.SliceScalingBitmap;
 import io.decagames.rotmg.ui.texture.TextureParser;
 
 import kabam.rotmg.core.model.PlayerModel;
+import kabam.rotmg.util.Diag;
    import kabam.rotmg.game.view.CreditDisplay;
    import kabam.rotmg.ui.view.components.ScreenBase;
    import org.osflash.signals.Signal;
@@ -112,6 +113,7 @@ import kabam.rotmg.core.model.PlayerModel;
          var characterType:String = null;
          var overrideIsAvailable:Boolean = false;
          var charBox:CharacterBox = null;
+         var shown:int = 0;
          if(this.isInitialized)
          {
             return;
@@ -138,10 +140,16 @@ import kabam.rotmg.core.model.PlayerModel;
             {
                overrideIsAvailable = model.isClassAvailability(characterType,SavedCharactersList.UNRESTRICTED);
                charBox = new CharacterBox(playerXML,model.getCharStats()[objectType],model,overrideIsAvailable);
-               charBox.x = 120 * int(i % 6);
-               if (i > 11)
+               /* Lay out by how many boxes have actually been drawn, not by the
+                  index into the full class list. Hidden classes leave gaps in i,
+                  which used to push the grid off to the right - with only one
+                  class visible its box landed in the old slot's position and
+                  the container centering below could not correct for it. */
+               charBox.x = 120 * int(shown % 6);
+               if (shown > 11)
                    charBox.x += 120;
-               charBox.y = 120 + 120 * int(i / 6);
+               charBox.y = 120 + 120 * int(shown / 6);
+               shown++;
                this.boxes_[objectType] = charBox;
                charBox.addEventListener(MouseEvent.ROLL_OVER,this.onCharBoxOver);
                charBox.addEventListener(MouseEvent.ROLL_OUT,this.onCharBoxOut);
@@ -167,6 +175,7 @@ import kabam.rotmg.core.model.PlayerModel;
       {
          var charBox:CharacterBox = event.currentTarget as CharacterBox;
          charBox.setOver(true);
+         Diag.at("NewCharacterScreen.onCharBoxOver: building tooltip");
          this.tooltip.dispatch(charBox.getTooltip());
       }
 

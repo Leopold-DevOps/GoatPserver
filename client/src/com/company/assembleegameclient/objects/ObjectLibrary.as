@@ -76,6 +76,7 @@ public class ObjectLibrary
         "OneWayContainer":OneWayContainer,
         "Player":Player,
         "Portal":Portal,
+        "QuestBoard":QuestBoard,
         "Projectile":Projectile,
         "Sign":Sign,
         "SpiderWeb":SpiderWeb,

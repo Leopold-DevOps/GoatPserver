@@ -13,6 +13,7 @@ import com.company.util.CachingColorTransformer;
    import flash.geom.ColorTransform;
 
 import kabam.rotmg.assets.services.CharacterFactory;
+import kabam.rotmg.util.Diag;
 import kabam.rotmg.classes.model.CharacterClass;
 import kabam.rotmg.classes.model.CharacterSkin;
 
@@ -40,12 +41,25 @@ public class SavedCharacter
       
       public static function getImage(savedChar:SavedCharacter, playerXML:XML, dir:int, action:int, p:Number, available:Boolean, selected:Boolean) : BitmapData
       {
+         // must not touch playerXML before reporting: if it is null, building
+         // this string would throw and leave the previous call's breadcrumb
+         Diag.at("SavedCharacter.getImage: entered, playerXML="
+                 + (playerXML == null ? "NULL" : "ok") + " dir=" + dir + " action=" + action);
+         Diag.at("SavedCharacter.getImage: lookup file='" + String(playerXML.AnimatedTexture.File) + "' index=" + int(playerXML.AnimatedTexture.Index) + " dir=" + dir);
          var animatedChar:AnimatedChar = AnimatedChars.getAnimatedChar(String(playerXML.AnimatedTexture.File),int(playerXML.AnimatedTexture.Index));
+         Diag.at("SavedCharacter.getImage: animatedChar " + (animatedChar == null ? "NULL" : "ok") + " dir=" + dir);
          var image:MaskedImage = animatedChar.imageFromDir(dir,action,p);
+         Diag.at("SavedCharacter.getImage: image " + (image == null ? "NULL" : "ok")
+                 + " image_=" + (image != null && image.image_ == null ? "NULL" : "ok")
+                 + " mask_=" + (image != null && image.mask_ == null ? "null" : "ok")
+                 + " action=" + action + " p=" + p);
          var tex1:int = savedChar != null?int(savedChar.tex1()):int(null);
          var tex2:int = savedChar != null?int(savedChar.tex2()):int(null);
+         Diag.at("SavedCharacter.getImage: calling resize");
          var bd:BitmapData = TextureRedrawer.resize(image.image_,image.mask_,100,false,tex1,tex2);
+         Diag.at("SavedCharacter.getImage: resize returned " + (bd == null ? "NULL" : "ok"));
          bd = GlowRedrawer.outlineGlow(bd,0);
+         Diag.at("SavedCharacter.getImage: outlineGlow returned " + (bd == null ? "NULL" : "ok"));
          if(!available)
          {
             bd = CachingColorTransformer.transformBitmapData(bd,notAvailableCT);
@@ -54,6 +68,7 @@ public class SavedCharacter
          {
             bd = CachingColorTransformer.transformBitmapData(bd,dimCT);
          }
+         Diag.at("SavedCharacter.getImage: returning " + (bd == null ? "NULL" : "ok"));
          return bd;
       }
       

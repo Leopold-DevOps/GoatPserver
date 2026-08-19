@@ -5,6 +5,7 @@ import com.company.assembleegameclient.objects.GameObject;
 import com.company.assembleegameclient.objects.ObjectLibrary;
 import com.company.assembleegameclient.objects.Player;
 import com.company.assembleegameclient.objects.Portal;
+import com.company.assembleegameclient.objects.QuestBoard;
 import com.company.assembleegameclient.parameters.Parameters;
 import com.company.assembleegameclient.tutorial.Tutorial;
 import com.company.assembleegameclient.tutorial.doneAction;
@@ -211,6 +212,14 @@ public class MapUserInput
       if(portal != null && portal.enterButtonRect_ != null &&
          portal.enterButtonRect_.contains(this.gs_.map.mouseX,this.gs_.map.mouseY))
       {
+         /* A QuestBoard borrows Portal's Enter plaque but has no destination
+            world - sending usePortal for it would ask the server to teleport
+            into a static prop. It handles the press itself instead. */
+         if(portal is QuestBoard)
+         {
+            (portal as QuestBoard).onEnterPressed(this.gs_);
+            return;
+         }
          this.gs_.gsc_.usePortal(portal.objectId_);
          return;
       }

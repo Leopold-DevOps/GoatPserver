@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 
 <Objects>
    <Object type="0x0700" id="Dungeon Portal">
@@ -234,13 +234,67 @@
       </Texture>
    </Object>
    <Object type="0x072f" id="Guild Hall Portal">
+		<DisplayId>Guild</DisplayId>
+		<ShowName/>
+		<NameColor>0xA855F7</NameColor>
       <Class>GuildHallPortal</Class>
       <IntergamePortal/>
       <DungeonName>Guild Hall</DungeonName>
-      <Texture>
-         <File>lofiEnvironment2</File>
-         <Index>0x54</Index>
-      </Texture>
+      <Size>22</Size>
+		<Texture>
+			<File>guildPortalAnim</File>
+			<Index>0</Index>
+		</Texture>
+		<Animation prob="1" period="1.2" sync="true">
+		<Frame time="0.15">
+			<Texture>
+				<File>guildPortalAnim</File>
+				<Index>0</Index>
+			</Texture>
+		</Frame>
+		<Frame time="0.15">
+			<Texture>
+				<File>guildPortalAnim</File>
+				<Index>1</Index>
+			</Texture>
+		</Frame>
+		<Frame time="0.15">
+			<Texture>
+				<File>guildPortalAnim</File>
+				<Index>2</Index>
+			</Texture>
+		</Frame>
+		<Frame time="0.15">
+			<Texture>
+				<File>guildPortalAnim</File>
+				<Index>3</Index>
+			</Texture>
+		</Frame>
+		<Frame time="0.15">
+			<Texture>
+				<File>guildPortalAnim</File>
+				<Index>4</Index>
+			</Texture>
+		</Frame>
+		<Frame time="0.15">
+			<Texture>
+				<File>guildPortalAnim</File>
+				<Index>5</Index>
+			</Texture>
+		</Frame>
+		<Frame time="0.15">
+			<Texture>
+				<File>guildPortalAnim</File>
+				<Index>6</Index>
+			</Texture>
+		</Frame>
+		<Frame time="0.15">
+			<Texture>
+				<File>guildPortalAnim</File>
+				<Index>7</Index>
+			</Texture>
+		</Frame>
+		</Animation>
       <ShadowSize>0</ShadowSize>
    </Object>
    <Object type="0x0736" id="Guild Hall Upgrade 1">
