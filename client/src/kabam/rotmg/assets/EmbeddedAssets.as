@@ -13,6 +13,10 @@ import kabam.rotmg.assets.custom.images.VaultPortalAnim;
 import kabam.rotmg.assets.custom.images.GuildPortalAnim;
 import kabam.rotmg.assets.custom.images.QuestBoardImg;
 import kabam.rotmg.assets.custom.images.EnterButton;
+import kabam.rotmg.assets.custom.images.OpenButton;
+import kabam.rotmg.assets.custom.images.SpeakButton;
+import kabam.rotmg.assets.custom.images.RankSecretaryAnim;
+import kabam.rotmg.assets.custom.images.TopLeftHud;
 import kabam.rotmg.assets.custom.objects.japaneseSign;
 public class EmbeddedAssets
 {
@@ -25,6 +29,10 @@ public class EmbeddedAssets
    public static var guildPortalAnim:Class = GuildPortalAnim;
    public static var questBoard:Class = QuestBoardImg;
    public static var enterButton:Class = EnterButton;
+   public static var openButton:Class = OpenButton;
+   public static var speakButton:Class = SpeakButton;
+   public static var rankSecretaryAnim:Class = RankSecretaryAnim;
+   public static var topLeftHud:Class = TopLeftHud;
 
    // production.
    private static var JapaneseSign:Class = japaneseSign;

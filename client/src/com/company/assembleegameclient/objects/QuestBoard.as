@@ -1,4 +1,4 @@
-package com.company.assembleegameclient.objects
+﻿package com.company.assembleegameclient.objects
 {
    import com.company.assembleegameclient.game.GameSprite;
    

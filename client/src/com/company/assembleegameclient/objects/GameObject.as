@@ -1,4 +1,4 @@
-package com.company.assembleegameclient.objects {
+﻿package com.company.assembleegameclient.objects {
 import com.company.assembleegameclient.engine3d.Model3D;
 import com.company.assembleegameclient.engine3d.Object3D;
 import com.company.assembleegameclient.map.Camera;
@@ -38,8 +38,14 @@ import flash.display.IGraphicsData;
 import flash.filters.ColorMatrixFilter;
 import flash.filters.GlowFilter;
 import flash.geom.Matrix;
+import flash.geom.ColorTransform;
 import flash.geom.Point;
 import flash.geom.Rectangle;
+import kabam.rotmg.constants.GeneralConstants;
+import kabam.rotmg.assets.custom.images.EnterButton;
+import kabam.rotmg.assets.custom.images.OpenButton;
+import kabam.rotmg.assets.custom.images.SpeakButton;
+import mx.core.BitmapAsset;
 import flash.geom.Vector3D;
 import flash.utils.Dictionary;
 import flash.utils.getQualifiedClassName;
@@ -203,6 +209,24 @@ public class GameObject extends BasicObject {
     public var drawnHeight_:int = 0;
     public var drawnContentOffsetX_:Number = 0;
     public var drawnContentTop_:Number = 0;
+
+    /** Gap between the top of the object art and the bottom of the plaque. */
+    private static const ENTER_MARGIN:int = 6;
+    /* Plaque art is per-object (Enter for portals, Open for the quest board),
+       so both the base and its brightened hover copy are cached by class. */
+    private static const ENTER_PLAQUES:Dictionary = new Dictionary();
+    private static const ENTER_PLAQUES_HOVER:Dictionary = new Dictionary();
+    private var enterFill_:GraphicsBitmapFill;
+    private var enterPath_:GraphicsPath;
+    private var enterVS_:Vector.<Number>;
+
+    /**
+     * Screen-space (posS_) rect of the Enter plaque as drawn this frame, or
+     * null when it is not showing. The plaque is drawn geometry rather than a
+     * display object, so it has no mouse events of its own and MapUserInput
+     * has to hit test against this.
+     */
+    public var enterButtonRect_:Rectangle;
     public var dead_:Boolean = false;
     public var maxHP_:int = 200;
     public var hp_:int = 200;
@@ -487,6 +511,7 @@ public class GameObject extends BasicObject {
         if (this.props_.showName_ && this.name_ != null && this.name_.length != 0) {
             this.drawName(graphicsData, camera);
         }
+        this.drawEnterButton(graphicsData);
 
         if (Parameters.data_.hpBars) {
             var bDrawHpBar:Boolean = this.props_ && (this.props_.isEnemy_ || this.props_.isPlayer_) && !this.isInvincible() && (this.props_.isPlayer_ || !this.isInvulnerable()) && !this.props_.noMiniMap_;
@@ -1168,6 +1193,94 @@ public class GameObject extends BasicObject {
         }
         CONTENT_BOUNDS_CACHE[bmp] = bounds;
         return bounds;
+    }
+
+    /**
+     * Whether this object offers the Enter plaque. Objects opt in with
+     * <ShowEnterButton/>; Portal overrides this to key off its own state.
+     */
+    /**
+     * Which plaque this object shows, from <EnterButtonLabel> in its XML.
+     * Returning a Class rather than a BitmapData keeps the art lazily
+     * instantiated and cached per class in ENTER_PLAQUES.
+     */
+    protected function enterButtonAsset():Class {
+        if (this.props_ != null) {
+            switch (this.props_.enterButtonLabel_) {
+                case "open":
+                    return OpenButton;
+                case "speak":
+                    return SpeakButton;
+            }
+        }
+        return EnterButton;
+    }
+
+    protected function canShowEnterButton():Boolean {
+        return this.props_ != null && this.props_.showEnterButton_;
+    }
+
+    /**
+     * "Enter" plaque, drawn above the object while the player is close enough
+     * to interact with it.
+     *
+     * This goes through graphicsData - the same path the object's own sprite
+     * takes - rather than being a display object parented to the map. With
+     * hardware acceleration on (GPURender, the default) the world is rendered
+     * by Stage3D on its own layer, whose origin does not match the Map
+     * sprite's, so a display-list child sits at a constant offset from the art
+     * it is meant to sit above. Rendering it here keeps it aligned in both the
+     * GPU and software paths.
+     */
+    protected function drawEnterButton(graphicsData:Vector.<IGraphicsData>):void {
+        this.enterButtonRect_ = null;
+        if (!this.canShowEnterButton() || map_ == null || map_.player_ == null) {
+            return;
+        }
+        if (posS_ == null || posS_.length < 5 || this.drawnHeight_ <= 0) {
+            return;
+        }
+        var dx:Number = this.x_ - map_.player_.x_;
+        var dy:Number = this.y_ - map_.player_.y_;
+        if (dx * dx + dy * dy > GeneralConstants.MAXIMUM_INTERACTION_DISTANCE * GeneralConstants.MAXIMUM_INTERACTION_DISTANCE) {
+            return;
+        }
+        var plaqueClass:Class = this.enterButtonAsset();
+        var enterBitmap_:BitmapData = ENTER_PLAQUES[plaqueClass];
+        if (enterBitmap_ == null) {
+            enterBitmap_ = BitmapAsset(new plaqueClass()).bitmapData;
+            ENTER_PLAQUES[plaqueClass] = enterBitmap_;
+            /* Brightened copy for hover - cheaper than filtering every frame
+               and it only has to be built once. */
+            var hover:BitmapData = enterBitmap_.clone();
+            hover.colorTransform(hover.rect,
+                new ColorTransform(1.25, 1.25, 1.25, 1, 18, 18, 10, 0));
+            ENTER_PLAQUES_HOVER[plaqueClass] = hover;
+        }
+        var enterBitmapHover_:BitmapData = ENTER_PLAQUES_HOVER[plaqueClass];
+        if (this.enterFill_ == null) {
+            this.enterFill_ = new GraphicsBitmapFill(null, new Matrix(), false, false);
+            this.enterPath_ = new GraphicsPath(GraphicsUtil.QUAD_COMMANDS, new Vector.<Number>());
+            this.enterVS_ = this.enterPath_.data;
+        }
+        var w:Number = enterBitmap_.width;
+        var h:Number = enterBitmap_.height;
+        /* Centre on the object's visible pixels, not its texture box - source
+           art is frequently off-centre inside its own cell. */
+        var cx:Number = posS_[3] + this.drawnContentOffsetX_;
+        var bottom:Number = posS_[4] - this.drawnHeight_ + this.drawnContentTop_ - ENTER_MARGIN;
+        var left:Number = cx - w / 2;
+        var top:Number = bottom - h;
+        this.enterButtonRect_ = new Rectangle(left, top, w, h);
+        var hovered:Boolean = this.enterButtonRect_.contains(map_.mouseX, map_.mouseY);
+        this.enterVS_.length = 0;
+        this.enterVS_.push(left, top, left + w, top, left + w, bottom, left, bottom);
+        this.enterFill_.bitmapData = hovered ? enterBitmapHover_ : enterBitmap_;
+        this.enterFill_.matrix.identity();
+        this.enterFill_.matrix.translate(left, top);
+        graphicsData.push(this.enterFill_);
+        graphicsData.push(this.enterPath_);
+        graphicsData.push(GraphicsUtil.END_FILL);
     }
 
     protected function getHallucinatingTexture():BitmapData {

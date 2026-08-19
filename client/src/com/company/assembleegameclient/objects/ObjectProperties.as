@@ -1,4 +1,4 @@
-// Decompiled by AS3 Sorcerer 6.08
+﻿// Decompiled by AS3 Sorcerer 6.08
 // www.as3sorcerer.com
 
 //com.company.assembleegameclient.objects.ObjectProperties
@@ -33,6 +33,12 @@ public class ObjectProperties
    public var color_:int = -1;
    public var showName_:Boolean = false;
    public var nameColor_:uint = 0xFFFFFF;
+   /** Draw the world-anchored Enter plaque above this object when nearby. */
+   public var showEnterButton_:Boolean = false;
+   /** Which plaque to show: "enter" (default), "open", "speak". */
+   public var enterButtonLabel_:String = "enter";
+   /** Explicit minimap dot colour, or -1 to use the default class rules. */
+   public var miniMapColor_:int = -1;
    public var dontFaceAttacks_:Boolean = false;
    public var dontFaceMovement_:Boolean = false;
    public var bloodProb_:Number = 0;
@@ -97,6 +103,15 @@ public class ObjectProperties
       this.protectFromSink_ = _arg_1.hasOwnProperty("ProtectFromSink");
       this.flying_ = _arg_1.hasOwnProperty("Flying");
       this.showName_ = _arg_1.hasOwnProperty("ShowName");
+      this.showEnterButton_ = _arg_1.hasOwnProperty("ShowEnterButton");
+      if (_arg_1.hasOwnProperty("EnterButtonLabel"))
+      {
+         this.enterButtonLabel_ = String(_arg_1.EnterButtonLabel).toLowerCase();
+      }
+      if (_arg_1.hasOwnProperty("MiniMapColor"))
+      {
+         this.miniMapColor_ = uint(_arg_1.MiniMapColor);
+      }
       if (_arg_1.hasOwnProperty("NameColor"))
       {
          this.nameColor_ = uint(_arg_1.NameColor);

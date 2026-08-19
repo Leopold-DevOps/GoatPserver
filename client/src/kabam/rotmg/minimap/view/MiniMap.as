@@ -324,6 +324,13 @@ package kabam.rotmg.minimap.view
                      fillColor = 16776960;
                   }
                }
+               else if(go.props_.miniMapColor_ != -1)
+               {
+                  /* <MiniMapColor> wins for anything that is not a player, so
+                     plain GameObjects (the Rank Secretary) can get a dot at
+                     all - without it they fall through to `continue` below. */
+                  fillColor = go.props_.miniMapColor_;
+               }
                else if(go is Character)
                {
                   if(go.props_.isEnemy_)
