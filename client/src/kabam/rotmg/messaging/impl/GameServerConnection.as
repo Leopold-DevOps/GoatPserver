@@ -1701,6 +1701,9 @@ public class GameServerConnection
                case StatData.GUILD_RANK_STAT:
                   player.guildRank_ = value;
                   continue;
+               case StatData.ADVENTURER_RANK:
+                  player.advRank_ = value;
+                  continue;
                case StatData.BREATH_STAT:
                   player.breath_ = value;
                   continue;

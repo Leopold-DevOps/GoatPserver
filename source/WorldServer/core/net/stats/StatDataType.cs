@@ -108,6 +108,8 @@
         BackPackData6 = 140,
         BackPackData7 = 141,
         SpeedMult = 142,
+        /// Adventurer rank - public, every client renders it under the player.
+        AdventurerRank = 143,
         None = 255
     }
 }

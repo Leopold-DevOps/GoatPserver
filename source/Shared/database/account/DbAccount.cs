@@ -8,6 +8,11 @@ namespace Shared.database.account
     {
         public int AccountId { get; private set; }
         public int Rank { get => GetValue<int>("rank"); set => SetValue("rank", value); }
+        /// <summary>
+        /// Adventurer rank: 0 = Beginner, then 1..N earned through reputation.
+        /// Distinct from <see cref="Rank"/>, which is the staff/permission tier.
+        /// </summary>
+        public int AdventurerRank { get => GetValue<int>("advRank"); set => SetValue("advRank", value); }
         public bool Admin { get => GetValue<bool>("admin"); set => SetValue("admin", value); }
         public int BanLiftTime { get => GetValue<int>("banLiftTime"); set => SetValue("banLiftTime", value); }
         public bool Banned { get => GetValue<bool>("banned"); set => SetValue("banned", value); }

@@ -1,4 +1,4 @@
-package kabam.rotmg.messaging.impl.data
+﻿package kabam.rotmg.messaging.impl.data
 {
 import flash.utils.IDataInput;
 import flash.utils.IDataOutput;
@@ -77,6 +77,7 @@ public class StatData
    public static const BACKPACK_5_STAT:int = 72;
    public static const BACKPACK_6_STAT:int = 73;
    public static const BACKPACK_7_STAT:int = 74;
+   public static const ADVENTURER_RANK:int = 143;
    public static const HASBACKPACK_STAT:int = 75;
    public static const TEXTURE_STAT:int = 76;
    public static const RANK:int = 77;

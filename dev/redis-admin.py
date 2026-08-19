@@ -52,7 +52,7 @@ RANKS = {
 
 # account fields worth showing first, in order
 ACCOUNT_SUMMARY = [
-    "name", "rank", "admin", "banned", "fame", "totalFame",
+    "name", "rank", "advRank", "admin", "banned", "fame", "totalFame",
     "credits", "totalCredits", "maxCharSlot", "vaultCount", "guildId",
 ]
 

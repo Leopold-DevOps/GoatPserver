@@ -1,4 +1,4 @@
-package com.company.assembleegameclient.objects {
+﻿package com.company.assembleegameclient.objects {
 import com.company.assembleegameclient.map.Camera;
 import com.company.assembleegameclient.map.Square;
 import com.company.assembleegameclient.map.mapoverlay.CharacterStatusText;
@@ -19,12 +19,14 @@ import com.company.ui.SimpleText;
 import com.company.util.CachingColorTransformer;
 import com.company.util.ConversionUtil;
 import com.company.util.GraphicsUtil;
+import kabam.rotmg.constants.AdventurerRank;
 import com.company.util.IntPoint;
 import com.company.util.MoreColorUtil;
 import com.company.util.PointUtil;
 import com.company.util.Trig;
 
 import flash.display.BitmapData;
+import flash.display.GraphicsBitmapFill;
 import flash.display.GraphicsPath;
 import flash.display.GraphicsSolidFill;
 import flash.display.IGraphicsData;
@@ -125,7 +127,18 @@ public class Player extends Character {
     public var currFame_:int = 0;
     public var nextClassQuestFame_:int = -1;
     public var legendaryRank_:int = -1;
+    /** Name quad is 30 tall (GameObject.drawName); sit just under it. */
+    private static const RANK_OFFSET_Y:int = 20;
+
     public var guildName_:String = null;
+
+    /** Adventurer rank (StatData.ADVENTURER_RANK). 0 = Beginner. */
+    public var advRank_:int = 0;
+
+    private var advRankDrawn_:int = -1;
+    private var advRankBitmapData_:BitmapData = null;
+    private var advRankFill_:GraphicsBitmapFill = null;
+    private var advRankPath_:GraphicsPath = null;
     public var guildRank_:int = -1;
     public var isFellowGuild_:Boolean = false;
     public var isPartyMember_:Boolean = false;
@@ -346,6 +359,50 @@ public class Player extends Character {
         else if (this.breath_ >= 0) {
             this.drawBreathBar(graphicsData, time);
         }
+        /* Drawn for every player including yourself - the point of the rank is
+           that it is public, and you should be able to see your own. */
+        this.drawAdventurerRank(graphicsData);
+    }
+
+    /**
+     * Rank label under the player, in that rank's colour.
+     *
+     * Mirrors GameObject.drawName's geometry but sits RANK_OFFSET_Y lower so
+     * it lands beneath the name rather than on top of it. The bitmap is only
+     * rebuilt when the rank actually changes, since rasterising text every
+     * frame for every visible player would be wasteful.
+     */
+    private function drawAdventurerRank(graphicsData:Vector.<IGraphicsData>):void {
+        if (posS_ == null || posS_.length < 2) {
+            return;
+        }
+        if (this.advRankBitmapData_ == null || this.advRankDrawn_ != this.advRank_) {
+            this.advRankDrawn_ = this.advRank_;
+            var text:SimpleText = new SimpleText(12, AdventurerRank.color(this.advRank_), false, 0, 0);
+            text.setBold(true);
+            text.text = AdventurerRank.label(this.advRank_);
+            text.updateMetrics();
+            var bd:BitmapData = new BitmapData(Math.max(1, text.width), 28, true, 0);
+            bd.draw(text, null);
+            bd.applyFilter(bd, bd.rect, PointUtil.ORIGIN, new GlowFilter(0, 1, 3, 3, 2, 1));
+            this.advRankBitmapData_ = bd;
+            if (this.advRankFill_ == null) {
+                this.advRankFill_ = new GraphicsBitmapFill(null, new Matrix(), false, false);
+                this.advRankPath_ = new GraphicsPath(GraphicsUtil.QUAD_COMMANDS, new Vector.<Number>());
+            }
+        }
+        var w:int = this.advRankBitmapData_.width / 2 + 1;
+        var h:int = 22;
+        var top:Number = posS_[1] + RANK_OFFSET_Y;
+        var vs:Vector.<Number> = this.advRankPath_.data;
+        vs.length = 0;
+        vs.push(posS_[0] - w, top, posS_[0] + w, top, posS_[0] + w, top + h, posS_[0] - w, top + h);
+        this.advRankFill_.bitmapData = this.advRankBitmapData_;
+        this.advRankFill_.matrix.identity();
+        this.advRankFill_.matrix.translate(vs[0], vs[1]);
+        graphicsData.push(this.advRankFill_);
+        graphicsData.push(this.advRankPath_);
+        graphicsData.push(GraphicsUtil.END_FILL);
     }
 
     override protected function getTexture(camera:Camera, time:int):BitmapData {

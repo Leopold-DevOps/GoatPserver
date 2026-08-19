@@ -155,6 +155,23 @@ namespace WorldServer.core.objects
 			set => _guildRank.SetValue(value);
         }
 
+        private StatTypeValue<int> _advRank;
+        /// <summary>
+        /// Adventurer rank. 0 = Beginner; higher tiers are earned through
+        /// reputation (not yet implemented). Setting this also writes it back
+        /// to the account so it survives a relog.
+        /// </summary>
+        public int AdventurerRank
+        {
+            get => _advRank.GetValue();
+            set
+            {
+                _advRank.SetValue(value);
+                if (Client?.Account != null)
+                    Client.Account.AdventurerRank = value;
+            }
+        }
+
         private StatTypeValue<bool> _hasBackpack;
         public bool HasBackpack
         {
@@ -259,6 +276,9 @@ namespace WorldServer.core.objects
             _stars = new StatTypeValue<int>(this, StatDataType.Stars, 0);
             _guild = new StatTypeValue<string>(this, StatDataType.GuildName, "");
             _guildRank = new StatTypeValue<int>(this, StatDataType.GuildRank, -1);
+            /* No private flag: the rank is meant to be visible to everyone,
+               so it goes out in the public stat set like GuildName does. */
+            _advRank = new StatTypeValue<int>(this, StatDataType.AdventurerRank, account.AdventurerRank);
             _credits = new StatTypeValue<int>(this, StatDataType.Credits, account.Credits, true);
             _nameChosen = new StatTypeValue<bool>(this, StatDataType.NameChosen, account.NameChosen, false, v => account?.NameChosen ?? v);
             _texture1 = new StatTypeValue<int>(this, StatDataType.Texture1, character.Tex1);
@@ -561,6 +581,7 @@ namespace WorldServer.core.objects
             stats[StatDataType.Stars] = Stars;
             stats[StatDataType.GuildName] = Guild;
             stats[StatDataType.GuildRank] = GuildRank;
+            stats[StatDataType.AdventurerRank] = AdventurerRank;
             stats[StatDataType.NameChosen] = (Client.Account?.NameChosen ?? NameChosen) ? 1 : 0;
             stats[StatDataType.Texture1] = Texture1;
             stats[StatDataType.Texture2] = Texture2;
