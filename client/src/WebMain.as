@@ -15,6 +15,7 @@ import flash.events.Event;
 import kabam.lib.net.NetConfig;
 import kabam.rotmg.account.AccountConfig;
 import kabam.rotmg.appengine.AppEngineConfig;
+import kabam.rotmg.application.impl.AppEngineHost;
 import kabam.rotmg.application.ApplicationConfig;
 import kabam.rotmg.assets.AssetsConfig;
 import kabam.rotmg.characters.CharactersConfig;
@@ -65,6 +66,8 @@ public class WebMain extends Sprite {
     protected var context:IContext;
 
     private function setup():void {
+        // must run before anything asks ReleaseSetup for the account server URL
+        AppEngineHost.initFromSwfUrl(loaderInfo != null ? loaderInfo.url : null);
         this.hackParameters();
         this.installErrorReporter();
         this.createContext();

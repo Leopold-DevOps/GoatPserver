@@ -1,0 +1,5 @@
+# Real deployment values - SERVER_ADDRESS is your friend's box, keep it local
+.env
+
+# Built client, copied in per deploy (see README)
+web/client.swf

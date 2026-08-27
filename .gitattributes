@@ -1,0 +1,6 @@
+# Shell scripts and Dockerfiles must keep LF: a CRLF shebang makes Linux fail
+# with "bad interpreter", which is a confusing way to learn about line endings.
+*.sh text eol=lf
+entrypoint.sh text eol=lf
+Dockerfile text eol=lf
+*.yml text eol=lf

@@ -12,9 +12,20 @@ import com.company.assembleegameclient.parameters.Parameters;
       private const RELEASE_PORT:String = ":8080";
       private const TESTING_PORT:String = ":8089";
 
-      private const CDN_APPENGINE:String =  HTTP + "127.0.0.1" + RELEASE_PORT;
-      private const CDN_APPENGINE_S:String = HTTPS + "127.0.0.1" + TESTING_PORT;
-      private const TESTING_CDN_APPENGINE:String = HTTP + "127.0.0.1" + TESTING_PORT;
+      /* The host comes from the URL the swf was loaded from rather than being
+         hardcoded, so one build works against a local server and a remote one
+         over the VPN. See AppEngineHost. */
+      private function get CDN_APPENGINE():String {
+         return HTTP + AppEngineHost.get() + RELEASE_PORT;
+      }
+
+      private function get CDN_APPENGINE_S():String {
+         return HTTPS + AppEngineHost.get() + TESTING_PORT;
+      }
+
+      private function get TESTING_CDN_APPENGINE():String {
+         return HTTP + AppEngineHost.get() + TESTING_PORT;
+      }
 
       private const BUILD_LABEL:String = "<font color=\"#4254d6\">release:</font> " + Parameters.GAME_VERSION;
       private const TESTING_BUILD_LABEL:String = "<font color=\"#4254d6\">testing.</font>";

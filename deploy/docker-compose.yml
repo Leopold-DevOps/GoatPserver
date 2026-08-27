@@ -1,0 +1,55 @@
+# Run from this folder:  docker compose up -d --build
+#
+# SERVER_ADDRESS comes from deploy/.env and must be the WireGuard IP of THIS
+# machine, because the account server hands that address to clients as the
+# place to open the game socket. Leaving it at 127.0.0.1 makes every client
+# try to connect to itself, which fails in a confusing way.
+
+services:
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes", "--save", "60", "1"]
+    volumes:
+      - redis-data:/data
+    restart: unless-stopped
+    # Deliberately not published to the host: only the two servers need it,
+    # and they reach it over the compose network.
+
+  app:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    command: ["app"]
+    environment:
+      SERVER_ADDRESS: ${SERVER_ADDRESS}
+      REDIS_HOST: redis
+    volumes:
+      - ./config:/templates:ro
+      # client.swf is a build artifact and is not in git, so it is mounted in
+      # rather than baked into the image. Rebuild the client on your PC, copy
+      # the swf into deploy/web/, and it is served without an image rebuild.
+      - ./web:/app/app/resources/web
+    ports:
+      - "8080:8080"
+    depends_on:
+      - redis
+    restart: unless-stopped
+
+  world:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    command: ["world"]
+    environment:
+      SERVER_ADDRESS: ${SERVER_ADDRESS}
+      REDIS_HOST: redis
+    volumes:
+      - ./config:/templates:ro
+    ports:
+      - "2050:2050"
+    depends_on:
+      - redis
+    restart: unless-stopped
+
+volumes:
+  redis-data:

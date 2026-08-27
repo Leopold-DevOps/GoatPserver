@@ -1,0 +1,19 @@
+{
+  "dbInfo": {
+    "host": "${REDIS_HOST}",
+    "port": 6379,
+    "auth": "",
+    "index": 0
+  },
+  "serverInfo": {
+    "type": "Account",
+    "name": "AppEngine",
+    "bindAddress": "*",
+    "port": 8080
+  },
+  "serverSettings": {
+    "logFolder": "./logs",
+    "resourceFolder": "./resources",
+    "sendGridApiKey": ""
+  }
+}
