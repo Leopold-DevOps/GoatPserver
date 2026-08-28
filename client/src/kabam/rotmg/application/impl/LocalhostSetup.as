@@ -5,7 +5,13 @@ import kabam.rotmg.application.api.ApplicationSetup;
 
 public class
 LocalhostSetup implements ApplicationSetup {
-    private const LOCALHOST:String = "http://127.0.0.1:8080";
+    /* Host comes from the URL the swf was served from rather than being fixed
+       at 127.0.0.1, so this build also works against a remote server reached
+       over the VPN. Falls back to 127.0.0.1 for a swf opened off disk.
+       See AppEngineHost. */
+    private function get LOCALHOST():String {
+        return "http://" + AppEngineHost.get() + ":8080";
+    }
     private const BUILD_LABEL:String = "<font color=\"#4254d6\">localhost.</font>";
 
     public function getAppEngineUrl():String {
