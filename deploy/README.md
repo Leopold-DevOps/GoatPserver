@@ -13,7 +13,7 @@ Microsoft .NET ones, which are Debian based regardless of what the host runs.
 git clone https://github.com/Leopold-DevOps/GoatPserver.git
 cd GoatPserver/deploy
 cp .env.example .env
-ip -4 addr show wg0          # note the address, e.g. 10.0.0.1
+echo $SSH_CONNECTION         # 3rd value is the address your PC reaches this box on
 nano .env                    # set SERVER_ADDRESS to that address
 docker compose up -d --build
 ```
@@ -23,6 +23,12 @@ get wrong. The account server hands it to clients as the place to open the
 game socket, so it must be the address **your PC** can reach over the VPN. If
 you leave it at `127.0.0.1`, every client is told to connect to itself; you
 get a server list and then a connection that never completes.
+
+Do not assume it is a `10.x` tunnel address. If WireGuard terminates on the
+router rather than on this box, there is no `wg0` here at all and the right
+answer is the box's LAN address, e.g. `192.168.2.69`. `echo $SSH_CONNECTION`
+sidesteps the question - whatever it reports is reachable from your PC by
+definition, because that is the address your SSH session is using.
 
 `.env` is gitignored, so your friend's address never lands in the repo.
 
