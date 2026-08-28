@@ -1,0 +1,2 @@
+Drop client.swf here; the entrypoint overlays this folder onto the
+servers web resources at start. See ../README.md

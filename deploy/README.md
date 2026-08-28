@@ -35,7 +35,10 @@ definition, because that is the address your SSH session is using.
 ## First time, on your PC
 
 Build the client and copy it over. It is a build artifact and deliberately not
-in git, so it is mounted into the container rather than baked into the image:
+in git, so it is copied into the container at start rather than baked into the
+image. It is overlaid onto the image's web resources rather than mounted over
+them - a plain mount would hide the `sfx/` and `music/` folders that ship in
+the image, and the account server exits on startup without them:
 
 ```sh
 scp client.swf user@10.0.0.1:~/GoatPserver/deploy/web/client.swf
@@ -60,11 +63,15 @@ Server-side changes:
 git pull && docker compose up -d --build
 ```
 
-Client-side changes - rebuild on your PC, then just copy the swf over; the
-volume mount means no image rebuild and no restart:
+Client-side changes - rebuild on your PC, copy the swf over, then restart the
+account server. No image rebuild is needed; the swf is overlaid at start:
 
 ```sh
-scp client.swf user@10.0.0.1:~/GoatPserver/deploy/web/client.swf
+scp client.swf root@192.168.2.69:~/GoatPserver/deploy/web/client.swf
+```
+
+```sh
+docker compose restart app
 ```
 
 Map and XML changes are baked into the image, so those need the `--build`.
@@ -76,7 +83,7 @@ Map and XML changes are baked into the image, so those need the `--build`.
 | `Dockerfile` | Builds both servers into one image; compose picks which to run |
 | `entrypoint.sh` | Renders configs from templates at start, then execs the server |
 | `config/*.template` | `server.json` / `wServer.json` with the address substituted in |
-| `web/` | Mounted over the account server's web resources; holds `client.swf` |
+| `web/` | Staged at `/incoming`, overlaid onto the web resources at start; holds `client.swf` |
 | `.env` | Your `SERVER_ADDRESS`, not committed |
 
 Configs are rendered at container start rather than committed so that the only

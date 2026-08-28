@@ -19,6 +19,12 @@ done
 
 case "$1" in
     app)
+        # Overlay whatever was staged in /incoming (client.swf) on top of the
+        # image's web resources, rather than mounting over the directory and
+        # hiding sfx/ and music/, which the server needs to start.
+        if [ -d /incoming ]; then
+            cp -a /incoming/. /app/app/resources/web/ 2>/dev/null || true
+        fi
         # CoreService reads /data/server.json when IS_DOCKER is set.
         cd /app/app
         exec dotnet App.dll

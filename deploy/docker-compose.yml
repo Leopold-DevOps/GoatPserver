@@ -25,10 +25,12 @@ services:
       REDIS_HOST: redis
     volumes:
       - ./config:/templates:ro
-      # client.swf is a build artifact and is not in git, so it is mounted in
-      # rather than baked into the image. Rebuild the client on your PC, copy
-      # the swf into deploy/web/, and it is served without an image rebuild.
-      - ./web:/app/app/resources/web
+      # client.swf is a build artifact and is not in git, so it is copied in
+      # rather than baked into the image. This mounts to a staging path and the
+      # entrypoint overlays it onto the web resources - mounting straight over
+      # resources/web would hide the sfx/ and music/ folders that ship in the
+      # image, and the account server will not start without them.
+      - ./web:/incoming:ro
     ports:
       - "8080:8080"
     depends_on:
