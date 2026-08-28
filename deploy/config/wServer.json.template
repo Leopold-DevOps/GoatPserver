@@ -19,7 +19,8 @@
     "serverSettings": {
         "logFolder": "./logs",
         "resourceFolder": "./resources",
-        "version": "3.0.0",
+        "version": "1.0.0",
+        "_version_note": "must equal Parameters.GAME_VERSION in the client - the world server rejects mismatches with ClientUpdateNeeded, but only in Release builds, since HelloHandler guards the check with #if !DEBUG",
         "maxConnections": 300,
         "maxPlayers": 300,
         "maxRealms": 2,
