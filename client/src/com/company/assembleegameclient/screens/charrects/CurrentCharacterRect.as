@@ -1,4 +1,4 @@
-package com.company.assembleegameclient.screens.charrects
+﻿package com.company.assembleegameclient.screens.charrects
 {
 import com.company.assembleegameclient.appengine.CharacterStats;
 import com.company.assembleegameclient.appengine.SavedCharacter;
@@ -58,7 +58,7 @@ public class CurrentCharacterRect extends CharacterRect
 
    public function CurrentCharacterRect(charName:String, charType:CharacterClass, char:SavedCharacter, charStats:CharacterStats)
    {
-      super(6052956,8355711);
+      super(CharSlotExisting);
       this.charName = charName;
       this.charType = charType;
       this.char = char;
@@ -79,8 +79,9 @@ public class CurrentCharacterRect extends CharacterRect
    {
       this.icon && selectContainer.removeChild(this.icon);
       this.icon = value;
-      this.icon.x = 0;
-      this.icon.y = 3;
+      /* Centred in the panel's painted icon well. */
+      this.icon.x = 76 - this.icon.width / 2;
+      this.icon.y = 47 - this.icon.height / 2;
       this.icon && selectContainer.addChild(this.icon);
    }
 
@@ -98,21 +99,21 @@ public class CurrentCharacterRect extends CharacterRect
       this.fameBitmapContainer = new Sprite();
       this.fameBitmapContainer.name = "fame_ui";
       this.fameBitmapContainer.addChild(this.fameBitmap);
-      this.fameBitmapContainer.x = this.width - 70;
-      this.fameBitmapContainer.y = 20;
+      this.fameBitmapContainer.x = panelRight - 70;
+      this.fameBitmapContainer.y = 38;
       addChild(this.fameBitmapContainer);
    }
 
 
    private function makeClassNameText() : void
    {
-      this.classNameText = new SimpleText(18,16777215,false,0,0);
+      this.classNameText = new SimpleText(18,GOLD,false,0,0);
       this.classNameText.setBold(true);
       this.classNameText.text = this.charType.name + " " + this.char.level();
       this.classNameText.updateMetrics();
       this.classNameText.filters = [new DropShadowFilter(0,0,0,1,8,8)];
-      this.classNameText.x = 58;
-      this.classNameText.y = 6;
+      this.classNameText.x = 124;
+      this.classNameText.y = 28;
       selectContainer.addChild(this.classNameText);
    }
 
@@ -137,20 +138,20 @@ public class CurrentCharacterRect extends CharacterRect
       this.taglineIcon.transform.colorTransform = new ColorTransform(179 / 255,179 / 255,179 / 255);
       this.taglineIcon.scaleX = 1.2;
       this.taglineIcon.scaleY = 1.2;
-      this.taglineIcon.x = 58;
-      this.taglineIcon.y = 31;
+      this.taglineIcon.x = 124;
+      this.taglineIcon.y = 54;
       this.taglineIcon.filters = [new DropShadowFilter(0,0,0)];
       selectContainer.addChild(this.taglineIcon);
    }
 
    private function makeTaglineText(nextStarFame:int) : void
    {
-      this.taglineText = new SimpleText(14,11776947,false,0,0);
+      this.taglineText = new SimpleText(14,GOLD_DIM,false,0,0);
       this.taglineText.text = "Class Quest: " + this.char.fame() + " of " + nextStarFame + " Fame";
       this.taglineText.updateMetrics();
       this.taglineText.filters = [new DropShadowFilter(0,0,0,1,8,8)];
-      this.taglineText.x = 58 + this.taglineIcon.width + 2;
-      this.taglineText.y = 31;
+      this.taglineText.x = 124 + this.taglineIcon.width + 2;
+      this.taglineText.y = 54;
       selectContainer.addChild(this.taglineText);
    }
 
@@ -158,8 +159,8 @@ public class CurrentCharacterRect extends CharacterRect
    {
       this.deleteButton = new DeleteXGraphic();
       this.deleteButton.addEventListener(MouseEvent.MOUSE_DOWN,this.onDeleteDown);
-      this.deleteButton.x = this.width - 25;
-      this.deleteButton.y = 5;
+      this.deleteButton.x = panelRight - 25;
+      this.deleteButton.y = 10;
       addChild(this.deleteButton);
    }
 
@@ -167,12 +168,12 @@ public class CurrentCharacterRect extends CharacterRect
    {
       var maxedStat:int = this.grabStats();
       var color:* = 11776947;
-      this.statsMaxedText = new SimpleText(18, 16777215);
+      this.statsMaxedText = new SimpleText(18, GOLD);
       this.statsMaxedText.filters = [new DropShadowFilter(0,0,0,1,8,8)];
       this.statsMaxedText.setBold(true);
       this.statsMaxedText.setText(maxedStat + "/8");
-      this.statsMaxedText.x = this.width - 105;
-      this.statsMaxedText.y = 18;
+      this.statsMaxedText.x = panelRight - 105;
+      this.statsMaxedText.y = 38;
       if (maxedStat == 8){
          color = uint(16572160)
       }
@@ -210,8 +211,12 @@ public class CurrentCharacterRect extends CharacterRect
       {
          fameToolTip = new TextToolTip(0x363636, 0x9B9B9B, "Fame", "Click to get an Overview!", 225);
          this.showToolTip.dispatch(fameToolTip);
-      } else
+      } else if (stage != null)
       {
+         /* stage is null when the row is not attached - the list is torn down
+            and rebuilt after buying a character slot, and a row can still take
+            a MOUSE_OVER while detached. Building the tooltip then attaching it
+            to a null stage was the #1009. */
          toolTip_ = new MyPlayerToolTip(this.charName,this.char.charXML_,this.charStats);
          stage.addChild(toolTip_);
       }

@@ -1,4 +1,4 @@
-package com.company.assembleegameclient.ui.panels.itemgrids
+﻿package com.company.assembleegameclient.ui.panels.itemgrids
 {
    import com.company.assembleegameclient.constants.InventoryOwnerTypes;
    import com.company.assembleegameclient.objects.Container;
@@ -22,15 +22,20 @@ package com.company.assembleegameclient.ui.panels.itemgrids
       private static const CutsByNum:Object = {
          1:[[1,0,0,1],NO_CUT,NO_CUT,[0,1,1,0]],
          2:[[1,0,0,0],NO_CUT,NO_CUT,[0,1,0,0],[0,0,0,1],NO_CUT,NO_CUT,[0,0,1,0]],
-         3:[[1,0,0,1],NO_CUT,NO_CUT,[0,1,1,0],[1,0,0,0],NO_CUT,NO_CUT,[0,1,0,0],[0,0,0,1],NO_CUT,NO_CUT,[0,0,1,0]]
+         3:[[1,0,0,1],NO_CUT,NO_CUT,[0,1,1,0],[1,0,0,0],NO_CUT,NO_CUT,[0,1,0,0],[0,0,0,1],NO_CUT,NO_CUT,[0,0,1,0]],
+         /* 8 tiles stacked 2 wide x 4 tall - the vertical bag layout. Keyed by
+            row count like the others, so only the four corner tiles are cut:
+            0 top-left, 1 top-right, 6 bottom-left, 7 bottom-right. */
+         4:[[1,0,0,0],[0,1,0,0],NO_CUT,NO_CUT,NO_CUT,NO_CUT,[0,0,0,1],[0,0,1,0]]
       };
        
       
-      private const padding:uint = UiMetrics.ITEM_GRID_PADDING_X;
+      protected var padding:uint = UiMetrics.ITEM_GRID_PADDING_X;
       
-      private const paddingY:uint = UiMetrics.ITEM_GRID_PADDING_Y;
+      protected var paddingY:uint = UiMetrics.ITEM_GRID_PADDING_Y;
       
-      private const rowLength:uint = UiMetrics.ITEM_GRID_COLUMNS;
+      /* Overridable: ContainerGrid stacks its 8 slots 2 wide to fit the plaque. */
+      protected var rowLength:uint = UiMetrics.ITEM_GRID_COLUMNS;
       
       public var owner:GameObject;
       

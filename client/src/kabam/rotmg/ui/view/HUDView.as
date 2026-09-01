@@ -43,8 +43,10 @@ import kabam.rotmg.game.view.components.TabStripView;
       private const STAT_METERS_POSITION:Point = new Point(UiMetrics.HUD_BAR_X, UiMetrics.HUD_STAT_METERS_Y);
       private const EQUIPMENT_INVENTORY_POSITION:Point = new Point(UiMetrics.ITEM_GRID_X, UiMetrics.HUD_EQUIPMENT_Y);
       private const TAB_STRIP_POSITION:Point = new Point(UiMetrics.ITEM_GRID_X - UiMetrics.HUD_CONTENT_INSET, UiMetrics.HUD_TAB_STRIP_Y);
-      /* Centred: the panel is 200 wide inside a HUD_DESIGN_WIDTH (245) pane. */
-      private const INTERACT_PANEL_POSITION:Point = new Point(22, UiMetrics.HUD_INTERACT_Y);
+      /* Aligned to the item grid, not to the parchment: a bag's 8 slots must
+         line up with the inventory columns above. The plaque runs x 36-167, so
+         the panel overhangs it by ~8px each side, which reads as centred. */
+      private const INTERACT_PANEL_POSITION:Point = new Point(UiMetrics.HUD_INTERACT_X, UiMetrics.HUD_INTERACT_Y);
       private const NEXUS_INDICATOR_POSITION:Point = new Point(200, 355);
 
       private var background:CharacterWindowBackground;
@@ -132,7 +134,7 @@ import kabam.rotmg.game.view.components.TabStripView;
          this.equippedGrid.x = this.EQUIPMENT_INVENTORY_POSITION.x;
          this.equippedGrid.y = this.EQUIPMENT_INVENTORY_POSITION.y;
          addChild(this.equippedGrid);
-         this.interactPanel = new InteractPanel(gs,player,200,100);
+         this.interactPanel = new InteractPanel(gs,player,UiMetrics.HUD_INTERACT_WIDTH,100);
          this.interactPanel.x = this.INTERACT_PANEL_POSITION.x;
          this.interactPanel.y = this.INTERACT_PANEL_POSITION.y;
          addChild(this.interactPanel);

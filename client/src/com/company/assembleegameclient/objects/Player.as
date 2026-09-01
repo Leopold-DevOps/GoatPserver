@@ -20,6 +20,9 @@ import com.company.util.CachingColorTransformer;
 import com.company.util.ConversionUtil;
 import com.company.util.GraphicsUtil;
 import kabam.rotmg.constants.AdventurerRank;
+import kabam.rotmg.assets.custom.images.HpBarFrame;
+import kabam.rotmg.assets.custom.images.RankPlaque;
+import mx.core.BitmapAsset;
 import com.company.util.IntPoint;
 import com.company.util.MoreColorUtil;
 import com.company.util.PointUtil;
@@ -78,9 +81,17 @@ public class Player extends Character {
         player.level_ = int(playerXML.Level);
         player.exp_ = int(playerXML.Exp);
         player.equipment_ = ConversionUtil.toIntVector(playerXML.Equipment);
+        /* Both of these can be absent on a saved character - ItemDatas is
+           omitted entirely when nothing is equipped, and equipData_ is only
+           built when the class XML declares SlotTypes. Dereferencing either
+           blind threw #1009 straight after the Player ctor. */
         var data:Vector.<Object> = ConversionUtil.ArrayToObject(playerXML.ItemDatas, ";");
-        for(var i:int = 0; i < data.length; i++)
-            player.equipData_[i] = JSON.parse(String(data[i]));
+        if (data != null && player.equipData_ != null)
+        {
+            var n:int = Math.min(data.length, player.equipData_.length);
+            for(var i:int = 0; i < n; i++)
+                player.equipData_[i] = JSON.parse(String(data[i]));
+        }
         player.maxHP_ = int(playerXML.MaxHitPoints);
         player.hp_ = int(playerXML.HitPoints);
         player.maxMP_ = int(playerXML.MaxMagicPoints);
@@ -134,6 +145,33 @@ public class Player extends Character {
 
     /** Adventurer rank (StatData.ADVENTURER_RANK). 0 = Beginner. */
     public var advRank_:int = 0;
+
+    /*
+     * Framed HP bar and rank plaque drawn under the character.
+     *
+     * Well rectangles were measured off the art (HpBarFrame.png 56x7,
+     * RankPlaque.png 84x17) - the fill and the label are inset into those
+     * wells so they sit inside the painted frame rather than over it.
+     * Re-measure if either bitmap is redrawn.
+     */
+    private static const HP_WELL_X:int = 3;
+    private static const HP_WELL_Y:int = 2;
+    private static const HP_WELL_W:int = 50;
+    private static const HP_WELL_H:int = 4;
+    private static const PLAQUE_WELL_X:int = 9;
+    private static const PLAQUE_WELL_Y:int = 6;
+    private static const PLAQUE_WELL_W:int = 66;
+    private static const PLAQUE_WELL_H:int = 9;
+    /** Gap between the bottom of the HP frame and the top of the plaque. */
+    private static const PLAQUE_GAP:int = 1;
+
+    private static var HP_FRAME_BD:BitmapData = null;
+    private static var PLAQUE_BD:BitmapData = null;
+
+    private var hpFrameFill_:GraphicsBitmapFill = null;
+    private var hpFramePath_:GraphicsPath = null;
+    private var hpWellFill_:GraphicsSolidFill = null;
+    private var hpWellPath_:GraphicsPath = null;
 
     private var advRankDrawn_:int = -1;
     private var advRankBitmapData_:BitmapData = null;
@@ -365,6 +403,58 @@ public class Player extends Character {
     }
 
     /**
+     * Framed HP bar, replacing GameObject's plain quad for players only.
+     *
+     * The frame is drawn first and the fill laid into its well on top: the
+     * well in the art is opaque, so painting the frame over the fill would
+     * hide it. Enemies keep the plain bar - this is deliberately a player
+     * affordance, and framing every enemy would be visual noise.
+     */
+    override protected function drawHpBar(graphicsData:Vector.<IGraphicsData>, yOffset:int=6):void {
+        if (posS_ == null || posS_.length < 2) {
+            return;
+        }
+        if (HP_FRAME_BD == null) {
+            HP_FRAME_BD = BitmapAsset(new HpBarFrame()).bitmapData;
+        }
+        if (this.hpFramePath_ == null) {
+            this.hpFrameFill_ = new GraphicsBitmapFill(null, new Matrix(), false, false);
+            this.hpFramePath_ = new GraphicsPath(GraphicsUtil.QUAD_COMMANDS, new Vector.<Number>());
+            this.hpWellFill_ = new GraphicsSolidFill();
+            this.hpWellPath_ = new GraphicsPath(GraphicsUtil.QUAD_COMMANDS, new Vector.<Number>());
+        }
+        var fw:int = HP_FRAME_BD.width;
+        var fh:int = HP_FRAME_BD.height;
+        var left:Number = Math.round(posS_[0] - (fw / 2));
+        var top:Number = posS_[1] + yOffset;
+
+        var v:Vector.<Number> = this.hpFramePath_.data as Vector.<Number>;
+        v.length = 0;
+        v.push(left, top, left + fw, top, left + fw, top + fh, left, top + fh);
+        this.hpFrameFill_.bitmapData = HP_FRAME_BD;
+        this.hpFrameFill_.matrix.identity();
+        this.hpFrameFill_.matrix.translate(left, top);
+        graphicsData.push(this.hpFrameFill_);
+        graphicsData.push(this.hpFramePath_);
+        graphicsData.push(GraphicsUtil.END_FILL);
+
+        if (this.hp_ > 0 && this.maxHP_ > 0) {
+            var frac:Number = Math.min(1, this.hp_ / this.maxHP_);
+            var fx:Number = left + HP_WELL_X;
+            var fy:Number = top + HP_WELL_Y;
+            var fwd:Number = HP_WELL_W * frac;
+            var v2:Vector.<Number> = this.hpWellPath_.data as Vector.<Number>;
+            v2.length = 0;
+            v2.push(fx, fy, fx + fwd, fy, fx + fwd, fy + HP_WELL_H, fx, fy + HP_WELL_H);
+            this.hpWellFill_.color = ((frac < 0.5) ? ((frac < 0.2) ? 14684176 : 16744464) : 0x10FF00);
+            graphicsData.push(this.hpWellFill_);
+            graphicsData.push(this.hpWellPath_);
+            graphicsData.push(GraphicsUtil.END_FILL);
+            GraphicsFillExtra.setSoftwareDrawSolid(this.hpWellFill_, true);
+        }
+    }
+
+    /**
      * Rank label under the player, in that rank's colour.
      *
      * Mirrors GameObject.drawName's geometry but sits RANK_OFFSET_Y lower so
@@ -376,30 +466,49 @@ public class Player extends Character {
         if (posS_ == null || posS_.length < 2) {
             return;
         }
+        if (PLAQUE_BD == null) {
+            PLAQUE_BD = BitmapAsset(new RankPlaque()).bitmapData;
+        }
         if (this.advRankBitmapData_ == null || this.advRankDrawn_ != this.advRank_) {
             this.advRankDrawn_ = this.advRank_;
-            var text:SimpleText = new SimpleText(12, AdventurerRank.color(this.advRank_), false, 0, 0);
+            /* Composite the label into a copy of the plaque so the whole thing
+               is one bitmap: two separate quads would drift apart by a pixel
+               under the Stage3D transform. */
+            var text:SimpleText = new SimpleText(10, AdventurerRank.color(this.advRank_), false, 0, 0);
             text.setBold(true);
             text.text = AdventurerRank.label(this.advRank_);
             text.updateMetrics();
-            var bd:BitmapData = new BitmapData(Math.max(1, text.width), 28, true, 0);
-            bd.draw(text, null);
-            bd.applyFilter(bd, bd.rect, PointUtil.ORIGIN, new GlowFilter(0, 1, 3, 3, 2, 1));
+            var tw:int = Math.max(1, Math.ceil(text.textWidth) + 4);
+            var th:int = Math.max(1, Math.ceil(text.textHeight) + 4);
+            var tb:BitmapData = new BitmapData(tw, th, true, 0);
+            tb.draw(text, null);
+            tb.applyFilter(tb, tb.rect, PointUtil.ORIGIN, new GlowFilter(0, 1, 2, 2, 3, 1));
+            var bd:BitmapData = PLAQUE_BD.clone();
+            bd.copyPixels(tb, tb.rect,
+                new Point(PLAQUE_WELL_X + ((PLAQUE_WELL_W - tw) >> 1),
+                          PLAQUE_WELL_Y + ((PLAQUE_WELL_H - th) >> 1)),
+                null, null, true);
+            tb.dispose();
             this.advRankBitmapData_ = bd;
             if (this.advRankFill_ == null) {
                 this.advRankFill_ = new GraphicsBitmapFill(null, new Matrix(), false, false);
                 this.advRankPath_ = new GraphicsPath(GraphicsUtil.QUAD_COMMANDS, new Vector.<Number>());
             }
         }
-        var w:int = this.advRankBitmapData_.width / 2 + 1;
-        var h:int = 22;
-        var top:Number = posS_[1] + RANK_OFFSET_Y;
-        var vs:Vector.<Number> = this.advRankPath_.data;
+        var bw:int = this.advRankBitmapData_.width;
+        var bh:int = this.advRankBitmapData_.height;
+        /* Sit directly under the HP frame, whose offset depends on whether
+           this is you or another player (see GameObject's draw). */
+        var hpTop:int = (this != map_.player_ ? 16 : 0) + GameObject.DEFAULT_HP_BAR_Y_OFFSET;
+        var top:Number = posS_[1] + hpTop
+                       + (HP_FRAME_BD != null ? HP_FRAME_BD.height : 7) + PLAQUE_GAP;
+        var left:Number = Math.round(posS_[0] - (bw / 2));
+        var vs:Vector.<Number> = this.advRankPath_.data as Vector.<Number>;
         vs.length = 0;
-        vs.push(posS_[0] - w, top, posS_[0] + w, top, posS_[0] + w, top + h, posS_[0] - w, top + h);
+        vs.push(left, top, left + bw, top, left + bw, top + bh, left, top + bh);
         this.advRankFill_.bitmapData = this.advRankBitmapData_;
         this.advRankFill_.matrix.identity();
-        this.advRankFill_.matrix.translate(vs[0], vs[1]);
+        this.advRankFill_.matrix.translate(left, top);
         graphicsData.push(this.advRankFill_);
         graphicsData.push(this.advRankPath_);
         graphicsData.push(GraphicsUtil.END_FILL);
@@ -496,7 +605,16 @@ public class Player extends Character {
         var image:MaskedImage = null;
         var size:int = 0;
         if (portrait_ == null) {
+            /* animatedChar_ is null for a Player built from saved XML whose
+               skin never resolved. Callers treat a null portrait as "no
+               image", which is far better than an unrecoverable #1009. */
+            if (animatedChar_ == null) {
+                return null;
+            }
             image = animatedChar_.imageFromDir(AnimatedChar.RIGHT, AnimatedChar.STAND, 0);
+            if (image == null || image.image_ == null) {
+                return null;
+            }
             size = 4 / image.image_.width * 100;
             portrait_ = TextureRedrawer.resize(image.image_, image.mask_, size, true, tex1Id_, tex2Id_);
             portrait_ = GlowRedrawer.outlineGlow(portrait_, 0);
@@ -822,7 +940,16 @@ public class Player extends Character {
         var image:MaskedImage = null;
         var size:int = 0;
         if (portrait2_ == null) {
+            /* animatedChar_ is null for a Player built from saved XML whose
+               skin never resolved. Callers treat a null portrait as "no
+               image", which is far better than an unrecoverable #1009. */
+            if (animatedChar_ == null) {
+                return null;
+            }
             image = animatedChar_.imageFromDir(AnimatedChar.RIGHT, AnimatedChar.STAND, 0);
+            if (image == null || image.image_ == null) {
+                return null;
+            }
             size = 4 / image.image_.width * 100;
             portrait2_ = TextureRedrawer.resize(image.image_, image.mask_, size, true, tex1Id_, tex2Id_);
         }

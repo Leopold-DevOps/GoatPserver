@@ -1,4 +1,4 @@
-package com.company.assembleegameclient.ui
+﻿package com.company.assembleegameclient.ui
 {
 import flash.text.engine.CFFHinting;
 import flash.text.engine.ElementFormat;
@@ -10,7 +10,7 @@ import flash.text.engine.RenderingMode;
 
 public class ElementFormats
 {
-   private static var FONT_DESCRIPTION:String = "MyriadProBoldCFF,_sans";
+   private static var FONT_DESCRIPTION:String = "CinzelBoldCFF,MyriadProBoldCFF,_sans";
 
    public var normalFormat_:ElementFormat = null;
    public var serverFormat_:ElementFormat = null;

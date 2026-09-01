@@ -1,4 +1,4 @@
-package com.company.assembleegameclient.screens.charrects
+﻿package com.company.assembleegameclient.screens.charrects
 {
    import com.company.assembleegameclient.appengine.SavedCharacter;
    import com.company.assembleegameclient.objects.ObjectLibrary;
@@ -29,7 +29,7 @@ package com.company.assembleegameclient.screens.charrects
       
       public function CreateNewCharacterRect(model:PlayerModel)
       {
-         super(5526612,7829367);
+         super(CharSlotEmpty);
          makeContainer();
          var pickIndex:int = int(ObjectLibrary.playerChars_.length * Math.random());
          Diag.at("CreateNewCharacterRect: picking " + pickIndex + " of " + ObjectLibrary.playerChars_.length);
@@ -42,16 +42,18 @@ package com.company.assembleegameclient.screens.charrects
                  + (selectContainer == null ? "NULL" : "ok") + " model=" + (model == null ? "NULL" : "ok"));
          this.bitmap_ = new Bitmap();
          this.bitmap_.bitmapData = bd;
-         this.bitmap_.x = 3;
+         /* Centred in the panel's painted icon well. */
+         this.bitmap_.x = 76 - this.bitmap_.width / 2;
+         this.bitmap_.y = 46 - this.bitmap_.height / 2;
          selectContainer.addChild(this.bitmap_);
          Diag.at("CreateNewCharacterRect: bitmap added");
-         this.classNameText_ = new SimpleText(18,16777215,false,0,0);
+         this.classNameText_ = new SimpleText(18,GOLD,false,0,0);
          this.classNameText_.setBold(true);
          this.classNameText_.text = "New Character";
          this.classNameText_.updateMetrics();
          this.classNameText_.filters = [new DropShadowFilter(0,0,0,1,8,8)];
-         this.classNameText_.x = 58;
-         this.classNameText_.y = 5;
+         this.classNameText_.x = 122;
+         this.classNameText_.y = 28;
          selectContainer.addChild(this.classNameText_);
          Diag.at("CreateNewCharacterRect: name text added, calling model.getNumStars()");
          if(model.getNumStars() != FameUtil.maxStars())
@@ -61,17 +63,17 @@ package com.company.assembleegameclient.screens.charrects
             this.taglineIcon_.transform.colorTransform = new ColorTransform(179 / 255,179 / 255,179 / 255);
             this.taglineIcon_.scaleX = 1.2;
             this.taglineIcon_.scaleY = 1.2;
-            this.taglineIcon_.x = 58;
-            this.taglineIcon_.y = 31;
+            this.taglineIcon_.x = 122;
+            this.taglineIcon_.y = 54;
             this.taglineIcon_.filters = [new DropShadowFilter(0,0,0)];
             selectContainer.addChild(this.taglineIcon_);
             Diag.at("CreateNewCharacterRect: tagline icon added");
-            this.taglineText_ = new SimpleText(14,11776947,false,0,0);
+            this.taglineText_ = new SimpleText(14,GOLD_DIM,false,0,0);
             this.taglineText_.text = FameUtil.maxStars() - model.getNumStars() + " Class quests not yet completed";
             this.taglineText_.updateMetrics();
             this.taglineText_.filters = [new DropShadowFilter(0,0,0,1,8,8)];
-            this.taglineText_.x = 58 + this.taglineIcon_.width + 2;
-            this.taglineText_.y = 31;
+            this.taglineText_.x = 122 + this.taglineIcon_.width + 2;
+            this.taglineText_.y = 54;
             selectContainer.addChild(this.taglineText_);
             Diag.at("CreateNewCharacterRect: tagline text added");
          }

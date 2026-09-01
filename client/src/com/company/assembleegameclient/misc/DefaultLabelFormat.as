@@ -1,4 +1,4 @@
-package com.company.assembleegameclient.misc
+﻿package com.company.assembleegameclient.misc
 {
 import flash.filters.BitmapFilterQuality;
 import flash.filters.DropShadowFilter;
@@ -306,7 +306,7 @@ public class DefaultLabelFormat
         var _loc5_:TextFormat = new TextFormat();
         _loc5_.color = param3;
         _loc5_.bold = true;
-        _loc5_.font = "Myriad Pro";
+        _loc5_.font = "Cinzel";
         _loc5_.size = param2;
         _loc5_.align = param4;
         applyTextFromat(_loc5_,param1);
@@ -356,7 +356,7 @@ public class DefaultLabelFormat
         var _loc5_:TextFormat = new TextFormat();
         _loc5_.color = param2;
         _loc5_.bold = param4;
-        _loc5_.font = "Myriad Pro";
+        _loc5_.font = "Cinzel";
         _loc5_.size = param1;
         _loc5_.align = param3;
         return _loc5_;

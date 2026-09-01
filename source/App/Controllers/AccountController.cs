@@ -50,10 +50,11 @@ namespace App.Controllers
         }
 
         [HttpPost("purchaseCharSlot")]
-        public async void PurchaseCharSlot([FromForm] string guid, [FromForm] string password)
+        public async Task PurchaseCharSlot([FromForm] string guid, [FromForm] string password)
         {
-            // works but currently keeps you with account in use
-            // need to fix
+            // Must be async Task, not async void: the framework cannot await an
+            // async void action, so the response was completed and the account
+            // lock disposed while the Redis work was still in flight.
 
             var db = _core.Database;
 
@@ -87,16 +88,22 @@ namespace App.Controllers
 
                 trans.AddCondition(Condition.HashEqual(acc.Key, "maxCharSlot", acc.MaxCharSlot));
 
-                await trans.HashIncrementAsync(acc.Key, "maxCharSlot");
-                var t2 = trans.ExecuteAsync();
+                // Tasks returned by commands queued on an ITransaction do not
+                // complete until Execute runs, so awaiting this one before
+                // ExecuteAsync meant execution was never reached and the
+                // increment never hit Redis. Queue it, execute, then await.
+                var tIncr = trans.HashIncrementAsync(acc.Key, "maxCharSlot");
 
-                await Task.WhenAll(t1, t2);
-                    
-                if (t2.IsCanceled || !t2.Result)
+                var committed = await trans.ExecuteAsync();
+                if (!committed)
                 {
-                    Response.CreateError("<Error>Internal Server Error</Error>");
+                    // The condition failed: maxCharSlot changed under us, so
+                    // another purchase already landed. Not an internal error.
+                    Response.CreateError("Purchase failed, please try again");
                     return;
                 }
+
+                await Task.WhenAll(t1, tIncr);
 
                 Response.CreateSuccess();
             }

@@ -1,4 +1,4 @@
-package com.company.assembleegameclient.ui.panels.itemgrids.itemtiles
+﻿package com.company.assembleegameclient.ui.panels.itemgrids.itemtiles
 {
 import com.company.assembleegameclient.misc.UILabel;
 import com.company.assembleegameclient.objects.ObjectLibrary;
@@ -61,6 +61,20 @@ public class ItemTile extends Sprite
          tile keeps its mouse target for hover, drag and tooltips. */
       fill_ = new GraphicsSolidFill(getBackgroundColor(),0);
       graphicsData_ = new <IGraphicsData>[fill_,path_,GraphicsUtil.END_FILL];
+   }
+
+   /**
+    * Give this tile a visible plate instead of the default alpha-0 one.
+    *
+    * The pane art paints a recess behind every inventory and equipment slot,
+    * so those tiles are deliberately invisible. A bag's slots are drawn over
+    * the parchment plaque, where there is no painted recess, so they need to
+    * paint their own. Call before the grid calls drawBackground().
+    */
+   public function setBackgroundFill(color:uint, alpha:Number) : void
+   {
+      fill_.color = color;
+      fill_.alpha = alpha;
    }
 
    public function drawBackground(cuts:Array) : void

@@ -136,4 +136,28 @@
 		<OldSound>bladeSwing</OldSound>
 		<feedPower>700</feedPower>
 	</Object>
+	<Object type="0x4992" id="Adventurer Blade">
+		<Class>Equipment</Class>
+		<Item/>
+		<Texture>
+			<File>customUV128x128</File>
+			<Index>0x03</Index>
+		</Texture>
+		<SlotType>1</SlotType>
+		<Description>The blade every adventurer earns. Swift, balanced, and unreasonably sharp.</Description>
+		<RateOfFire>1.15</RateOfFire>
+		<Sound>weapon/mithril_sword</Sound>
+		<Projectile>
+			<ObjectId>Adventurer Shot</ObjectId>
+			<Speed>100</Speed>
+			<MinDamage>245</MinDamage>
+			<MaxDamage>300</MaxDamage>
+			<LifetimeMS>350</LifetimeMS>
+			<Size>130</Size>
+		</Projectile>
+		<BagType>9</BagType>
+		<FameBonus>6</FameBonus>
+		<OldSound>bladeSwing</OldSound>
+		<feedPower>950</feedPower>
+	</Object>
 </Objects>

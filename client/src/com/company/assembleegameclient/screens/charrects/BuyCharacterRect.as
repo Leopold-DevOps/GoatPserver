@@ -1,4 +1,4 @@
-package com.company.assembleegameclient.screens.charrects
+﻿package com.company.assembleegameclient.screens.charrects
 {
    import com.company.ui.SimpleText;
    import flash.display.Bitmap;
@@ -19,34 +19,32 @@ import kabam.rotmg.assets.services.IconFactory;
       
       public function BuyCharacterRect(model:PlayerModel)
       {
-         super(2039583,4342338);
-         var icon:Shape = this.buildIcon();
-         icon.x = 7;
-         icon.y = 9;
-         addChild(icon);
+         super(CharSlotBuy);
+         /* No drawn plus: the panel art already paints a plus medallion. */
          makeContainer();
-         this.classNameText_ = new SimpleText(18,16777215,false,0,0);
+         this.classNameText_ = new SimpleText(18,GOLD,false,0,0);
          this.classNameText_.setBold(true);
          this.classNameText_.text = "Buy " + this.getOrdinalString(model.getMaxCharacters() + 1) + " Character Slot";
          this.classNameText_.updateMetrics();
          this.classNameText_.filters = [new DropShadowFilter(0,0,0,1,8,8)];
-         this.classNameText_.x = 58;
-         this.classNameText_.y = 13;
+         /* Clear of the panel's painted plus medallion, which ends at x 89. */
+         this.classNameText_.x = 118;
+         this.classNameText_.y = 36;
          selectContainer.addChild(this.classNameText_);
-         this.priceText_ = new SimpleText(18,16777215,false,0,0);
+         this.priceText_ = new SimpleText(18,GOLD,false,0,0);
          this.priceText_.text = model.getNextCharSlotPrice().toString();
          this.priceText_.updateMetrics();
          this.priceText_.filters = [new DropShadowFilter(0,0,0,1,8,8)];
-         this.priceText_.x = this.width - 45 - this.priceText_.width;
-         this.priceText_.y = 16;
+         this.priceText_.x = panelRight - 45 - this.priceText_.width;
+         this.priceText_.y = 38;
          selectContainer.addChild(this.priceText_);
          var bd:BitmapData =
                  model.isNextCharSlotCurrencyFame() ?
                          IconFactory.makeFame() :
                          IconFactory.makeCoin();
          this.currency_ = new Bitmap(bd);
-         this.currency_.x = this.width - 43;
-         this.currency_.y = 18;
+         this.currency_.x = panelRight - 43;
+         this.currency_.y = 40;
          selectContainer.addChild(this.currency_);
       }
       

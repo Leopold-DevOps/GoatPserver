@@ -1,4 +1,4 @@
-package com.company.assembleegameclient.ui
+﻿package com.company.assembleegameclient.ui
 {
 import com.company.assembleegameclient.game.GameSprite;
 import com.company.assembleegameclient.objects.Player;
@@ -109,7 +109,7 @@ public class TextBox extends Sprite
       //this.textSprite_.mouseChildren = false;
       addChild(this.textSprite_);
       var format:TextFormat = new TextFormat();
-      format.font = "Myriad Pro";
+      format.font = "Cinzel";
       format.size = 14;
       format.color = 16777215;
       format.bold = true;

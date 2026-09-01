@@ -1,6 +1,10 @@
-package com.company.ui
+﻿package com.company.ui
 {
 
+import com.company.ui.fonts.Cinzel;
+import com.company.ui.fonts.CinzelBold;
+import com.company.ui.fonts.CinzelBoldCFF;
+import com.company.ui.fonts.CinzelCFF;
 import com.company.ui.fonts.MyriadPro;
 import com.company.ui.fonts.MyriadProBold;
 import com.company.ui.fonts.MyriadProBoldCFF;
@@ -27,6 +31,14 @@ public class SimpleText extends TextField
       public static const _MyriadProCFF:Class = MyriadProCFF;
       public static const _MyriadProBoldCFF:Class = MyriadProBoldCFF;
       public static const _MyriadProG:Class = BaseSimpleText_MyriadPro;
+
+      /* Cinzel is the UI face. Myriad stays registered as the fallback for any
+         glyph Cinzel lacks - swapping _Font back to _MyriadPro reverts the
+         whole game, since every TextField reads its name from here. */
+      public static const _Cinzel:Class = Cinzel;
+      public static const _CinzelBold:Class = CinzelBold;
+      public static const _CinzelCFF:Class = CinzelCFF;
+      public static const _CinzelBoldCFF:Class = CinzelBoldCFF;
       public static var _Font:Font;
       public static var _FontRegistered:Boolean = false;
       
@@ -44,7 +56,11 @@ public class SimpleText extends TextField
             Font.registerFont(_MyriadProCFF);
             Font.registerFont(_MyriadProBoldCFF);
             Font.registerFont(_MyriadProG);
-            _Font = new _MyriadPro();
+            Font.registerFont(_Cinzel);
+            Font.registerFont(_CinzelBold);
+            Font.registerFont(_CinzelCFF);
+            Font.registerFont(_CinzelBoldCFF);
+            _Font = new _Cinzel();
             _FontRegistered = true;
          }
 

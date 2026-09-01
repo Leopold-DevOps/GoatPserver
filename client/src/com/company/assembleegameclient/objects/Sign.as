@@ -1,4 +1,4 @@
-package com.company.assembleegameclient.objects
+﻿package com.company.assembleegameclient.objects
 {
    import com.company.assembleegameclient.map.Camera;
    import com.company.assembleegameclient.util.TextureRedrawer;
@@ -32,7 +32,7 @@ package com.company.assembleegameclient.objects
          txt.embedFonts = true;
          var newFormat:TextFormat = new TextFormat();
          newFormat.align = TextFormatAlign.CENTER;
-         newFormat.font = "Myriad Pro";
+         newFormat.font = "Cinzel";
          newFormat.size = 24;
          newFormat.color = 16777215;
          newFormat.bold = true;
