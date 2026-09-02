@@ -77,6 +77,13 @@ W="$(cygpath -w "$ROOT")"
 LOCAL_SIZE=$(stat -c%s "$ROOT/client.swf")
 echo "   built: $LOCAL_SIZE bytes"
 
+# ----------------------------------------------------------------- copy swf
+# Must precede any container work: the entrypoint overlays /incoming onto the
+# web resources at container START, so a swf copied after `compose up` is not
+# picked up until the next restart and the previous build stays served.
+say "Copying client.swf to the box"
+retry scp "${SSH_OPTS[@]}" "$ROOT/client.swf" "$HOST:$REMOTE_DIR/deploy/web/client.swf"     || fail "scp failed"
+
 # --------------------------------------------------------------- push/pull
 if [ $FULL -eq 1 ]; then
     BRANCH="$(git -C "$ROOT" branch --show-current)"
@@ -84,19 +91,13 @@ if [ $FULL -eq 1 ]; then
     retry git -C "$ROOT" push origin "$BRANCH"
 
     say "Pulling and rebuilding the image on the box (slow)"
-    remote "cd $REMOTE_DIR && git pull --ff-only && cd deploy && docker compose up -d --build" \
-        || fail "remote rebuild failed"
+    remote "cd $REMOTE_DIR && git pull --ff-only && cd deploy && docker compose up -d --build"         || fail "remote rebuild failed"
 fi
 
-# ----------------------------------------------------------------- copy swf
-say "Copying client.swf to the box"
-retry scp "${SSH_OPTS[@]}" "$ROOT/client.swf" "$HOST:$REMOTE_DIR/deploy/web/client.swf" \
-    || fail "scp failed"
-
-if [ $FULL -eq 0 ]; then
-    say "Restarting the account server"
-    remote "cd $REMOTE_DIR/deploy && docker compose restart app" || fail "restart failed"
-fi
+# The image may be unchanged (client-only work), in which case `up` leaves the
+# containers running and the new swf would never be overlaid. Restart always.
+say "Restarting the account server"
+remote "cd $REMOTE_DIR/deploy && docker compose restart app" || fail "restart failed"
 
 # ------------------------------------------------------------------ verify
 say "Verifying"
