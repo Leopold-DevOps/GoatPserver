@@ -175,4 +175,98 @@
 		<EnemyOccupySquare/>
 		<BlocksSight/>
 	</Object>
+	<Object type="0x499d" id="Gothic Fountain">
+		<Class>GameObject</Class>
+		<Texture>
+			<File>gothicProps</File>
+			<Index>0x00</Index>
+		</Texture>
+		<Size>17</Size>
+		<Static/>
+		<OccupySquare/>
+		<EnemyOccupySquare/>
+		<ShadowSize>0</ShadowSize>
+	</Object>
+	<Object type="0x499e" id="Gothic Brazier">
+		<Class>GameObject</Class>
+		<Texture>
+			<File>gothicProps</File>
+			<Index>0x01</Index>
+		</Texture>
+		<Size>10</Size>
+		<Static/>
+		<OccupySquare/>
+		<EnemyOccupySquare/>
+		<ShadowSize>0</ShadowSize>
+	</Object>
+	<Object type="0x499f" id="Gothic Candelabra">
+		<Class>GameObject</Class>
+		<Texture>
+			<File>gothicProps</File>
+			<Index>0x02</Index>
+		</Texture>
+		<Size>10</Size>
+		<Static/>
+		<OccupySquare/>
+		<EnemyOccupySquare/>
+		<ShadowSize>0</ShadowSize>
+	</Object>
+	<Object type="0x49a0" id="Gothic Altar">
+		<Class>GameObject</Class>
+		<Texture>
+			<File>gothicProps</File>
+			<Index>0x03</Index>
+		</Texture>
+		<Size>17</Size>
+		<Static/>
+		<OccupySquare/>
+		<EnemyOccupySquare/>
+		<ShadowSize>0</ShadowSize>
+	</Object>
+	<Object type="0x49a1" id="Gothic Angel Statue">
+		<Class>GameObject</Class>
+		<Texture>
+			<File>gothicProps</File>
+			<Index>0x04</Index>
+		</Texture>
+		<Size>13</Size>
+		<Static/>
+		<OccupySquare/>
+		<EnemyOccupySquare/>
+		<ShadowSize>0</ShadowSize>
+	</Object>
+	<Object type="0x49a2" id="Gothic Pew">
+		<Class>GameObject</Class>
+		<Texture>
+			<File>gothicProps</File>
+			<Index>0x05</Index>
+		</Texture>
+		<Size>17</Size>
+		<Static/>
+		<OccupySquare/>
+		<EnemyOccupySquare/>
+		<ShadowSize>0</ShadowSize>
+	</Object>
+	<Object type="0x49a3" id="Gothic Font">
+		<Class>GameObject</Class>
+		<Texture>
+			<File>gothicProps</File>
+			<Index>0x06</Index>
+		</Texture>
+		<Size>10</Size>
+		<Static/>
+		<OccupySquare/>
+		<EnemyOccupySquare/>
+		<ShadowSize>0</ShadowSize>
+	</Object>
+	<Object type="0x49a4" id="Gothic Banner">
+		<Class>GameObject</Class>
+		<Texture>
+			<File>gothicProps</File>
+			<Index>0x07</Index>
+		</Texture>
+		<Size>10</Size>
+		<Static/>
+		<ShadowSize>0</ShadowSize>
+	</Object>
 </Objects>

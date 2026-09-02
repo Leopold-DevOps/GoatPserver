@@ -174,6 +174,9 @@ public class AssetLoader
       /* Wall side/top faces. Wall.as uses the same normalised UVs as ground,
          so these are 64x64 rather than 8x8. */
       AssetLibrary.addImageSet("gothicWalls", new EmbeddedAssets.gothicWalls().bitmapData, 64, 64);
+      /* Billboard props. Unlike ground and walls these are NOT UV-mapped, so
+         on-screen size is 5 * (Size/100) * 96 and Size is tuned per object. */
+      AssetLibrary.addImageSet("gothicProps", new EmbeddedAssets.gothicProps().bitmapData, 96, 96);
       AssetLibrary.addImageSet("rankSecretaryAnim", new EmbeddedAssets.rankSecretaryAnim().bitmapData, 112, 143);
       AssetLibrary.addImageSet("guildPortalAnim", new EmbeddedAssets.guildPortalAnim().bitmapData, 87, 167);
       AssetLibrary.addImageSet("questBoard", new EmbeddedAssets.questBoard().bitmapData, 166, 164);
