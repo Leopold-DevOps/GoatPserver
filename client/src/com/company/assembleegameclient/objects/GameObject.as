@@ -116,6 +116,12 @@ public class GameObject extends BasicObject {
         }
         this.objectType_ = int(objectXML.@type);
         this.props_ = ObjectLibrary.propsLibrary_[this.objectType_];
+        /* Apply the XML <Size> up front. size_ was previously only ever set by
+           setSize() from the server's SIZE stat, and static map objects are
+           never sent one - so they fell back to the default 100 and a 96px
+           sprite drew at 5 * 1.0 * 96 = 480px. A server stat still arrives
+           later for entities that set one (portals), and overrides this. */
+        this.size_ = this.props_.getSize();
         hasShadow_ = this.props_.shadowSize_ > 0;
         var textureData:TextureData = ObjectLibrary.typeToTextureData_[this.objectType_];
         this.texture_ = textureData.texture_;
