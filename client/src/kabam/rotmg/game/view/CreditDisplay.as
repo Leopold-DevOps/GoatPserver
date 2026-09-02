@@ -1,4 +1,4 @@
-package kabam.rotmg.game.view
+﻿package kabam.rotmg.game.view
 {
    import com.company.assembleegameclient.game.GameSprite;
    import com.company.assembleegameclient.parameters.Parameters;
@@ -58,7 +58,8 @@ public class CreditDisplay extends Sprite
          super();
          this.gs = gs;
          this.showButton = fameButton;
-         this.creditsText_ = new SimpleText(FONT_SIZE,16777215,false,0,0);
+         /* Gold, matching the menu banners and character rows. */
+         this.creditsText_ = new SimpleText(FONT_SIZE,0xE6C88C,false,0,0);
          this.creditsText_.setBold(true);
          this.creditsText_.filters = [new DropShadowFilter(0,0,0,1,4,4,2)];
          addChild(this.creditsText_);
@@ -66,7 +67,7 @@ public class CreditDisplay extends Sprite
          coinBD = TextureRedrawer.redraw(coinBD,40,true,0);
          this.coinIcon_ = new Bitmap(coinBD);
          addChild(this.coinIcon_);
-         this.fameText_ = new SimpleText(FONT_SIZE,16777215,false,0,0);
+         this.fameText_ = new SimpleText(FONT_SIZE,0xE6C88C,false,0,0);
          this.fameText_.setBold(true);
          this.fameText_.filters = [new DropShadowFilter(0,0,0,1,4,4,2)];
          addChild(this.fameText_);

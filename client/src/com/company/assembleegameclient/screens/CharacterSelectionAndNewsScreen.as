@@ -111,6 +111,13 @@ public class CharacterSelectionAndNewsScreen extends Sprite
     /** Decorative rule under the player name; art is 2x, drawn at half. */
     private var namePlate:Bitmap;
 
+    /* List viewport. The rows must stop above the menu banner, which moves
+       with the stage - so a small window gets a short viewport, and the
+       scrollbar appears sooner rather than the rows drawing over the banner. */
+    private static const LIST_TOP:int = 105;
+    private static const LIST_BOTTOM_GAP:int = 14;
+    private static const LIST_MIN_HEIGHT:int = 100;
+
     private var menuBanner:Sprite;
     private var bannerBitmap:Bitmap;
     private var mainLabel:SimpleText;
@@ -156,8 +163,6 @@ public class CharacterSelectionAndNewsScreen extends Sprite
         //this.createNews();
         this.createBoundaryLines();
         this.createCharacterList();
-        if(this.characterListHeight > this.SCROLLBAR_REQUIREMENT_HEIGHT)
-            this.createScrollbar();
         this.createButtons();
         this.positionButtons();
     }
@@ -331,9 +336,7 @@ public class CharacterSelectionAndNewsScreen extends Sprite
         this.lines.width = width;
         this.creditDisplay.x = width;
 
-        this.characterList.x = UIUtil.centerXAndOffset(this.characterList);
-        if (this.scrollBar)
-            this.scrollBar.x = this.characterList.x + this.characterList.width + 5;
+        this.layoutList();
         this.nameText.x = UIUtil.centerXAndOffset(this.nameText);
         if (this.namePlate != null)
         {
@@ -361,21 +364,17 @@ public class CharacterSelectionAndNewsScreen extends Sprite
             removeChild(this.characterList);
             this.createCharacterList();
         }
-        if (this.scrollBar)
-        {
-            removeChild(this.scrollBar);
-            this.createScrollbar();
-        }
+        this.layoutList();
         WebMain.STAGE.removeEventListener(MouseEvent.MOUSE_OUT, redraw);
     }
 
     private function createScrollbar() : void
     {
-        var scrollSize:int = 399 + (WebMain.STAGE.stageHeight - 600);
-        this.scrollBar = new Scrollbar(16, scrollSize);
-        this.scrollBar.x = this.characterList.x + this.characterList.width + 5;
-        this.scrollBar.y = 113;
-        this.scrollBar.setIndicatorSize(scrollSize,this.characterList.height);
+        var viewH:Number = this.listViewportHeight();
+        this.scrollBar = new Scrollbar(16, viewH);
+        this.scrollBar.x = this.characterList.x + CharacterList.WIDTH + 5;
+        this.scrollBar.y = LIST_TOP;
+        this.scrollBar.setIndicatorSize(viewH, this.characterList.contentHeight);
         this.scrollBar.addEventListener(Event.CHANGE,this.onScrollBarChange);
         addChild(this.scrollBar);
     }
@@ -383,10 +382,50 @@ public class CharacterSelectionAndNewsScreen extends Sprite
     private function createCharacterList() : void
     {
         this.characterList = new CharacterList(this.model);
-        this.characterList.x = WebMain.STAGE.stageWidth / 2 - this.characterList.width / 2;
-        this.characterList.y = 105;
-        this.characterListHeight = this.characterList.height;
+        this.characterList.y = LIST_TOP;
         addChild(this.characterList);
+    }
+
+    /**
+     * Height available to the rows: from the top of the list down to the top
+     * of the menu banner. The banner is centred at 0.825 of the stage and
+     * drawn at half its 373px art height, so that is its top edge.
+     */
+    private function listViewportHeight() : Number
+    {
+        var bannerTop:Number = WebMain.STAGE.stageHeight * 0.825
+                             - (BANNER_H * BANNER_ART_SCALE) / 2;
+        return Math.max(LIST_MIN_HEIGHT, bannerTop - LIST_TOP - LIST_BOTTOM_GAP);
+    }
+
+    /** Re-masks the list and shows the scrollbar only when it is needed. */
+    private function layoutList() : void
+    {
+        if (this.characterList == null)
+        {
+            return;
+        }
+        var viewH:Number = this.listViewportHeight();
+        this.characterList.setViewportHeight(viewH);
+        this.characterList.x = WebMain.STAGE.stageWidth / 2 - CharacterList.WIDTH / 2;
+        this.characterList.y = LIST_TOP;
+        this.characterListHeight = this.characterList.contentHeight;
+
+        var needsBar:Boolean = this.characterListHeight > viewH;
+        if (this.scrollBar != null)
+        {
+            this.removeIfAble(this.scrollBar);
+            this.scrollBar = null;
+        }
+        if (needsBar)
+        {
+            this.createScrollbar();
+        }
+        else
+        {
+            /* No overflow: make sure a previous scroll position is undone. */
+            this.characterList.setPos(0);
+        }
     }
 
     private function createSelectCharacterText() : void
@@ -451,7 +490,11 @@ public class CharacterSelectionAndNewsScreen extends Sprite
 
     private function onScrollBarChange(event:Event) : void
     {
-        this.characterList.setPos(-this.scrollBar.pos() * (this.characterListHeight - 400));
+        /* Scroll range is content minus viewport, not content minus a fixed
+           400 - the viewport now depends on the window height. */
+        var range:Number = Math.max(0, this.characterList.contentHeight
+                                     - this.listViewportHeight());
+        this.characterList.setPos(-this.scrollBar.pos() * range);
     }
 
     private function removeIfAble(object:DisplayObject) : void

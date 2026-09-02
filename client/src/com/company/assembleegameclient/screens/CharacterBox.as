@@ -1,4 +1,4 @@
-package com.company.assembleegameclient.screens
+﻿package com.company.assembleegameclient.screens
 {
    import com.company.assembleegameclient.appengine.CharacterStats;
    import com.company.assembleegameclient.appengine.SavedCharacter;
@@ -42,6 +42,13 @@ package com.company.assembleegameclient.screens
       public var available_:Boolean;
       private var graphicContainer_:Sprite;
       private var graphic_:Sprite;
+
+      /* Eased hover, matching the play banners: grow and lift together. */
+      private static const HOVER_GROW:Number = 0.06;
+      private static const HOVER_LIGHT:Number = 42;
+      private static const HOVER_EASE:Number = 0.22;
+      private var hover:Number = 0;
+      private var hoverTarget:Number = 0;
       private var bitmap_:Bitmap;
       private var statusText_:SimpleText;
       private var classNameText_:SimpleText;
@@ -63,16 +70,17 @@ package com.company.assembleegameclient.screens
          this.available_ = overrideIsAvailable || model.isLevelRequirementsMet(this.objectType());
          if(!this.available_)
          {
-            this.graphic_ = new LockedCharBoxGraphic();
+            this.graphic_ = new ClassBoxGraphic(true);
          }
          else
          {
-            this.graphic_ = new FullCharBoxGraphic();
+            this.graphic_ = new ClassBoxGraphic(false);
          }
          this.graphicContainer_ = new Sprite();
          addChild(this.graphicContainer_);
          this.graphicContainer_.addChild(this.graphic_);
          this.characterSelectClicked_ = new NativeSignal(this.graphicContainer_,MouseEvent.CLICK,MouseEvent);
+         addEventListener(Event.ENTER_FRAME, this.onHoverFrame);
          this.bitmap_ = new Bitmap(null);
          this.setImage(AnimatedChar.DOWN,AnimatedChar.STAND,0);
          this.graphic_.addChild(this.bitmap_);
@@ -87,11 +95,11 @@ package com.company.assembleegameclient.screens
          if(this.available_)
          {
             stars = this.getStars(FameUtil.numStars(model.getBestFame(this.objectType())),FameUtil.STARS.length);
-            stars.y = 60;
+            stars.y = 92;
             stars.x = this.graphic_.width / 2 - stars.width / 2;
             stars.filters = [new DropShadowFilter(0,0,0,1,4,4)];
             this.graphicContainer_.addChild(stars);
-            this.classNameText_.y = 74;
+            this.classNameText_.y = 106;
          }
          else
          {
@@ -102,7 +110,7 @@ package com.company.assembleegameclient.screens
             this.lock_.y = 8;
             addChild(this.lock_);
             addChild(this.statusText_);
-            this.classNameText_.y = 78;
+            this.classNameText_.y = 106;
          }
       }
       
@@ -119,7 +127,7 @@ package com.company.assembleegameclient.screens
          {
             this.available_ = true;
             this.graphicContainer_.removeChild(this.graphic_);
-            this.graphic_ = new FullCharBoxGraphic();
+            this.graphic_ = new ClassBoxGraphic(false);
             this.graphicContainer_.addChild(this.graphic_);
             this.setImage(AnimatedChar.DOWN,AnimatedChar.STAND,0);
             this.graphic_.addChild(this.bitmap_);
@@ -167,14 +175,33 @@ package com.company.assembleegameclient.screens
          {
             return;
          }
-         if(over)
+         this.hoverTarget = over ? 1 : 0;
+      }
+
+      /**
+       * Eases the hover grow and highlight. Scales graphicContainer_ rather
+       * than the box itself so the grid position is untouched, and recentres
+       * on the box so it swells in place.
+       */
+      private function onHoverFrame(e:Event) : void
+      {
+         if(this.hover == this.hoverTarget)
          {
-            transform.colorTransform = new ColorTransform(1.2,1.2,1.2);
+            return;
          }
-         else
+         this.hover = this.hover + (this.hoverTarget - this.hover) * HOVER_EASE;
+         if(Math.abs(this.hoverTarget - this.hover) < 0.002)
          {
-            transform.colorTransform = new ColorTransform(1,1,1);
+            this.hover = this.hoverTarget;
          }
+         var s:Number = 1 + HOVER_GROW * this.hover;
+         this.graphicContainer_.scaleX = s;
+         this.graphicContainer_.scaleY = s;
+         this.graphicContainer_.x = (ClassBoxGraphic.BOX_W - ClassBoxGraphic.BOX_W * s) / 2;
+         this.graphicContainer_.y = (ClassBoxGraphic.BOX_H - ClassBoxGraphic.BOX_H * s) / 2;
+         var lift:Number = HOVER_LIGHT * this.hover;
+         this.graphicContainer_.transform.colorTransform =
+            new ColorTransform(1, 1, 1, 1, lift, lift, lift, 0);
       }
       
       private function onKeyDown(e:KeyboardEvent) : void
@@ -220,6 +247,10 @@ package com.company.assembleegameclient.screens
                  + (this.bitmap_.bitmapData == null ? "NULL" : "ok")
                  + " graphic_=" + (this.graphic_ == null ? "NULL" : "ok"));
          this.bitmap_.x = this.graphic_.width / 2 - this.bitmap_.bitmapData.width / 2;
+         /* Centred in the upper half of the frame's well - y was never set at
+            all, so the portrait used to sit over the top gem. */
+         this.bitmap_.y = ClassBoxGraphic.WELL_TOP
+                        + (62 - this.bitmap_.bitmapData.height) / 2;
          Diag.at("CharacterBox.setImage: done");
       }
       

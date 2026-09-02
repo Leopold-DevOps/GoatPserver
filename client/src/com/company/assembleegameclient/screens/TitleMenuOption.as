@@ -1,4 +1,4 @@
-package com.company.assembleegameclient.screens
+﻿package com.company.assembleegameclient.screens
 {
    import com.company.assembleegameclient.sound.SoundEffectLibrary;
    import com.company.ui.SimpleText;
@@ -97,6 +97,12 @@ package com.company.assembleegameclient.screens
          this.textField.y = this.originalHeight / 2 - this.textField.height / 2;
       }
       
+      /** Recolours the label; hover still applies its own ColorTransform. */
+      public function setTextColor(color:uint) : void
+      {
+         this.textField.setColor(color);
+      }
+
       public function setColorTransform(ct:ColorTransform) : void
       {
          if(ct == this.colorTransform)
