@@ -171,6 +171,9 @@ public class AssetLoader
       /* 64x64 ground tiles. Square.as maps tiles with normalised UVs, so a
          high-res tile draws at the same on-screen size as an 8x8 one. */
       AssetLibrary.addImageSet("gothicTiles", new EmbeddedAssets.gothicTiles().bitmapData, 64, 64);
+      /* Wall side/top faces. Wall.as uses the same normalised UVs as ground,
+         so these are 64x64 rather than 8x8. */
+      AssetLibrary.addImageSet("gothicWalls", new EmbeddedAssets.gothicWalls().bitmapData, 64, 64);
       AssetLibrary.addImageSet("rankSecretaryAnim", new EmbeddedAssets.rankSecretaryAnim().bitmapData, 112, 143);
       AssetLibrary.addImageSet("guildPortalAnim", new EmbeddedAssets.guildPortalAnim().bitmapData, 87, 167);
       AssetLibrary.addImageSet("questBoard", new EmbeddedAssets.questBoard().bitmapData, 166, 164);
