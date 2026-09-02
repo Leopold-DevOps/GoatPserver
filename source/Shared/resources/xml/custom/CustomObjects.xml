@@ -181,7 +181,7 @@
 			<File>gothicProps</File>
 			<Index>0x00</Index>
 		</Texture>
-		<Size>17</Size>
+		<Size>10</Size>
 		<Static/>
 		<OccupySquare/>
 		<EnemyOccupySquare/>
@@ -193,7 +193,7 @@
 			<File>gothicProps</File>
 			<Index>0x01</Index>
 		</Texture>
-		<Size>10</Size>
+		<Size>6</Size>
 		<Static/>
 		<OccupySquare/>
 		<EnemyOccupySquare/>
@@ -205,7 +205,7 @@
 			<File>gothicProps</File>
 			<Index>0x02</Index>
 		</Texture>
-		<Size>10</Size>
+		<Size>6</Size>
 		<Static/>
 		<OccupySquare/>
 		<EnemyOccupySquare/>
@@ -217,7 +217,7 @@
 			<File>gothicProps</File>
 			<Index>0x03</Index>
 		</Texture>
-		<Size>17</Size>
+		<Size>10</Size>
 		<Static/>
 		<OccupySquare/>
 		<EnemyOccupySquare/>
@@ -229,7 +229,7 @@
 			<File>gothicProps</File>
 			<Index>0x04</Index>
 		</Texture>
-		<Size>13</Size>
+		<Size>7</Size>
 		<Static/>
 		<OccupySquare/>
 		<EnemyOccupySquare/>
@@ -241,7 +241,7 @@
 			<File>gothicProps</File>
 			<Index>0x05</Index>
 		</Texture>
-		<Size>17</Size>
+		<Size>9</Size>
 		<Static/>
 		<OccupySquare/>
 		<EnemyOccupySquare/>
@@ -253,7 +253,7 @@
 			<File>gothicProps</File>
 			<Index>0x06</Index>
 		</Texture>
-		<Size>10</Size>
+		<Size>6</Size>
 		<Static/>
 		<OccupySquare/>
 		<EnemyOccupySquare/>
@@ -265,7 +265,7 @@
 			<File>gothicProps</File>
 			<Index>0x07</Index>
 		</Texture>
-		<Size>10</Size>
+		<Size>6</Size>
 		<Static/>
 		<ShadowSize>0</ShadowSize>
 	</Object>
