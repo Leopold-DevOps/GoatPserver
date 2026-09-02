@@ -66,7 +66,10 @@ namespace WorldServer.core.worlds
                 var portal = (Portal)_world.CreateNewEntity("Nexus Portal", pos.X + 0.5f, pos.Y + 0.5f);
                 portal.WorldInstance = world;
                 portal.Name = $"{world.GetDisplayName()}(0/{MAX_PER_REALM})";
-                portal.Size = 80;
+                // Sized for the animated gothic gateway art (128px frames):
+                // 5 * (Size/100) * 128 -> ~141px on screen. This overrides the
+                // XML, so changing Size there alone has no effect.
+                portal.Size = 22;
 
                 _portals.Add(world.Id, portal);
             }
