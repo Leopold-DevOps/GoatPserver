@@ -1,4 +1,4 @@
-package kabam.rotmg.ui.view {
+﻿package kabam.rotmg.ui.view {
 import com.company.assembleegameclient.game.GameSprite;
 import com.company.assembleegameclient.game.events.DeathEvent;
 import com.company.assembleegameclient.game.events.ReconnectEvent;
@@ -19,6 +19,7 @@ import kabam.rotmg.core.model.PlayerModel;
 import kabam.rotmg.core.signals.GotoPreviousScreenSignal;
 import kabam.rotmg.servers.api.Server;
 import kabam.rotmg.servers.api.ServerModel;
+import kabam.rotmg.util.Diag;
 
 import org.swiftsuspenders.Injector;
 
@@ -43,21 +44,37 @@ public class NewEditorScreen extends Sprite {
     }
 
     private function onAddedToStage(e:Event):void {
+        Diag.at("NewEditorScreen: loadAssets");
         EditorLoader.loadAssets(
                 AssetLibrary.images_,
                 AssetLibrary.imageSets_,
                 AssetLibrary.imageLookup_
         );
+        Diag.at("NewEditorScreen: loadAnimChars");
         EditorLoader.loadAnimChars(AnimatedChars.nameMap_);
+        Diag.at("NewEditorScreen: loadGround");
         EditorLoader.loadGround(GroundLibrary.xmlLibrary_);
+        Diag.at("NewEditorScreen: loadObjects");
         EditorLoader.loadObjects(ObjectLibrary.xmlLibrary_);
+        Diag.at("NewEditorScreen: loadRegions");
         EditorLoader.loadRegions(RegionLibrary.xmlLibrary_);
+        Diag.at("NewEditorScreen: EditorLoader.load");
         this.editorView = EditorLoader.load(this);
+        Diag.at("NewEditorScreen: view built");
         this.editorView.addEventListener(Event.REMOVED_FROM_STAGE, this.onEditorExit);
         this.editorView.addEventListener(Event.CONNECT, this.onMapTest);
-        this.window = stage["nativeWindow"] as IEventDispatcher; // AIR only; null under Flash Player
+        /* Stage is a sealed class, so this bracket access throws
+           ReferenceError #1069 under Flash Player rather than returning null
+           as the original comment assumed - nativeWindow exists only in AIR. */
+        this.window = null;
+        try {
+            this.window = stage["nativeWindow"] as IEventDispatcher;
+        } catch (err:Error) {
+            this.window = null;
+        }
         if (this.window != null)
             this.window.addEventListener("closing", this.onMapTestDone); // Closing the window
+        Diag.at("NewEditorScreen: ready");
     }
 
     private function onEditorExit(e:Event):void { // Go back to title screen

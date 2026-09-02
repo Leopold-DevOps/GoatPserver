@@ -203,7 +203,11 @@ public class TitleView extends Sprite
       this.accountClicked = this.accountButton.clicked;
       this.legendsButton = new TitleMenuOption(ScreenTypes.LEGENDS,22,false);
       this.legendsClicked = this.legendsButton.clicked;
-      this.editorButton = new TitleMenuOption(ScreenTypes.EDITOR,22,false);
+      /* The only remaining route to the map editor: the bottom row it used
+         to live in was removed with the title screen rework. Small and in the
+         corner so it stays out of the way of the logo and play banner. */
+      this.editorButton = new TitleMenuOption(ScreenTypes.EDITOR,18,false);
+      this.editorButton.setTextColor(0xE6C88C);
       this.editorClicked = this.editorButton.clicked;
       this.versionText = new SimpleText(12,0xaaaaaa,false,0,0);
       this.versionText.filters = [new DropShadowFilter(0,0,0)];
@@ -233,6 +237,7 @@ public class TitleView extends Sprite
       this.updateVersionText();
       this.positionButtons();
       addChild(this.container);
+      addChild(this.editorButton);
       this.addListeners();
       if (stage)
       {
@@ -281,6 +286,9 @@ public class TitleView extends Sprite
       this.logoCY = sh * (175 / 600);
       this.playCX = sw / 2;
       this.playCY = sh * (466 / 600);
+
+      this.editorButton.x = 14;
+      this.editorButton.y = sh - this.editorButton.height - 10;
    }
 }
 }
