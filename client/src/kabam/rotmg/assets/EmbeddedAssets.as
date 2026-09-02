@@ -11,6 +11,7 @@ import kabam.rotmg.assets.custom.images.CustomUV128x128;
 import kabam.rotmg.assets.custom.images.Emotes;
 import kabam.rotmg.assets.custom.images.VaultPortalAnim;
 import kabam.rotmg.assets.custom.images.GothicPortalAnim;
+import kabam.rotmg.assets.custom.images.GothicTiles;
 import kabam.rotmg.assets.custom.images.GuildPortalAnim;
 import kabam.rotmg.assets.custom.images.QuestBoardImg;
 import kabam.rotmg.assets.custom.images.EnterButton;
@@ -28,6 +29,7 @@ public class EmbeddedAssets
    public static var customUV128x128:Class = CustomUV128x128;
    public static var vaultPortalAnim:Class = VaultPortalAnim;
    public static var gothicPortalAnim:Class = GothicPortalAnim;
+   public static var gothicTiles:Class = GothicTiles;
    public static var guildPortalAnim:Class = GuildPortalAnim;
    public static var questBoard:Class = QuestBoardImg;
    public static var enterButton:Class = EnterButton;

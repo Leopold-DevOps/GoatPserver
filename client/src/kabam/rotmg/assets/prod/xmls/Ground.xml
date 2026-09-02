@@ -4176,4 +4176,103 @@
       <BlendPriority>2</BlendPriority>
       <RandomOffset/>
    </Ground>
+   <Ground type="0x15d" id="Gothic Flagstone">
+      <Texture>
+         <File>gothicTiles</File>
+         <Index>0x00</Index>
+      </Texture>
+   </Ground>
+   <Ground type="0x15e" id="Gothic Cracked Stone">
+      <Texture>
+         <File>gothicTiles</File>
+         <Index>0x01</Index>
+      </Texture>
+   </Ground>
+   <Ground type="0x15f" id="Gothic Cobblestone">
+      <Texture>
+         <File>gothicTiles</File>
+         <Index>0x02</Index>
+      </Texture>
+   </Ground>
+   <Ground type="0x160" id="Gothic Chequer Marble">
+      <Texture>
+         <File>gothicTiles</File>
+         <Index>0x03</Index>
+      </Texture>
+   </Ground>
+   <Ground type="0x161" id="Gothic Dark Marble">
+      <Texture>
+         <File>gothicTiles</File>
+         <Index>0x04</Index>
+      </Texture>
+   </Ground>
+   <Ground type="0x162" id="Gothic Compass Inlay">
+      <Texture>
+         <File>gothicTiles</File>
+         <Index>0x05</Index>
+      </Texture>
+   </Ground>
+   <Ground type="0x163" id="Gothic Sapphire Inlay">
+      <Texture>
+         <File>gothicTiles</File>
+         <Index>0x06</Index>
+      </Texture>
+   </Ground>
+   <Ground type="0x164" id="Gothic Mossy Stone">
+      <Texture>
+         <File>gothicTiles</File>
+         <Index>0x07</Index>
+      </Texture>
+   </Ground>
+   <Ground type="0x165" id="Gothic Rune Stone">
+      <Texture>
+         <File>gothicTiles</File>
+         <Index>0x08</Index>
+      </Texture>
+   </Ground>
+   <Ground type="0x166" id="Gothic Red Carpet">
+      <Texture>
+         <File>gothicTiles</File>
+         <Index>0x09</Index>
+      </Texture>
+   </Ground>
+   <Ground type="0x167" id="Gothic Bordered Carpet">
+      <Texture>
+         <File>gothicTiles</File>
+         <Index>0x0a</Index>
+      </Texture>
+   </Ground>
+   <Ground type="0x168" id="Gothic Oak Floor">
+      <Texture>
+         <File>gothicTiles</File>
+         <Index>0x0b</Index>
+      </Texture>
+   </Ground>
+   <Ground type="0x169" id="Gothic Gravel">
+      <Texture>
+         <File>gothicTiles</File>
+         <Index>0x0c</Index>
+      </Texture>
+   </Ground>
+   <Ground type="0x16a" id="Gothic Dark Water">
+      <Texture>
+         <File>gothicTiles</File>
+         <Index>0x0d</Index>
+      </Texture>
+      <Animate dx="0.4" dy="0.4">Wave</Animate>
+      <Sink/>
+      <Speed>0.7</Speed>
+   </Ground>
+   <Ground type="0x16b" id="Gothic Packed Earth">
+      <Texture>
+         <File>gothicTiles</File>
+         <Index>0x0e</Index>
+      </Texture>
+   </Ground>
+   <Ground type="0x16c" id="Gothic Filigree Inlay">
+      <Texture>
+         <File>gothicTiles</File>
+         <Index>0x0f</Index>
+      </Texture>
+   </Ground>
 </GroundTypes>

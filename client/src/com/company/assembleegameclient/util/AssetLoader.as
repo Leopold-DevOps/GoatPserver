@@ -168,6 +168,9 @@ public class AssetLoader
       AssetLibrary.addImageSet("vaultPortalAnim", new EmbeddedAssets.vaultPortalAnim().bitmapData, 87, 164);
       /* 12 frames laid out in a single row, 128x256 each. */
       AssetLibrary.addImageSet("gothicPortalAnim", new EmbeddedAssets.gothicPortalAnim().bitmapData, 128, 256);
+      /* 64x64 ground tiles. Square.as maps tiles with normalised UVs, so a
+         high-res tile draws at the same on-screen size as an 8x8 one. */
+      AssetLibrary.addImageSet("gothicTiles", new EmbeddedAssets.gothicTiles().bitmapData, 64, 64);
       AssetLibrary.addImageSet("rankSecretaryAnim", new EmbeddedAssets.rankSecretaryAnim().bitmapData, 112, 143);
       AssetLibrary.addImageSet("guildPortalAnim", new EmbeddedAssets.guildPortalAnim().bitmapData, 87, 167);
       AssetLibrary.addImageSet("questBoard", new EmbeddedAssets.questBoard().bitmapData, 166, 164);
