@@ -13,6 +13,7 @@ import com.company.assembleegameclient.util.BloodComposition;
 import com.company.assembleegameclient.util.FreeList;
 import com.company.assembleegameclient.util.RandomUtil;
 import com.company.assembleegameclient.util.TextureRedrawer;
+import com.company.util.AssetLibrary;
 import com.company.util.GraphicsUtil;
 import com.company.util.Trig;
 
@@ -401,6 +402,24 @@ public class Projectile extends BasicObject
    override public function draw(_arg_1:Vector.<IGraphicsData>, _arg_2:Camera, _arg_3:int):void
    {
       var _local_4:BitmapData = this.texture_;
+      if (this.props_.projAnimFile_ != null && this.props_.projAnimFrames_ > 0)
+      {
+         /* Frame is chosen from elapsed lifetime, not a free-running timer -
+            the animation is drawn to play exactly once across the shot's
+            flight (spawn to expiry), not loop independently of it. Point3D's
+            bitmap-fill matrix (see engine3d/Point3D.as) rescales whatever
+            texture it is given to fit the projectile's fixed-size quad, so
+            every frame - regardless of how much of its own canvas the art
+            fills - lands at the same on-screen footprint; the fill
+            percentage baked into each frame is what actually produces the
+            bloom-then-fade look, not the quad size. */
+         var _local_age:Number = (_arg_3 - this.startTime_) / this.projProps_.lifetime_;
+         if (_local_age < 0) _local_age = 0;
+         else if (_local_age > 1) _local_age = 1;
+         var _local_frame:int = int(_local_age * this.props_.projAnimFrames_);
+         if (_local_frame >= this.props_.projAnimFrames_) _local_frame = this.props_.projAnimFrames_ - 1;
+         _local_4 = AssetLibrary.getImageFromSet(this.props_.projAnimFile_, _local_frame);
+      }
       if (Parameters.data_.projOutline)
       {
          _local_4 = TextureRedrawer.redraw(_local_4, this.size, true, 0);

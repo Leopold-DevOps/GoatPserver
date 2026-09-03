@@ -39,6 +39,18 @@ public class ObjectProperties
    public var enterButtonLabel_:String = "enter";
    /** Explicit minimap dot colour, or -1 to use the default class rules. */
    public var miniMapColor_:int = -1;
+   /**
+    * Multi-frame projectile flight animation, opt-in. Projectile.as has never
+    * supported this - it holds one static texture_ for its whole flight - so
+    * this stays null for every projectile that does not set both attributes,
+    * which is all of them except ones that explicitly opt in.
+    *
+    * Driven by elapsed lifetime fraction (see Projectile.draw()), not a
+    * looping timer: the animation is meant to play exactly once per shot,
+    * synced to when it spawns and expires, not cycle independently of flight.
+    */
+   public var projAnimFile_:String = null;
+   public var projAnimFrames_:int = 0;
    public var dontFaceAttacks_:Boolean = false;
    public var dontFaceMovement_:Boolean = false;
    public var bloodProb_:Number = 0;
@@ -111,6 +123,11 @@ public class ObjectProperties
       if (_arg_1.hasOwnProperty("MiniMapColor"))
       {
          this.miniMapColor_ = uint(_arg_1.MiniMapColor);
+      }
+      if (_arg_1.hasOwnProperty("@projAnimFile") && _arg_1.hasOwnProperty("@projAnimFrames"))
+      {
+         this.projAnimFile_ = String(_arg_1.attribute("projAnimFile"));
+         this.projAnimFrames_ = int(_arg_1.attribute("projAnimFrames"));
       }
       if (_arg_1.hasOwnProperty("NameColor"))
       {

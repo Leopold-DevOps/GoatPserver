@@ -179,7 +179,13 @@ public class AssetLoader
       AssetLibrary.addImageSet("gothicProps", new EmbeddedAssets.gothicProps().bitmapData, 96, 96);
       /* 12-frame pulsing glow for the Adventurer Blade's inventory icon,
          driven by ItemTileSprite's spritePeriod/spriteFile/spriteArray. */
-      AssetLibrary.addImageSet("adventurerSwordGlow", new EmbeddedAssets.adventurerSwordGlow().bitmapData, 176, 176);
+      AssetLibrary.addImageSet("adventurerSwordGlow", new EmbeddedAssets.adventurerSwordGlow().bitmapData, 156, 156);
+      /* 13-frame flight animation for the Adventurer Shot projectile, driven
+         by elapsed lifetime fraction in Projectile.draw() - see ObjectProperties
+         projAnimFile_/projAnimFrames_. Square canvas: Point3D rescales whatever
+         texture it is given to its fixed quad, so a non-square frame would be
+         stretched unevenly. */
+      AssetLibrary.addImageSet("adventurerSwordProjectile", new EmbeddedAssets.adventurerSwordProjectile().bitmapData, 288, 288);
       AssetLibrary.addImageSet("rankSecretaryAnim", new EmbeddedAssets.rankSecretaryAnim().bitmapData, 112, 143);
       AssetLibrary.addImageSet("guildPortalAnim", new EmbeddedAssets.guildPortalAnim().bitmapData, 87, 167);
       AssetLibrary.addImageSet("questBoard", new EmbeddedAssets.questBoard().bitmapData, 166, 164);

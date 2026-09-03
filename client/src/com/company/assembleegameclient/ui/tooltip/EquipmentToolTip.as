@@ -20,6 +20,7 @@ import com.company.assembleegameclient.util.TierUtil;
 import com.company.ui.SimpleText;
 import com.company.util.AssetLibrary;
 import com.company.util.BitmapUtil;
+import flash.events.Event;
 import com.company.util.KeyCodes;
 import com.company.util.MathUtil2;
 
@@ -44,6 +45,9 @@ public class EquipmentToolTip extends ToolTip
    private static const MAX_WIDTH:int = 230;
    private static const CSS_TEXT:String = ".in { margin-left:10px; text-indent: -10px; }";
    private var iconSize:Number = 60;
+   /** Matches ItemTileSprite.ADVENTURER_GEAR_SCALE, so the tooltip and the
+       grid icon read as the same size. */
+   private static const ADVENTURER_GEAR_SCALE:Number = 1.5;
    private var icon_:Bitmap;
    private var titleText_:SimpleText;
    private var tierText_:UILabel;
@@ -206,7 +210,14 @@ public class EquipmentToolTip extends ToolTip
    private function addIcon() : void
    {
       var scaleValue:int = 5;
-      var texture:BitmapData = ObjectLibrary.getRedrawnTextureFromType(this.objectType_,60,true,true,scaleValue);
+      /* Adventurer gear's icon runs bigger everywhere it appears - see the
+         matching override in ItemTileSprite - so the tooltip matches the
+         grid rather than showing a smaller sword than the slot it came from. */
+      if (this.objectXML_ != null && this.objectXML_.hasOwnProperty("AdventurerGear"))
+      {
+         this.iconSize = this.iconSize * ADVENTURER_GEAR_SCALE;
+      }
+      var texture:BitmapData = ObjectLibrary.getRedrawnTextureFromType(this.objectType_,this.iconSize,true,true,scaleValue);
       texture = BitmapUtil.cropToBitmapData(texture,4,4,texture.width - 8,texture.height - 8);
       this.icon_ = new Bitmap(texture);
       addChild(this.icon_);
@@ -1038,13 +1049,20 @@ public class EquipmentToolTip extends ToolTip
       if (this.spriteFile == null)
          return;
 
-      var size:int = this.iconSize;
-      var bitmapData:BitmapData = AssetLibrary.getImageFromSet(this.spriteFile, this.next);
-
-      //  if (Parameters.itemTypes16.indexOf(this.objectType_) != -1 || bitmapData.height == 16)
-      //      size = (size * 0.5);
-
-      bitmapData = TextureRedrawer.redraw(bitmapData, size, true, 0, true, 5);
+      /* This is a second, independent copy of the exact bug fixed in
+         ItemTileSprite.makeAnimation: it drew every frame at a hardcoded
+         iconSize=60 with the redraw scale pinned to 5, skipping the
+         height-based correction addIcon() applies via
+         getRedrawnTextureFromType. A 176px frame rendered at
+         5 * (60/100) * 176 = 528px - the tooltip's "giant sprite". Mirror
+         addIcon()'s normalisation here too. */
+      var frame:BitmapData = AssetLibrary.getImageFromSet(this.spriteFile, this.next);
+      var scale:Number = 5;
+      if (frame.height > 16)
+      {
+         scale = (scale * 8) / frame.height;
+      }
+      var bitmapData:BitmapData = TextureRedrawer.redraw(frame, this.iconSize, true, 0, true, scale);
 
       this.icon_.bitmapData = bitmapData;
       this.icon_.x = this.icon_.y = - 4;
@@ -1094,6 +1112,12 @@ public class EquipmentToolTip extends ToolTip
          this.animatedTimer = new Timer(spritePeriod);
          this.animatedTimer.addEventListener(TimerEvent.TIMER, this.makeAnimation);
          this.animatedTimer.start();
+         /* A running Timer is kept alive by the player's event loop even once
+            nothing else references this tooltip - a fresh instance is
+            created on every hover (ItemGrid.onTileHover), so without this
+            every hover of an animated item would leave one more Timer
+            ticking forever in the background. */
+         addEventListener(Event.REMOVED_FROM_STAGE, this.onAnimatedTooltipRemoved);
       }
 
       this.restrictions = new Vector.<Restriction>();
@@ -1143,6 +1167,23 @@ public class EquipmentToolTip extends ToolTip
             value = int(reqXML.@value);
             this.restrictions.push(new Restriction("Requires " + StatData.statToName(stat) + " of " + value,reqMet?11776947:16549442,reqMet?Boolean(false):Boolean(true)));
          }
+      }
+   }
+
+   /**
+    * A running Timer is kept alive by the player's event loop even once
+    * nothing else references this tooltip - a fresh instance is created on
+    * every hover (ItemGrid.onTileHover), so without this every hover of an
+    * animated item would leave one more Timer ticking forever in the
+    * background.
+    */
+   private function onAnimatedTooltipRemoved(event:Event) : void
+   {
+      if (this.animatedTimer != null)
+      {
+         this.animatedTimer.stop();
+         this.animatedTimer.removeEventListener(TimerEvent.TIMER, this.makeAnimation);
+         this.animatedTimer = null;
       }
    }
 

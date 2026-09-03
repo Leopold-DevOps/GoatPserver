@@ -22,6 +22,9 @@ import kabam.rotmg.constants.UiMetrics;
    {
       
       protected static const DIM_FILTER:Array = [new ColorMatrixFilter([0.4,0,0,0,0,0,0.4,0,0,0,0,0,0.4,0,0,0,0,0,1,0])];
+
+      /** How much bigger Adventurer gear's icon renders than a normal item. */
+      private static const ADVENTURER_GEAR_SCALE:Number = 1.5;
       
       private static const DOSE_MATRIX:Matrix = function():Matrix
       {
@@ -72,8 +75,16 @@ import kabam.rotmg.constants.UiMetrics;
          this.itemData = data;
          if(this.itemId != ItemConstants.NO_ITEM)
          {
-            texture = ObjectLibrary.getRedrawnTextureFromType(this.itemId,UiMetrics.ITEM_ICON_SIZE,true);
             eqXML = ObjectLibrary.xmlLibrary_[this.itemId];
+            /* Adventurer gear reads bigger than an ordinary item icon - it is
+               meant to stand out, and the pulsing glow needs real pixel
+               budget of its own rather than squeezing the blade down to fit
+               inside the same footprint as a plain sword. Everything else
+               keeps the standard size unchanged. */
+            this.iconSizeOverride = (eqXML != null && eqXML.hasOwnProperty("AdventurerGear"))
+               ? UiMetrics.ITEM_ICON_SIZE * ADVENTURER_GEAR_SCALE
+               : UiMetrics.ITEM_ICON_SIZE;
+            texture = ObjectLibrary.getRedrawnTextureFromType(this.itemId,this.iconSizeOverride,true);
 
              if(eqXML == null){
                  this.itemId = -1;
@@ -155,6 +166,8 @@ import kabam.rotmg.constants.UiMetrics;
        private var last:Number;
        private var next:Number;
        private var animTimer:Timer;
+       /** Set in setType() so makeAnimation() sizes its frames the same way. */
+       private var iconSizeOverride:Number = UiMetrics.ITEM_ICON_SIZE;
 
        private function makeAnimation(event:TimerEvent = null):void {
            if (this.spriteFile == null)
@@ -183,7 +196,7 @@ import kabam.rotmg.constants.UiMetrics;
            {
                scale = (scale * 8) / frame.height;
            }
-           var bitmapData:BitmapData = TextureRedrawer.redraw(frame, UiMetrics.ITEM_ICON_SIZE, true, 0, true, scale);
+           var bitmapData:BitmapData = TextureRedrawer.redraw(frame, this.iconSizeOverride, true, 0, true, scale);
 
            this.itemBitmap.bitmapData = bitmapData;
            this.centreOnContent(bitmapData);
