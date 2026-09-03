@@ -26,4 +26,15 @@
 		</Texture>
 		<AngleCorrection>1</AngleCorrection>
 	</Object>
+	<!-- Placeholder art: reuses the hammer icon until the real projectile
+	     lands. Swap the Texture (or add projAnimFile/projAnimFrames as the
+	     Adventurer Shot does) when it arrives - nothing else needs to change. -->
+	<Object type="0x49aa" id="Paladin Shot">
+		<Class>Projectile</Class>
+		<Texture>
+			<File>customUV128x128</File>
+			<Index>0x07</Index>
+		</Texture>
+		<AngleCorrection>1</AngleCorrection>
+	</Object>
 </Objects>

@@ -246,4 +246,34 @@
 		<FameBonus>6</FameBonus>
 		<feedPower>950</feedPower>
 	</Object>
+	<Object type="0x49a9" id="Paladin Hammer" spritePeriod="8" spriteFile="paladinHammerGlow" spriteArray="0-11">
+		<HolyGear/>
+		<Class>Equipment</Class>
+		<Item/>
+		<Texture>
+			<File>customUV128x128</File>
+			<Index>0x07</Index>
+		</Texture>
+		<SlotType>1</SlotType>
+		<Description>Heavy, deliberate, and final. It swings slowly because it only needs to land once.</Description>
+		<!-- Slow and heavy: roughly half the Adventurer Blade's fire rate for
+		     rather more than double its damage, so the DPS lands slightly above
+		     it while every individual hit is far larger. -->
+		<RateOfFire>0.55</RateOfFire>
+		<Sound>weapon/blunt_sword</Sound>
+		<Projectile>
+			<ObjectId>Paladin Shot</ObjectId>
+			<Speed>80</Speed>
+			<MinDamage>560</MinDamage>
+			<MaxDamage>700</MaxDamage>
+			<!-- speed*lifetime matches the Adventurer Blade, so the range is the
+			     same while the shot visibly travels slower. -->
+			<LifetimeMS>440</LifetimeMS>
+			<Size>160</Size>
+		</Projectile>
+		<BagType>9</BagType>
+		<FameBonus>6</FameBonus>
+		<OldSound>bladeSwing</OldSound>
+		<feedPower>950</feedPower>
+	</Object>
 </Objects>

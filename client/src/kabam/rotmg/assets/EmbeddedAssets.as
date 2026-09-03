@@ -19,6 +19,7 @@ import kabam.rotmg.assets.custom.images.AdventurerSwordProjectile;
 import kabam.rotmg.assets.custom.images.AdventurerHelmGlow;
 import kabam.rotmg.assets.custom.images.AdventurerArmorGlow;
 import kabam.rotmg.assets.custom.images.AdventurerBagGlow;
+import kabam.rotmg.assets.custom.images.PaladinHammerGlow;
 import kabam.rotmg.assets.custom.images.TooltipFrame;
 import kabam.rotmg.assets.custom.images.TooltipDivider;
 import kabam.rotmg.assets.custom.images.TooltipDividerSmall;
@@ -50,6 +51,7 @@ public class EmbeddedAssets
    public static var adventurerHelmGlow:Class = AdventurerHelmGlow;
    public static var adventurerArmorGlow:Class = AdventurerArmorGlow;
    public static var adventurerBagGlow:Class = AdventurerBagGlow;
+   public static var paladinHammerGlow:Class = PaladinHammerGlow;
    public static var tooltipFrame:Class = TooltipFrame;
    public static var tooltipDivider:Class = TooltipDivider;
    public static var tooltipDividerSmall:Class = TooltipDividerSmall;

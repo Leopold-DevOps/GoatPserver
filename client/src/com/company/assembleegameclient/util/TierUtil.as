@@ -13,6 +13,9 @@ public class TierUtil
     /** Matches the Adventurer sword's pulsing glow, sampled bright. */
     public static const ADVENTURER_COLOR:uint = 0x3B9EFF;
 
+    /** The gold equivalent, matching the Paladin Hammer's glow. */
+    public static const HOLY_COLOR:uint = 0xFFC83B;
+
     public function TierUtil()
     {
         super();
@@ -42,6 +45,13 @@ public class TierUtil
             {
                 color = TooltipHelper.SET_COLOR;
                 tierTag = "ST";
+            }
+            else if(xml.hasOwnProperty("HolyGear"))
+            {
+                /* Paladin/Holy class gear - same treatment as Adventurer gear,
+                   its own tag rather than reading as an ordinary untiered item. */
+                color = HOLY_COLOR;
+                tierTag = "HOLY";
             }
             else if(xml.hasOwnProperty("AdventurerGear"))
             {

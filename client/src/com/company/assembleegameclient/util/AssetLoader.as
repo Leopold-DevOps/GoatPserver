@@ -192,6 +192,8 @@ public class AssetLoader
       AssetLibrary.addImageSet("adventurerHelmGlow", new EmbeddedAssets.adventurerHelmGlow().bitmapData, 156, 156);
       AssetLibrary.addImageSet("adventurerArmorGlow", new EmbeddedAssets.adventurerArmorGlow().bitmapData, 156, 156);
       AssetLibrary.addImageSet("adventurerBagGlow", new EmbeddedAssets.adventurerBagGlow().bitmapData, 156, 156);
+      /* Same 12-frame treatment for the Paladin Hammer, gold instead of blue. */
+      AssetLibrary.addImageSet("paladinHammerGlow", new EmbeddedAssets.paladinHammerGlow().bitmapData, 156, 156);
       /* Stat icons drawn in front of the tooltip stat lines, in the order
          EquipmentToolTip.STAT_ICON_LABELS expects. */
       AssetLibrary.addImageSet("statIcons", new EmbeddedAssets.statIcons().bitmapData, 18, 18);
