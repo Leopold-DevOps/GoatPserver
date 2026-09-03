@@ -1,4 +1,4 @@
-package com.company.assembleegameclient.ui {
+﻿package com.company.assembleegameclient.ui {
 import com.company.assembleegameclient.objects.Player;
 import com.company.assembleegameclient.ui.tooltip.TextToolTip;
 
@@ -79,7 +79,9 @@ public class Stats extends Sprite {
       this.h_ = h;
       for each(statXML in statsXML.Stat) {
          stat = new Stat(statXML.Abbr, statXML.Name, statXML.Description, statXML.hasOwnProperty("RedOnZero"));
-         stat.x = 8 + 26 + int(this.stats_.length % 2) * (this.w_ / 2 - 4);
+         /* The extra STAT_ICON_GAP shifts both columns right so each row's
+            icon has somewhere to sit without running off the panel. */
+         stat.x = 8 + 26 + Stat.STAT_ICON_GAP + int(this.stats_.length % 2) * (this.w_ / 2 - 4);
          stat.y = 8 + this.h_ / 6 + int(this.stats_.length / 2) * this.h_ / 3;
          addChild(stat);
          this.stats_.push(stat);
@@ -156,14 +158,22 @@ public class Stats extends Sprite {
 }
 }
 
+import com.company.assembleegameclient.ui.StatIconLibrary;
 import com.company.ui.SimpleText;
 
+import flash.display.Bitmap;
 import flash.display.Sprite;
 import flash.filters.DropShadowFilter;
 import flash.text.TextFormat;
 
 class Stat extends Sprite {
 
+   /** Drawn smaller than the 18px sheet cell to fit the row pitch. */
+   public static const ICON_SIZE:int = 12;
+   /** Room reserved at the left of each row for its icon. */
+   public static const STAT_ICON_GAP:int = ICON_SIZE + 3;
+
+   public var icon_:Bitmap;
 
    public var fullName_:String;
 
@@ -191,6 +201,19 @@ class Stat extends Sprite {
       this.nameText_.x = -this.nameText_.width;
       this.nameText_.filters = [new DropShadowFilter(0, 0, 0)];
       addChild(this.nameText_);
+      /* Rows here are only about 15px apart, so the icon is drawn smaller
+         than the sheet's authored size rather than overlapping its
+         neighbours. */
+      var cell:int = StatIconLibrary.cellForStat(fullName);
+      if (cell >= 0) {
+         this.icon_ = new Bitmap(StatIconLibrary.getIcon(cell));
+         this.icon_.smoothing = true;
+         this.icon_.width = ICON_SIZE;
+         this.icon_.height = ICON_SIZE;
+         this.icon_.x = this.nameText_.x - STAT_ICON_GAP;
+         this.icon_.y = (this.nameText_.height - ICON_SIZE) / 2;
+         addChild(this.icon_);
+      }
       this.valText_ = new SimpleText(12, this.valColor_, false, 0, 0);
       this.valText_.setBold(true);
       this.valText_.text = "-";

@@ -14,6 +14,7 @@ import com.company.assembleegameclient.objects.Player;
 import com.company.assembleegameclient.parameters.Parameters;
 import com.company.assembleegameclient.ui.LineBreakDesign;
 import com.company.assembleegameclient.ui.Stats;
+import com.company.assembleegameclient.ui.StatIconLibrary;
 import com.company.assembleegameclient.util.FilterUtil;
 import com.company.assembleegameclient.util.TextureRedrawer;
 import com.company.assembleegameclient.util.TierUtil;
@@ -22,6 +23,8 @@ import com.company.util.AssetLibrary;
 import com.company.util.BitmapUtil;
 import flash.events.Event;
 import flash.geom.Rectangle;
+import flash.text.TextLineMetrics;
+import mx.utils.StringUtil;
 import com.company.util.KeyCodes;
 import com.company.util.MathUtil2;
 
@@ -384,7 +387,6 @@ public class EquipmentToolTip extends ToolTip
             this.attributesText.filters = [new DropShadowFilter(0,0,0,0.5,12,12)];
       }
       addChild(this.attributesText);
-      this.addStatIcons();
    }
 
    private function makeProjAttributes():void {
@@ -933,7 +935,7 @@ public class EquipmentToolTip extends ToolTip
          else if (amount < 0) {
             amountColor = TooltipHelper.WORSE_COLOR;
          }
-         this.attributes += "    ";
+         this.attributes += STAT_ICON_INDENT;
          this.attributes += TooltipHelper.wrapInFontTag(GetSign(amount) + amount, amountColor) + " " + TooltipHelper.wrapInFontTag(stat, amountColor) + "\n";
       }
    }
@@ -1058,52 +1060,72 @@ public class EquipmentToolTip extends ToolTip
    private static const STAT_ICON_INDENT:String = "      ";
 
    private var statIcons_:Vector.<Bitmap>;
-   private var statIconChars_:Vector.<int>;
 
    /**
-    * Build one icon per stat line present in the attribute text. Positions
-    * are left to alignUI, which runs once the text has been laid out and can
-    * ask it where each label actually landed.
+    * Which icon a line of the attribute text deserves, or -1 for none.
+    *
+    * Driven by what the line says rather than by the code that emitted it,
+    * so any stat gets its icon wherever it is listed - the weapon lines at
+    * the top and the "On Equip" boosts further down alike - without every
+    * producer having to know icons exist.
     */
-   private function addStatIcons():void
+   private static function iconCellForLine(line:String):int
    {
+      var text:String = StringUtil.trim(line);
+      if (text.length == 0)
+         return -1;
+
+      for (var i:int = 0; i < STAT_ICON_LABELS.length; i++)
+      {
+         if (text.indexOf(STAT_ICON_LABELS[i]) == 0)
+            return i;
+      }
+
+      // "+30 Defense" / "-5 Speed": a boost line, named by its stat.
+      var boost:Array = text.match(/^[+\-]?\d+\s+(.+)$/);
+      if (boost != null && boost.length > 1)
+         return StatIconLibrary.cellForStat(StringUtil.trim(boost[1]));
+
+      return -1;
+   }
+
+   /**
+    * Rebuild the icon column beside the attribute text. Runs from alignUI,
+    * once the text is laid out and can be asked how tall each of its lines
+    * ended up - lines above may have wrapped, so fixed offsets would drift.
+    */
+   private function positionStatIcons():void
+   {
+      var icon:Bitmap = null;
+      if (this.statIcons_ != null)
+      {
+         for each (icon in this.statIcons_)
+         {
+            if (contains(icon))
+               removeChild(icon);
+         }
+      }
       this.statIcons_ = new Vector.<Bitmap>();
-      this.statIconChars_ = new Vector.<int>();
       if (this.attributesText == null)
          return;
 
-      var plain:String = this.attributesText.text;
-      for (var i:int = 0; i < STAT_ICON_LABELS.length; i++)
+      var y:Number = 2;
+      for (var line:int = 0; line < this.attributesText.numLines; line++)
       {
-         var at:int = plain.indexOf(STAT_ICON_LABELS[i]);
-         if (at == -1)
-            continue;
-
-         var icon:Bitmap = new Bitmap(AssetLibrary.getImageFromSet("statIcons", i));
-         addChild(icon);
-         this.statIcons_.push(icon);
-         this.statIconChars_.push(at);
-      }
-   }
-
-   private function positionStatIcons():void
-   {
-      if (this.statIcons_ == null || this.attributesText == null)
-         return;
-
-      for (var i:int = 0; i < this.statIcons_.length; i++)
-      {
-         var bounds:Rectangle = this.attributesText.getCharBoundaries(this.statIconChars_[i]);
-         if (bounds == null)
+         var metrics:TextLineMetrics = this.attributesText.getLineMetrics(line);
+         var cell:int = iconCellForLine(this.attributesText.getLineText(line));
+         if (cell >= 0)
          {
-            // No box means the character never got laid out - hide rather
-            // than stack the icon at the origin.
-            this.statIcons_[i].visible = false;
-            continue;
+            icon = new Bitmap(StatIconLibrary.getIcon(cell));
+            icon.smoothing = true;
+            icon.width = STAT_ICON_SIZE;
+            icon.height = STAT_ICON_SIZE;
+            icon.x = this.attributesText.x;
+            icon.y = this.attributesText.y + y + (metrics.height - STAT_ICON_SIZE) / 2;
+            addChild(icon);
+            this.statIcons_.push(icon);
          }
-         this.statIcons_[i].visible = true;
-         this.statIcons_[i].x = this.attributesText.x;
-         this.statIcons_[i].y = this.attributesText.y + bounds.y + (bounds.height - STAT_ICON_SIZE) / 2;
+         y += metrics.height;
       }
    }
 
