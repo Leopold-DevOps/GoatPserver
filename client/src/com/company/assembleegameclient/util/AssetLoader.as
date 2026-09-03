@@ -188,6 +188,7 @@ public class AssetLoader
       AssetLibrary.addImageSet("adventurerSwordProjectile", new EmbeddedAssets.adventurerSwordProjectile().bitmapData, 288, 288);
       AssetLibrary.addImageSet("adventurerHelmGlow", new EmbeddedAssets.adventurerHelmGlow().bitmapData, 156, 156);
       AssetLibrary.addImageSet("adventurerArmorGlow", new EmbeddedAssets.adventurerArmorGlow().bitmapData, 156, 156);
+      AssetLibrary.addImageSet("adventurerBagGlow", new EmbeddedAssets.adventurerBagGlow().bitmapData, 156, 156);
       AssetLibrary.addImageSet("rankSecretaryAnim", new EmbeddedAssets.rankSecretaryAnim().bitmapData, 112, 143);
       AssetLibrary.addImageSet("guildPortalAnim", new EmbeddedAssets.guildPortalAnim().bitmapData, 87, 167);
       AssetLibrary.addImageSet("questBoard", new EmbeddedAssets.questBoard().bitmapData, 166, 164);

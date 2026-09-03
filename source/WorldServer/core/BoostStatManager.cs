@@ -118,6 +118,47 @@ namespace WorldServer.core
                 _player.RemoveCondition(effect);
                 return true;
             });
+
+            // Deliberately last: the health percentage below has to be measured
+            // against the max HP the player actually has, including any bonus
+            // just added by the loops above (the bag grants +100 itself), not
+            // the base pool.
+            ApplyHpTierBoosts();
+        }
+
+        /**
+         * Apply the health band that currently matches, for any equipped item
+         * that declares bands. See Item.HpTierBoost.
+         *
+         * These are re-evaluated once a second from Player.PassiveEffects while
+         * such an item is equipped - a recompute is otherwise only triggered by
+         * an inventory change, so nothing would notice health moving.
+         */
+        private void ApplyHpTierBoosts()
+        {
+            var maxHp = _parent.Base[0] + _boost[0];
+            if (maxHp <= 0)
+                return;
+
+            var percent = _player.Health * 100 / maxHp;
+            if (percent > 100)
+                percent = 100;
+
+            for (var i = 0; i < 4; i++)
+            {
+                var item = _player.Inventory[i];
+                if (item == null || item.HpTierBoosts == null)
+                    continue;
+
+                foreach (var tier in item.HpTierBoosts)
+                {
+                    if (percent < tier.MinPercent || percent > tier.MaxPercent)
+                        continue;
+
+                    foreach (var s in tier.Stats)
+                        IncrementBoost((StatDataType)s.Key, s.Value);
+                }
+            }
         }
 
         private void FixedStat(StatDataType stat, int value)

@@ -95,6 +95,8 @@ namespace WorldServer.core.objects
         }
         private void PassiveEffects() // gets called every second. use proc activateeffect with that in mind.
         {
+            RefreshHpTierBoosts();
+
             for (var i = 0; i < 4; i++)
             {
                 if (CantApplySlotEffect(i))
@@ -114,6 +116,30 @@ namespace WorldServer.core.objects
                 }
             }
         }
+        /**
+         * Gear whose bonus depends on current health (see Item.HpTierBoosts)
+         * needs its band re-picked as health moves. BoostStatManager's recompute
+         * is otherwise only driven by inventory changes - nothing re-runs it
+         * when health alone changes - so the bonus would freeze at whatever
+         * band was active when the item was equipped.
+         *
+         * Gated on actually having such an item so this costs nothing for
+         * everyone else; no item in the game declares bands except ones that
+         * opt in.
+         */
+        private void RefreshHpTierBoosts()
+        {
+            for (var i = 0; i < 4; i++)
+            {
+                var item = Inventory[i];
+                if (item == null || item.HpTierBoosts == null || item.HpTierBoosts.Length == 0)
+                    continue;
+
+                Stats.ReCalculateValues();
+                return;
+            }
+        }
+
         private bool CheckParams(ActivateEffect eff, int damage = 0)
         {
             if (eff.Proc != 0)

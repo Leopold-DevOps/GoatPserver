@@ -17,6 +17,33 @@ namespace Shared.resources
         }
     }
 
+    /**
+     * One health band of an HP-reactive item: while the wearer's health
+     * percentage falls inside [MinPercent, MaxPercent], these stat deltas
+     * apply, and they stop the moment it does not.
+     *
+     * Bands are matched inclusively at both ends and are expected not to
+     * overlap - every band that matches is applied, so an overlap stacks
+     * rather than picking a winner. A band must never boost MaximumHealth:
+     * that would change the very percentage used to select the band, and
+     * the tier could oscillate between two states as it re-evaluated.
+     */
+    public class HpTierBoost
+    {
+        public readonly int MinPercent;
+        public readonly int MaxPercent;
+        public readonly KeyValuePair<int, int>[] Stats;
+
+        public HpTierBoost(XElement e)
+        {
+            MinPercent = e.GetAttribute<int>("minPercent");
+            MaxPercent = e.GetAttribute<int>("maxPercent");
+            Stats = e.Elements("Stat")
+                .Select(_ => new KeyValuePair<int, int>(_.GetAttribute<int>("stat"), _.GetAttribute<int>("amount")))
+                .ToArray();
+        }
+    }
+
     public class Item
     {
         public ActivateEffect[] ActivateEffects;
@@ -62,6 +89,17 @@ namespace Shared.resources
          * passive effect is not meant to buff nearby players.
          */
         public ConditionEffectIndex[] ActivateOnEquipConditions;
+        /**
+         * Stat bonuses that change with the wearer's current health - see
+         * HpTierBoost. Empty for every item that does not declare any, which
+         * is all of them except ones that opt in.
+         *
+         * Unlike ActivateOnEquips these have to be re-evaluated as health
+         * moves, not just when equipment changes: BoostStatManager's recompute
+         * is normally only driven by inventory changes, so Player.PassiveEffects
+         * re-runs it once a second while an item like this is equipped.
+         */
+        public HpTierBoost[] HpTierBoosts;
         public string SuccessorId;
         public int Texture1;
         public int Texture2;
@@ -110,6 +148,7 @@ namespace Shared.resources
             TypeOfConsumable = InvUse || Consumable;
             ActivateOnEquips = e.Elements("ActivateOnEquip").Select(_ => new KeyValuePair<int, int>(_.GetAttribute<int>("stat"), _.GetAttribute<int>("amount"))).ToArray();
             ActivateOnEquipConditions = e.Elements("ActivateOnEquipCondition").Select(_ => Utils.GetEffect(_.GetAttribute<string>("effect"))).ToArray();
+            HpTierBoosts = e.Elements("HpTierBoost").Select(_ => new HpTierBoost(_)).ToArray();
             ActivateEffects = e.Elements("Activate").Select(_ => new ActivateEffect(_)).ToArray();
             OnPlayerHitActivateEffects = e.Elements("OnPlayerHitActivate").Select(_ => new ActivateEffect(_)).ToArray();
             OnPlayerAbilityActivateEffects = e.Elements("OnPlayerAbilityActivate").Select(_ => new ActivateEffect(_)).ToArray();
