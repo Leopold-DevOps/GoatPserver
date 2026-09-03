@@ -170,13 +170,17 @@
 			<Index>0x04</Index>
 		</Texture>
 		<SlotType>16</SlotType>
-		<Description>The helm every adventurer earns alongside their blade. Wards off harm and quickens the blood.</Description>
+		<Description>The helm every adventurer earns alongside their blade. On Equip: Berserk, Damaging (self only). On Use: Speedy (self only, 80 MP).</Description>
 		<!-- Self only, permanent while worn - reconciled every tick in
 		     BoostStatManager.ApplyEquipBonus, and removed the moment this
-		     leaves the armor slot. No `range`/aura: deliberately does not
+		     leaves the ability slot. No `range`/aura: deliberately does not
 		     buff nearby players, only the wearer. -->
-		<ActivateOnEquipCondition effect="Armored"/>
 		<ActivateOnEquipCondition effect="Berserk"/>
+		<ActivateOnEquipCondition effect="Damaging"/>
+		<Usable/>
+		<MpCost>80</MpCost>
+		<Cooldown>10</Cooldown>
+		<Activate effect="Speedy" duration="4">ConditionEffectSelf</Activate>
 		<BagType>9</BagType>
 		<FameBonus>6</FameBonus>
 		<feedPower>950</feedPower>
