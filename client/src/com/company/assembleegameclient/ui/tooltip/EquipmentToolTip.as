@@ -384,6 +384,7 @@ public class EquipmentToolTip extends ToolTip
             this.attributesText.filters = [new DropShadowFilter(0,0,0,0.5,12,12)];
       }
       addChild(this.attributesText);
+      this.addStatIcons();
    }
 
    private function makeProjAttributes():void {
@@ -409,7 +410,7 @@ public class EquipmentToolTip extends ToolTip
       }
       else if (this.isEquippable_)
          color = TooltipHelper.BETTER_COLOR;
-      this.attributes += "Shots: " + TooltipHelper.wrapInFontTag(String(count), color) + "\n";
+      this.attributes += STAT_ICON_INDENT + "Shots: " + TooltipHelper.wrapInFontTag(String(count), color) + "\n";
    }
 
    private function makeProjEffects(proj:ProjectileDesc, proj2:ProjectileDesc):void {
@@ -448,7 +449,7 @@ public class EquipmentToolTip extends ToolTip
       }
       else if (this.isEquippable_)
          color = TooltipHelper.BETTER_COLOR;
-      this.attributes += "Damage: " + TooltipHelper.wrapInFontTag(minD == maxD ? String(minD) : minD + " - " + maxD, color) + "\n";
+      this.attributes += STAT_ICON_INDENT + "Damage: " + TooltipHelper.wrapInFontTag(minD == maxD ? String(minD) : minD + " - " + maxD, color) + "\n";
    }
 
    private function makeProjRange(proj:ProjectileDesc, proj2:ProjectileDesc):void {
@@ -460,7 +461,7 @@ public class EquipmentToolTip extends ToolTip
       }
       else if (this.isEquippable_)
          color = TooltipHelper.BETTER_COLOR;
-      this.attributes += "Range: " + TooltipHelper.wrapInFontTag(String(range), color) + "\n";
+      this.attributes += STAT_ICON_INDENT + "Range: " + TooltipHelper.wrapInFontTag(String(range), color) + "\n";
    }
 
    private function makeProjRoF(proj:ProjectileDesc, proj2:ProjectileDesc):void {
@@ -478,7 +479,7 @@ public class EquipmentToolTip extends ToolTip
       }
       else if (this.isEquippable_)
          color = TooltipHelper.BETTER_COLOR;
-      this.attributes += "Rate of Fire: " + TooltipHelper.wrapInFontTag(rof.toFixed(0) + "%", color) + "\n";
+      this.attributes += STAT_ICON_INDENT + "Rate of Fire: " + TooltipHelper.wrapInFontTag(rof.toFixed(0) + "%", color) + "\n";
    }
 
    private static function GetMatches(eff:String, effects:Vector.<ActivateEffect>):Vector.<ActivateEffect> {
@@ -999,7 +1000,7 @@ public class EquipmentToolTip extends ToolTip
       }
       else if (this.isEquippable_)
          color = TooltipHelper.BETTER_COLOR;
-      this.attributes += "Fame Bonus: " + TooltipHelper.wrapInFontTag(fame + "%", color) + "\n";
+      this.attributes += STAT_ICON_INDENT + "Fame Bonus: " + TooltipHelper.wrapInFontTag(fame + "%", color) + "\n";
    }
 
    private function makeItemMpCost():void {
@@ -1045,6 +1046,67 @@ public class EquipmentToolTip extends ToolTip
    /** Gap left above and below each divider bar. */
    private static const DIVIDER_GAP:int = 7;
 
+   /**
+    * Icons drawn in front of the main stat lines. Keyed off the label text
+    * rather than the code that emits each line, so an icon appears whenever
+    * its stat does, on any item, without every producer having to know about
+    * icons. Order matches the cells of the "statIcons" image set.
+    */
+   private static const STAT_ICON_LABELS:Array = ["Shots:", "Damage:", "Range:", "Rate of Fire:", "Fame Bonus:"];
+   private static const STAT_ICON_SIZE:int = 18;
+   /** Blank run reserving the icon's width at the start of a stat line. */
+   private static const STAT_ICON_INDENT:String = "      ";
+
+   private var statIcons_:Vector.<Bitmap>;
+   private var statIconChars_:Vector.<int>;
+
+   /**
+    * Build one icon per stat line present in the attribute text. Positions
+    * are left to alignUI, which runs once the text has been laid out and can
+    * ask it where each label actually landed.
+    */
+   private function addStatIcons():void
+   {
+      this.statIcons_ = new Vector.<Bitmap>();
+      this.statIconChars_ = new Vector.<int>();
+      if (this.attributesText == null)
+         return;
+
+      var plain:String = this.attributesText.text;
+      for (var i:int = 0; i < STAT_ICON_LABELS.length; i++)
+      {
+         var at:int = plain.indexOf(STAT_ICON_LABELS[i]);
+         if (at == -1)
+            continue;
+
+         var icon:Bitmap = new Bitmap(AssetLibrary.getImageFromSet("statIcons", i));
+         addChild(icon);
+         this.statIcons_.push(icon);
+         this.statIconChars_.push(at);
+      }
+   }
+
+   private function positionStatIcons():void
+   {
+      if (this.statIcons_ == null || this.attributesText == null)
+         return;
+
+      for (var i:int = 0; i < this.statIcons_.length; i++)
+      {
+         var bounds:Rectangle = this.attributesText.getCharBoundaries(this.statIconChars_[i]);
+         if (bounds == null)
+         {
+            // No box means the character never got laid out - hide rather
+            // than stack the icon at the origin.
+            this.statIcons_[i].visible = false;
+            continue;
+         }
+         this.statIcons_[i].visible = true;
+         this.statIcons_[i].x = this.attributesText.x;
+         this.statIcons_[i].y = this.attributesText.y + bounds.y + (bounds.height - STAT_ICON_SIZE) / 2;
+      }
+   }
+
    override protected function alignUI():void {
       this.titleText_.x = (this.icon_.width + 4);
       this.titleText_.y = ((this.icon_.height / 2) - (this.titleText_.height / 2));
@@ -1076,6 +1138,7 @@ public class EquipmentToolTip extends ToolTip
          this.restrictionsText_.y = _local1;
          _local1 = (_local1 + this.restrictionsText_.height);
       }
+      this.positionStatIcons();
       /*if (this.powerText) {
          if (contains(this.powerText)) {
             this.powerText.x = 4;
