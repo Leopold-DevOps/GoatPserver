@@ -2,6 +2,7 @@ package com.company.assembleegameclient.ui.tooltip
 {
 import com.company.util.BitmapUtil;
 
+import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.Graphics;
 import flash.geom.Matrix;
@@ -53,25 +54,31 @@ public class TooltipFrameSkin
       gems = BitmapUtil.cropToBitmapData(sheet, 0, GEMS_Y, FRAME_WIDTH, GEMS_H);
    }
 
+   /** One ornate divider bar, at the width the art was authored for. */
+   public static function makeDivider():Bitmap
+   {
+      return new Bitmap(new EmbeddedAssets.tooltipDivider().bitmapData);
+   }
+
    /**
-    * Draw the frame around a content box of contentW x contentH whose top
-    * left corner sits at the origin. The frame is painted outside that box,
-    * BORDER px on every side.
+    * Paint the frame filling exactly the rect (x, y, w, h) - the OUTER edge
+    * of the art, so the caller decides how much room to leave around its
+    * content on each side.
     */
-   public static function draw(g:Graphics, contentW:Number, contentH:Number):void
+   public static function draw(g:Graphics, x:Number, y:Number, w:Number, h:Number):void
    {
       init();
 
-      var frameW:Number = contentW + BORDER * 2;
-      var frameH:Number = contentH + BORDER * 2;
+      var frameW:Number = w;
+      var frameH:Number = h;
       // The two caps cannot overlap; a very short tooltip just gets a taller
       // frame rather than a squashed one.
       if (frameH < TOP_H + BOTTOM_H)
          frameH = TOP_H + BOTTOM_H;
 
       var sx:Number = frameW / FRAME_WIDTH;
-      var left:Number = -BORDER;
-      var top:Number = -BORDER;
+      var left:Number = x;
+      var top:Number = y;
       var innerH:Number = frameH - TOP_H - BOTTOM_H;
 
       // Stretched middle first, then the caps over it, then the gems.

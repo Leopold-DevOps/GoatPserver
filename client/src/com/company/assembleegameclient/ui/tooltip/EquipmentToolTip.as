@@ -1,4 +1,4 @@
-package com.company.assembleegameclient.ui.tooltip
+﻿package com.company.assembleegameclient.ui.tooltip
 {
 import com.company.assembleegameclient.constants.InventoryOwnerTypes;
 import com.company.assembleegameclient.desc.ActivateEffect;
@@ -21,6 +21,7 @@ import com.company.ui.SimpleText;
 import com.company.util.AssetLibrary;
 import com.company.util.BitmapUtil;
 import flash.events.Event;
+import flash.geom.Rectangle;
 import com.company.util.KeyCodes;
 import com.company.util.MathUtil2;
 
@@ -45,7 +46,7 @@ public class EquipmentToolTip extends ToolTip
 
    private static const MAX_WIDTH:int = 230;
    private static const CSS_TEXT:String = ".in { margin-left:10px; text-indent: -10px; }";
-   private var iconSize:Number = 60;
+   private var iconSize:Number = 100;
    /** Matches ItemTileSprite.ADVENTURER_GEAR_SCALE, so the tooltip and the
        grid icon read as the same size. */
    private static const ADVENTURER_GEAR_SCALE:Number = 1.5;
@@ -53,8 +54,10 @@ public class EquipmentToolTip extends ToolTip
    private var titleText_:SimpleText;
    private var tierText_:UILabel;
    private var descText_:SimpleText;
-   private var line1_:LineBreakDesign;
-   private var line2_:LineBreakDesign;
+   private var line1_:Bitmap;
+   private var line2_:Bitmap;
+   /** Sits between the icon/name header and the description. */
+   private var headerDivider_:Bitmap;
    private var restrictionsText_:SimpleText;
    private var player_:Player;
    private var isEquippable_:Boolean = false;
@@ -146,16 +149,29 @@ public class EquipmentToolTip extends ToolTip
    }
 
    /**
-    * Use the ornate panel instead of the base class's flat rect. The frame is
-    * painted outside the content box, so nothing here has to move - see
-    * TooltipFrameSkin for how it stretches.
+    * Use the ornate panel instead of the base class's flat rect.
+    *
+    * Measured off the real child bounds rather than assuming content starts
+    * at the origin, so the breathing room above the icon and below the
+    * requirements is set here by PAD_TOP/PAD_BOTTOM instead of by nudging
+    * every child down. The art's own border is BORDER thick, so the visible
+    * gap is whatever these exceed it by.
     */
+   private static const PAD_X:int = TooltipFrameSkin.BORDER;
+   private static const PAD_TOP:int = TooltipFrameSkin.BORDER + 15;
+   private static const PAD_BOTTOM:int = TooltipFrameSkin.BORDER + 15;
+
    override public function draw():void
    {
       graphics.clear();
-      this.contentWidth_ = width;
-      this.contentHeight_ = height;
-      TooltipFrameSkin.draw(graphics, this.contentWidth_, this.contentHeight_);
+      var bounds:Rectangle = getBounds(this);
+      this.contentWidth_ = bounds.width;
+      this.contentHeight_ = bounds.height;
+      TooltipFrameSkin.draw(graphics,
+         bounds.x - PAD_X,
+         bounds.y - PAD_TOP,
+         bounds.width + PAD_X * 2,
+         bounds.height + PAD_TOP + PAD_BOTTOM);
    }
 
    private static function GetEquipIndex(slotType:int, items:Vector.<ItemAttributes>):int {
@@ -235,6 +251,10 @@ public class EquipmentToolTip extends ToolTip
       texture = BitmapUtil.cropToBitmapData(texture,4,4,texture.width - 8,texture.height - 8);
       this.icon_ = new Bitmap(texture);
       addChild(this.icon_);
+
+      // Separates the icon/name header from the lore below it.
+      this.headerDivider_ = TooltipFrameSkin.makeDivider();
+      addChild(this.headerDivider_);
    }
 
 
@@ -346,7 +366,7 @@ public class EquipmentToolTip extends ToolTip
    private function drawAttributes():void {
       if (this.attributes.length <= 0)
          return;
-      this.line1_ = new LineBreakDesign(MAX_WIDTH - 15, 0x151515);
+      this.line1_ = TooltipFrameSkin.makeDivider();
       addChild(this.line1_);
       var sheet:StyleSheet = new StyleSheet();
       //sheet.parseCSS(CSS_TEXT);
@@ -1022,6 +1042,9 @@ public class EquipmentToolTip extends ToolTip
       this.attributes += "Cooldown: " + TooltipHelper.wrapInFontTag(cd + " secs", color) + "\n";
    }
 
+   /** Gap left above and below each divider bar. */
+   private static const DIVIDER_GAP:int = 7;
+
    override protected function alignUI():void {
       this.titleText_.x = (this.icon_.width + 4);
       this.titleText_.y = ((this.icon_.height / 2) - (this.titleText_.height / 2));
@@ -1029,17 +1052,25 @@ public class EquipmentToolTip extends ToolTip
          this.tierText_.y = this.icon_.height / 2 - (this.tierText_.height / 2);
          this.tierText_.x = (MAX_WIDTH - 10) - (this.tierText_.width);
       }
+
+      // Header divider, then the lore, with matching air on both sides of it.
+      this.headerDivider_.x = 4;
+      this.headerDivider_.y = this.icon_.height + DIVIDER_GAP;
+
       this.descText_.x = 4;
-      this.descText_.y = (this.icon_.height + 2);
+      this.descText_.y = this.headerDivider_.y + this.headerDivider_.height + DIVIDER_GAP;
+
       if (this.line1_ != null && this.attributesText != null) {
-         this.line1_.x = 8;
-         this.line1_.y = ((this.descText_.y + this.descText_.height) + 4);
+         this.line1_.x = 4;
+         this.line1_.y = this.descText_.y + this.descText_.height + DIVIDER_GAP;
          this.attributesText.x = 4;
-         this.attributesText.y = (this.line1_.y + 8);
+         this.attributesText.y = this.line1_.y + this.line1_.height + DIVIDER_GAP;
       }
-      this.line2_.x = 8;
-      this.line2_.y = this.attributesText != null ? ((this.attributesText.y + this.attributesText.height) + 8) : ((this.descText_.y + this.descText_.height));
-      var _local1:uint = (this.line2_.y + 8);
+      this.line2_.x = 4;
+      this.line2_.y = this.attributesText != null
+         ? (this.attributesText.y + this.attributesText.height + DIVIDER_GAP)
+         : (this.descText_.y + this.descText_.height + DIVIDER_GAP);
+      var _local1:uint = this.line2_.y + this.line2_.height + DIVIDER_GAP;
       if (this.restrictionsText_) {
          this.restrictionsText_.x = 4;
          this.restrictionsText_.y = _local1;
@@ -1259,7 +1290,7 @@ public class EquipmentToolTip extends ToolTip
    }
 
    private function makeLineTwo():void{
-      this.line2_ = new LineBreakDesign((MAX_WIDTH - 15), 0x151515);
+      this.line2_ = TooltipFrameSkin.makeDivider();
       addChild(this.line2_);
    }
 
