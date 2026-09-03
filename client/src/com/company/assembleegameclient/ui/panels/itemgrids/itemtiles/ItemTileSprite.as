@@ -14,6 +14,7 @@ import flash.filters.ColorMatrixFilter;
    import flash.geom.Matrix;
 import flash.geom.Rectangle;
 import flash.utils.Timer;
+import flash.utils.getTimer;
 
 import kabam.rotmg.constants.ItemConstants;
 import kabam.rotmg.constants.UiMetrics;
@@ -145,13 +146,14 @@ import kabam.rotmg.constants.UiMetrics;
                  this.spriteFile = spriteFile;
                  this.first = first;
                  this.last = last;
-                 this.next = this.first;
+                 this.animPeriodMs = spritePeriod;
                  this.animTimer = new Timer(spritePeriod);
                  this.animTimer.addEventListener(TimerEvent.TIMER, this.makeAnimation);
                  this.animTimer.start();
+                 this.makeAnimation();
              } else {
                  this.spriteFile = null;
-                 this.first = this.last = this.next = -1;
+                 this.first = this.last = -1;
              }
 
              visible = true;
@@ -164,7 +166,7 @@ import kabam.rotmg.constants.UiMetrics;
        private var spriteFile:String;
        private var first:Number;
        private var last:Number;
-       private var next:Number;
+       private var animPeriodMs:Number;
        private var animTimer:Timer;
        /** Set in setType() so makeAnimation() sizes its frames the same way. */
        private var iconSizeOverride:Number = UiMetrics.ITEM_ICON_SIZE;
@@ -173,7 +175,19 @@ import kabam.rotmg.constants.UiMetrics;
            if (this.spriteFile == null)
                return;
 
-           var frame:BitmapData = AssetLibrary.getImageFromSet(this.spriteFile, this.next);
+           /* Frame comes from the GLOBAL clock (getTimer(), ms since the
+              player started), not a per-instance counter. Two tiles showing
+              the same animated item each used to start their own Timer at
+              whatever moment their own icon happened to be built - the
+              sword's slot and the helm's slot render at different times, so
+              their counters drifted out of phase and pulsed independently
+              even though both use the same period and frame count. Deriving
+              the frame from a shared clock makes every instance of the same
+              animation land on the identical frame at the identical instant,
+              regardless of when it was constructed. */
+           var frameCount:int = this.last - this.first + 1;
+           var globalFrame:int = int(getTimer() / this.animPeriodMs) % frameCount;
+           var frame:BitmapData = AssetLibrary.getImageFromSet(this.spriteFile, this.first + globalFrame);
 
            /* This never went through getRedrawnTextureFromType's height-based
               scale correction - it drew every frame at a hardcoded iconSize
@@ -200,11 +214,6 @@ import kabam.rotmg.constants.UiMetrics;
 
            this.itemBitmap.bitmapData = bitmapData;
            this.centreOnContent(bitmapData);
-
-           this.next++;
-
-           if (this.next > this.last)
-               this.next = this.first;
        }
 
        /**

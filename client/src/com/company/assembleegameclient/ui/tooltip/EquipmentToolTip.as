@@ -30,6 +30,7 @@ import flash.events.TimerEvent;
 import flash.filters.DropShadowFilter;
 import flash.text.StyleSheet;
 import flash.utils.Timer;
+import flash.utils.getTimer;
 
 import kabam.rotmg.constants.ActivationType;
 import kabam.rotmg.constants.ItemConstants;
@@ -1042,7 +1043,7 @@ public class EquipmentToolTip extends ToolTip
    private var spriteFile:String = null;
    private var first:Number = -1;
    private var last:Number = -1;
-   private var next:Number = -1;
+   private var animPeriodMs:Number = 0;
    private var animatedTimer:Timer;
 
    private function makeAnimation(event:TimerEvent = null):void {
@@ -1056,7 +1057,15 @@ public class EquipmentToolTip extends ToolTip
          getRedrawnTextureFromType. A 176px frame rendered at
          5 * (60/100) * 176 = 528px - the tooltip's "giant sprite". Mirror
          addIcon()'s normalisation here too. */
-      var frame:BitmapData = AssetLibrary.getImageFromSet(this.spriteFile, this.next);
+      /* Frame comes from the GLOBAL clock (getTimer()), not a per-instance
+         counter - see the matching comment in ItemTileSprite.makeAnimation.
+         A tooltip is a fresh instance every hover, so a local counter
+         starting at `first` every time would desync from the grid icon's
+         own timer (and from any other tooltip) the moment two windows into
+         the same animation opened at different real moments. */
+      var frameCount:int = this.last - this.first + 1;
+      var globalFrame:int = int(getTimer() / this.animPeriodMs) % frameCount;
+      var frame:BitmapData = AssetLibrary.getImageFromSet(this.spriteFile, this.first + globalFrame);
       var scale:Number = 5;
       if (frame.height > 16)
       {
@@ -1066,11 +1075,6 @@ public class EquipmentToolTip extends ToolTip
 
       this.icon_.bitmapData = bitmapData;
       this.icon_.x = this.icon_.y = - 4;
-
-      this.next++;
-
-      if (this.next > this.last)
-         this.next = this.first;
    }
 
    private function makeRestrictionList() : void
@@ -1108,10 +1112,11 @@ public class EquipmentToolTip extends ToolTip
          this.spriteFile = spriteFile;
          this.first = first;
          this.last = last;
-         this.next = this.first;
+         this.animPeriodMs = spritePeriod;
          this.animatedTimer = new Timer(spritePeriod);
          this.animatedTimer.addEventListener(TimerEvent.TIMER, this.makeAnimation);
          this.animatedTimer.start();
+         this.makeAnimation();
          /* A running Timer is kept alive by the player's event loop even once
             nothing else references this tooltip - a fresh instance is
             created on every hover (ItemGrid.onTileHover), so without this

@@ -169,7 +169,7 @@
 			<File>customUV128x128</File>
 			<Index>0x04</Index>
 		</Texture>
-		<SlotType>7</SlotType>
+		<SlotType>16</SlotType>
 		<Description>The helm every adventurer earns alongside their blade. Wards off harm and quickens the blood.</Description>
 		<!-- Self only, permanent while worn - reconciled every tick in
 		     BoostStatManager.ApplyEquipBonus, and removed the moment this
