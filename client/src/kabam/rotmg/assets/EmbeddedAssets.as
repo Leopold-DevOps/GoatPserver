@@ -23,6 +23,7 @@ import kabam.rotmg.assets.custom.images.TooltipFrame;
 import kabam.rotmg.assets.custom.images.TooltipDivider;
 import kabam.rotmg.assets.custom.images.TooltipDividerSmall;
 import kabam.rotmg.assets.custom.images.StatIcons;
+import kabam.rotmg.assets.custom.images.AscendancyTreeAnim;
 import kabam.rotmg.assets.custom.images.GuildPortalAnim;
 import kabam.rotmg.assets.custom.images.QuestBoardImg;
 import kabam.rotmg.assets.custom.images.EnterButton;
@@ -52,6 +53,7 @@ public class EmbeddedAssets
    public static var tooltipDivider:Class = TooltipDivider;
    public static var tooltipDividerSmall:Class = TooltipDividerSmall;
    public static var statIcons:Class = StatIcons;
+   public static var ascendancyTreeAnim:Class = AscendancyTreeAnim;
    public static var guildPortalAnim:Class = GuildPortalAnim;
    public static var questBoard:Class = QuestBoardImg;
    public static var enterButton:Class = EnterButton;

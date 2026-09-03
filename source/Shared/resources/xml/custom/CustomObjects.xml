@@ -269,4 +269,97 @@
 		<Static/>
 		<ShadowSize>0</ShadowSize>
 	</Object>
+	<!-- Landmark for the Swordsman ascendancy trees. The Enter plaque is
+	     wired to nothing yet - the tree screen does not exist. -->
+	<Object type="0x49a8" id="Ascendancy Tree">
+		<Class>GameObject</Class>
+		<DisplayId>Ascendancy Tree</DisplayId>
+		<ShowName/>
+		<NameColor>0xC6484C</NameColor>
+		<Size>13</Size>
+		<Texture>
+			<File>ascendancyTreeAnim</File>
+			<Index>0</Index>
+		</Texture>
+		<Animation prob="1" period="1.8" sync="true">
+			<Frame time="0.15">
+				<Texture>
+					<File>ascendancyTreeAnim</File>
+					<Index>0</Index>
+				</Texture>
+			</Frame>
+			<Frame time="0.15">
+				<Texture>
+					<File>ascendancyTreeAnim</File>
+					<Index>1</Index>
+				</Texture>
+			</Frame>
+			<Frame time="0.15">
+				<Texture>
+					<File>ascendancyTreeAnim</File>
+					<Index>2</Index>
+				</Texture>
+			</Frame>
+			<Frame time="0.15">
+				<Texture>
+					<File>ascendancyTreeAnim</File>
+					<Index>3</Index>
+				</Texture>
+			</Frame>
+			<Frame time="0.15">
+				<Texture>
+					<File>ascendancyTreeAnim</File>
+					<Index>4</Index>
+				</Texture>
+			</Frame>
+			<Frame time="0.15">
+				<Texture>
+					<File>ascendancyTreeAnim</File>
+					<Index>5</Index>
+				</Texture>
+			</Frame>
+			<Frame time="0.15">
+				<Texture>
+					<File>ascendancyTreeAnim</File>
+					<Index>6</Index>
+				</Texture>
+			</Frame>
+			<Frame time="0.15">
+				<Texture>
+					<File>ascendancyTreeAnim</File>
+					<Index>7</Index>
+				</Texture>
+			</Frame>
+			<Frame time="0.15">
+				<Texture>
+					<File>ascendancyTreeAnim</File>
+					<Index>8</Index>
+				</Texture>
+			</Frame>
+			<Frame time="0.15">
+				<Texture>
+					<File>ascendancyTreeAnim</File>
+					<Index>9</Index>
+				</Texture>
+			</Frame>
+			<Frame time="0.15">
+				<Texture>
+					<File>ascendancyTreeAnim</File>
+					<Index>10</Index>
+				</Texture>
+			</Frame>
+			<Frame time="0.15">
+				<Texture>
+					<File>ascendancyTreeAnim</File>
+					<Index>11</Index>
+				</Texture>
+			</Frame>
+		</Animation>
+		<ShowEnterButton/>
+		<EnterButtonLabel>open</EnterButtonLabel>
+		<MiniMapColor>0xC6484C</MiniMapColor>
+		<OccupySquare/>
+		<ShadowSize>0</ShadowSize>
+		<Static/>
+	</Object>
 </Objects>
