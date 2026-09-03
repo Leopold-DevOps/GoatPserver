@@ -10,7 +10,8 @@ import com.company.assembleegameclient.util.FilterUtil;
 
 public class TierUtil
 {
-
+    /** Matches the Adventurer sword's pulsing glow, sampled bright. */
+    public static const ADVENTURER_COLOR:uint = 0x3B9EFF;
 
     public function TierUtil()
     {
@@ -41,6 +42,14 @@ public class TierUtil
             {
                 color = TooltipHelper.SET_COLOR;
                 tierTag = "ST";
+            }
+            else if(xml.hasOwnProperty("AdventurerGear"))
+            {
+                /* Adventurer class gear: guild rewards and purchases, not part
+                   of the normal drop tables, so it gets its own tag rather
+                   than reading as an ordinary untiered item. */
+                color = ADVENTURER_COLOR;
+                tierTag = "ADV";
             }
             else
             {

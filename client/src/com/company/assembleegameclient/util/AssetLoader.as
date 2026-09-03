@@ -177,6 +177,9 @@ public class AssetLoader
       /* Billboard props. Unlike ground and walls these are NOT UV-mapped, so
          on-screen size is 5 * (Size/100) * 96 and Size is tuned per object. */
       AssetLibrary.addImageSet("gothicProps", new EmbeddedAssets.gothicProps().bitmapData, 96, 96);
+      /* 12-frame pulsing glow for the Adventurer Blade's inventory icon,
+         driven by ItemTileSprite's spritePeriod/spriteFile/spriteArray. */
+      AssetLibrary.addImageSet("adventurerSwordGlow", new EmbeddedAssets.adventurerSwordGlow().bitmapData, 176, 176);
       AssetLibrary.addImageSet("rankSecretaryAnim", new EmbeddedAssets.rankSecretaryAnim().bitmapData, 112, 143);
       AssetLibrary.addImageSet("guildPortalAnim", new EmbeddedAssets.guildPortalAnim().bitmapData, 87, 167);
       AssetLibrary.addImageSet("questBoard", new EmbeddedAssets.questBoard().bitmapData, 166, 164);

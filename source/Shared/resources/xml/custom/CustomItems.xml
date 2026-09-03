@@ -136,7 +136,8 @@
 		<OldSound>bladeSwing</OldSound>
 		<feedPower>700</feedPower>
 	</Object>
-	<Object type="0x4992" id="Adventurer Blade">
+	<Object type="0x4992" id="Adventurer Blade" spritePeriod="8" spriteFile="adventurerSwordGlow" spriteArray="0-11">
+		<AdventurerGear/>
 		<Class>Equipment</Class>
 		<Item/>
 		<Texture>

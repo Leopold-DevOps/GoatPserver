@@ -56,6 +56,18 @@ import kabam.rotmg.constants.UiMetrics;
          var texture:BitmapData = null;
          var eqXML:XML = null;
          var tempText:SimpleText = null;
+         /* setType can be called repeatedly on the same tile as the item in a
+            slot changes (equip/unequip, pickup). The previous animated item's
+            Timer was never stopped - it kept ticking and overwriting
+            itemBitmap.bitmapData with frames of whatever item used to be
+            here, silently corrupting the tile's icon the next time it
+            displayed a non-animated item. Stop unconditionally, first. */
+         if (this.animTimer != null)
+         {
+            this.animTimer.stop();
+            this.animTimer.removeEventListener(TimerEvent.TIMER, this.makeAnimation);
+            this.animTimer = null;
+         }
          this.itemId = displayedItemType;
          this.itemData = data;
          if(this.itemId != ItemConstants.NO_ITEM)
@@ -123,9 +135,9 @@ import kabam.rotmg.constants.UiMetrics;
                  this.first = first;
                  this.last = last;
                  this.next = this.first;
-                 var animatedTimer:Timer = new Timer(spritePeriod);
-                 animatedTimer.addEventListener(TimerEvent.TIMER, this.makeAnimation);
-                 animatedTimer.start();
+                 this.animTimer = new Timer(spritePeriod);
+                 this.animTimer.addEventListener(TimerEvent.TIMER, this.makeAnimation);
+                 this.animTimer.start();
              } else {
                  this.spriteFile = null;
                  this.first = this.last = this.next = -1;
@@ -138,23 +150,40 @@ import kabam.rotmg.constants.UiMetrics;
             visible = false;
          }
       }
-       private var iconSize:Number = 60;
        private var spriteFile:String;
        private var first:Number;
        private var last:Number;
        private var next:Number;
+       private var animTimer:Timer;
 
        private function makeAnimation(event:TimerEvent = null):void {
            if (this.spriteFile == null)
                return;
 
-           var size:int = this.iconSize;
-           var bitmapData:BitmapData = AssetLibrary.getImageFromSet(this.spriteFile, this.next);
+           var frame:BitmapData = AssetLibrary.getImageFromSet(this.spriteFile, this.next);
 
-         //  if (Parameters.itemTypes16.indexOf(this.itemId) != -1 || bitmapData.height == 16)
-         //      size = (size * 0.5);
+           /* This never went through getRedrawnTextureFromType's height-based
+              scale correction - it drew every frame at a hardcoded iconSize
+              of 60 with the redraw scale pinned to 5, so a high-resolution
+              frame (anything past the old 8x8/16x16 convention) rendered at
+              5 * (60/100) * frame.width px: for a 176px square frame that is
+              528px, filling most of the screen rather than one inventory
+              slot. No existing content used spritePeriod, so this was never
+              exercised until now.
 
-           bitmapData = TextureRedrawer.redraw(bitmapData, size, true, 0, true, 5);
+              Mirror the static icon's normalisation instead (see
+              ObjectLibrary.getRedrawnTextureFromType): scale down by the
+              frame's own height once it exceeds 16px, and size against
+              UiMetrics.ITEM_ICON_SIZE so an animated icon lands at the same
+              on-screen size as a static one. This holds exactly when the
+              frame canvas is square - any square size cancels out in the
+              width formula - which is how the glow-frame sheets are built. */
+           var scale:Number = 5;
+           if (frame.height > 16)
+           {
+               scale = (scale * 8) / frame.height;
+           }
+           var bitmapData:BitmapData = TextureRedrawer.redraw(frame, UiMetrics.ITEM_ICON_SIZE, true, 0, true, scale);
 
            this.itemBitmap.bitmapData = bitmapData;
            this.centreOnContent(bitmapData);
