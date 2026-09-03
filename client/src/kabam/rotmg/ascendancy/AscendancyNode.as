@@ -1,4 +1,4 @@
-package kabam.rotmg.ascendancy {
+﻿package kabam.rotmg.ascendancy {
 
 import com.company.ui.SimpleText;
 
@@ -17,8 +17,8 @@ import flash.filters.DropShadowFilter;
  */
 public class AscendancyNode extends Sprite {
 
-    public static const RADIUS:int = 21;
-    public static const KEY_RADIUS:int = 26;
+    public static const RADIUS:int = 15;
+    public static const KEY_RADIUS:int = 19;
 
     public var node:Object;
     private var accent:uint;
@@ -38,7 +38,7 @@ public class AscendancyNode extends Sprite {
         this.icon = new Shape();
         addChild(this.icon);
 
-        this.pip = new SimpleText(11, 0xFFFFFF, false, 0, 0);
+        this.pip = new SimpleText(9, 0xFFFFFF, false, 0, 0);
         this.pip.setBold(true);
         this.pip.filters = [new DropShadowFilter(0, 0, 0, 1, 3, 3)];
         addChild(this.pip);
@@ -104,10 +104,10 @@ public class AscendancyNode extends Sprite {
         var glyph:uint = taken > 0 ? accent : (reachable ? 0x8A91A0 : 0x44474F);
         ig.beginFill(glyph, 1);
         if (isKeystone) {
-            drawDiamond(ig, 9);
+            drawDiamond(ig, 7);
         } else {
-            ig.drawRect(-2, -8, 4, 16);
-            ig.drawRect(-8, -2, 16, 4);
+            ig.drawRect(-1.5, -6, 3, 12);
+            ig.drawRect(-6, -1.5, 12, 3);
         }
         ig.endFill();
 

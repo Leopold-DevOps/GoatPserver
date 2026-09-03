@@ -1,4 +1,4 @@
-package kabam.rotmg.ascendancy {
+﻿package kabam.rotmg.ascendancy {
 
 /**
  * The tree definition: what the nodes are, what they cost, and what they say.
@@ -19,6 +19,8 @@ public class AscendancyData {
     public static const DAWNBEARER:int = 3;
 
     public static const TAB_NAMES:Array = ["The Road", "Carnifex", "Iron Sentinel", "Dawnbearer"];
+    /** Short forms, for the panel's narrow left rail. */
+    public static const TAB_SHORT:Array = ["The Road", "Carnifex", "Sentinel", "Dawnbearer"];
     public static const TAB_COLORS:Array = [0x3B9EFF, 0xC6484C, 0x7FA3C4, 0xE8A33D];
     public static const TAB_BLURB:Array = [
         "The shared trunk - everyone walks this before they are anything.",
