@@ -1,4 +1,4 @@
-package com.company.assembleegameclient.ui.tooltip
+﻿package com.company.assembleegameclient.ui.tooltip
 {
 import com.company.util.BitmapUtil;
 
@@ -54,10 +54,16 @@ public class TooltipFrameSkin
       gems = BitmapUtil.cropToBitmapData(sheet, 0, GEMS_Y, FRAME_WIDTH, GEMS_H);
    }
 
-   /** One ornate divider bar, at the width the art was authored for. */
+   /** The heavier divider, used under the icon/name header. */
    public static function makeDivider():Bitmap
    {
       return new Bitmap(new EmbeddedAssets.tooltipDivider().bitmapData);
+   }
+
+   /** The lighter divider, for the splits further down the panel. */
+   public static function makeSmallDivider():Bitmap
+   {
+      return new Bitmap(new EmbeddedAssets.tooltipDividerSmall().bitmapData);
    }
 
    /**

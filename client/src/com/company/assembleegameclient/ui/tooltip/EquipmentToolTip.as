@@ -366,7 +366,7 @@ public class EquipmentToolTip extends ToolTip
    private function drawAttributes():void {
       if (this.attributes.length <= 0)
          return;
-      this.line1_ = TooltipFrameSkin.makeDivider();
+      this.line1_ = TooltipFrameSkin.makeSmallDivider();
       addChild(this.line1_);
       var sheet:StyleSheet = new StyleSheet();
       //sheet.parseCSS(CSS_TEXT);
@@ -1290,7 +1290,7 @@ public class EquipmentToolTip extends ToolTip
    }
 
    private function makeLineTwo():void{
-      this.line2_ = TooltipFrameSkin.makeDivider();
+      this.line2_ = TooltipFrameSkin.makeSmallDivider();
       addChild(this.line2_);
    }
 
