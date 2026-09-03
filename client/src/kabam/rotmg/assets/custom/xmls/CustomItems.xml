@@ -170,7 +170,7 @@
 			<Index>0x04</Index>
 		</Texture>
 		<SlotType>16</SlotType>
-		<Description>The helm every adventurer earns alongside their blade. On Equip: Berserk, Damaging (self only). On Use: Speedy (self only, 80 MP).</Description>
+		<Description>The helm every adventurer earns alongside their blade. Dented, re-forged, and never once set down.</Description>
 		<!-- Self only, permanent while worn - reconciled every tick in
 		     BoostStatManager.ApplyEquipBonus, and removed the moment this
 		     leaves the ability slot. No `range`/aura: deliberately does not
@@ -194,7 +194,7 @@
 			<Index>0x05</Index>
 		</Texture>
 		<SlotType>7</SlotType>
-		<Description>Plate forged for the adventurer's own frame. On Equip: +30 Defense, +100 Max HP.</Description>
+		<Description>Plate forged for the adventurer's own frame, and worn until it fit like skin.</Description>
 		<ActivateOnEquip stat="21" amount="30">IncrementStat</ActivateOnEquip>
 		<ActivateOnEquip stat="0" amount="100">IncrementStat</ActivateOnEquip>
 		<BagType>9</BagType>
@@ -210,7 +210,7 @@
 			<Index>0x06</Index>
 		</Texture>
 		<SlotType>9</SlotType>
-		<Description>Everything an adventurer carries, and it answers to how the fight is going. On Equip: +100 Max HP, +100 Max MP, +8 to all stats. Full HP: +10 Speed. Under 100%: +10 Dexterity. Under 75%: +10 Dexterity, +10 Attack. Under 50%: +15 Vitality, +5 to all stats.</Description>
+		<Description>Bread, cheese, a flask, and whatever else the road demanded. It seems to know how the fight is going.</Description>
 		<ActivateOnEquip stat="0" amount="100">IncrementStat</ActivateOnEquip>
 		<ActivateOnEquip stat="3" amount="100">IncrementStat</ActivateOnEquip>
 		<ActivateOnEquip stat="20" amount="8">IncrementStat</ActivateOnEquip>
@@ -235,11 +235,10 @@
 			<Stat stat="20" amount="10"/>
 		</HpTierBoost>
 		<HpTierBoost minPercent="25" maxPercent="49">
-			<Stat stat="26" amount="10"/>
 			<Stat stat="20" amount="5"/>
 			<Stat stat="21" amount="5"/>
 			<Stat stat="22" amount="5"/>
-			<Stat stat="26" amount="5"/>
+			<Stat stat="26" amount="15"/>
 			<Stat stat="27" amount="5"/>
 			<Stat stat="28" amount="5"/>
 		</HpTierBoost>

@@ -145,6 +145,19 @@ public class EquipmentToolTip extends ToolTip
       this.makeRestrictionText();
    }
 
+   /**
+    * Use the ornate panel instead of the base class's flat rect. The frame is
+    * painted outside the content box, so nothing here has to move - see
+    * TooltipFrameSkin for how it stretches.
+    */
+   override public function draw():void
+   {
+      graphics.clear();
+      this.contentWidth_ = width;
+      this.contentHeight_ = height;
+      TooltipFrameSkin.draw(graphics, this.contentWidth_, this.contentHeight_);
+   }
+
    private static function GetEquipIndex(slotType:int, items:Vector.<ItemAttributes>):int {
       for (var i:int = 0; i < 4; i++)
          if (items[i] && items[i].SlotType == slotType)
@@ -274,7 +287,60 @@ public class EquipmentToolTip extends ToolTip
       this.makeProjAttributes();
       this.makeActivateEffects();
       this.makeStatBoosts();
+      this.makeEquipConditions();
+      this.makeHpTiers();
       this.makeGlobalAttributes();
+   }
+
+   /**
+    * Conditions held for as long as the item is worn
+    * (<ActivateOnEquipCondition>). These are custom to this fork and do not
+    * go through ItemAttributes, so read them off the item XML directly.
+    *
+    * Continues the "On Equip:" block makeStatBoosts already opened rather
+    * than printing a second header, and only writes its own header when
+    * there were no stat boosts to open one.
+    */
+   private function makeEquipConditions():void {
+      var conditions:XMLList = this.objectXML_.ActivateOnEquipCondition;
+      if (conditions.length() == 0)
+         return;
+
+      var hasBoosts:Boolean = this.itemAtr.StatsBoosts != null && this.itemAtr.StatsBoosts.length > 0;
+      if (!hasBoosts)
+         this.attributes += "On Equip:\n";
+
+      var names:Array = [];
+      for each (var condition:XML in conditions)
+         names.push(String(condition.@effect));
+
+      this.attributes += "    " + TooltipHelper.wrapInFontTag(names.join(", "), TooltipHelper.BETTER_COLOR) + "\n";
+   }
+
+   /**
+    * Health bands of HP-reactive gear (<HpTierBoost>), listed high to low so
+    * they read as a ladder. Also custom to this fork.
+    */
+   private function makeHpTiers():void {
+      var tiers:XMLList = this.objectXML_.HpTierBoost;
+      if (tiers.length() == 0)
+         return;
+
+      this.attributes += "By Health:\n";
+      for each (var tier:XML in tiers) {
+         var low:int = int(tier.@minPercent);
+         var high:int = int(tier.@maxPercent);
+         var label:String = low >= 100 ? "Full HP" : ("Under " + (high + 1) + "%");
+
+         var parts:Array = [];
+         for each (var boost:XML in tier.Stat) {
+            var amount:int = int(boost.@amount);
+            parts.push(GetSign(amount) + amount + " " + Stats.fromId(int(boost.@stat)));
+         }
+
+         this.attributes += "    " + label + ": " +
+            TooltipHelper.wrapInFontTag(parts.join(", "), TooltipHelper.BETTER_COLOR) + "\n";
+      }
    }
 
    private function drawAttributes():void {

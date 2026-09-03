@@ -19,6 +19,7 @@ import kabam.rotmg.assets.custom.images.AdventurerSwordProjectile;
 import kabam.rotmg.assets.custom.images.AdventurerHelmGlow;
 import kabam.rotmg.assets.custom.images.AdventurerArmorGlow;
 import kabam.rotmg.assets.custom.images.AdventurerBagGlow;
+import kabam.rotmg.assets.custom.images.TooltipFrame;
 import kabam.rotmg.assets.custom.images.GuildPortalAnim;
 import kabam.rotmg.assets.custom.images.QuestBoardImg;
 import kabam.rotmg.assets.custom.images.EnterButton;
@@ -44,6 +45,7 @@ public class EmbeddedAssets
    public static var adventurerHelmGlow:Class = AdventurerHelmGlow;
    public static var adventurerArmorGlow:Class = AdventurerArmorGlow;
    public static var adventurerBagGlow:Class = AdventurerBagGlow;
+   public static var tooltipFrame:Class = TooltipFrame;
    public static var guildPortalAnim:Class = GuildPortalAnim;
    public static var questBoard:Class = QuestBoardImg;
    public static var enterButton:Class = EnterButton;
