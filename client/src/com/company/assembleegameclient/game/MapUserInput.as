@@ -1,10 +1,11 @@
-package com.company.assembleegameclient.game
+﻿package com.company.assembleegameclient.game
 {
 import com.company.assembleegameclient.map.Square;
 import com.company.assembleegameclient.objects.GameObject;
 import com.company.assembleegameclient.objects.ObjectLibrary;
 import com.company.assembleegameclient.objects.Player;
 import com.company.assembleegameclient.objects.Portal;
+import com.company.assembleegameclient.objects.AscendancyTree;
 import com.company.assembleegameclient.objects.QuestBoard;
 import com.company.assembleegameclient.parameters.Parameters;
 import com.company.assembleegameclient.tutorial.Tutorial;
@@ -218,6 +219,11 @@ public class MapUserInput
          if(portal is QuestBoard)
          {
             (portal as QuestBoard).onEnterPressed(this.gs_);
+            return;
+         }
+         if(portal is AscendancyTree)
+         {
+            (portal as AscendancyTree).onEnterPressed(this.gs_);
             return;
          }
          this.gs_.gsc_.usePortal(portal.objectId_);

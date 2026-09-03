@@ -1,4 +1,4 @@
-// Decompiled by AS3 Sorcerer 6.08
+﻿// Decompiled by AS3 Sorcerer 6.08
 // www.as3sorcerer.com
 
 //com.company.assembleegameclient.objects.ObjectLibrary
@@ -77,6 +77,7 @@ public class ObjectLibrary
         "Player":Player,
         "Portal":Portal,
         "QuestBoard":QuestBoard,
+        "AscendancyTree":AscendancyTree,
         "Projectile":Projectile,
         "Sign":Sign,
         "SpiderWeb":SpiderWeb,

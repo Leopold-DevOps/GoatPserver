@@ -272,7 +272,7 @@
 	<!-- Landmark for the Swordsman ascendancy trees. The Enter plaque is
 	     wired to nothing yet - the tree screen does not exist. -->
 	<Object type="0x49a8" id="Ascendancy Tree">
-		<Class>GameObject</Class>
+		<Class>AscendancyTree</Class>
 		<DisplayId>Ascendancy Tree</DisplayId>
 		<ShowName/>
 		<NameColor>0xC6484C</NameColor>
