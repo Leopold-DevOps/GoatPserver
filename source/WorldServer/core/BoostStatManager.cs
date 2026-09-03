@@ -1,5 +1,6 @@
 ﻿using Shared.resources;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using WorldServer.core.objects;
 using WorldServer.utils;
@@ -14,6 +15,11 @@ namespace WorldServer.core
         private StatTypeValue<int>[] _boostSV;
         private StatsManager _parent;
         private Player _player;
+        /** Conditions currently applied because of an equipped item, so an
+            item that stops being equipped has its condition removed rather
+            than left on permanently. Reconciled fresh every recompute in
+            ApplyEquipBonus - see the class comment on Item.ActivateOnEquipConditions. */
+        private readonly HashSet<ConditionEffectIndex> _equipConditions = new HashSet<ConditionEffectIndex>();
 
         public BoostStatManager(StatsManager parent)
         {
@@ -74,6 +80,8 @@ namespace WorldServer.core
 
         private void ApplyEquipBonus()
         {
+            var desiredConditions = new HashSet<ConditionEffectIndex>();
+
             for (var i = 0; i < 4; i++)
             {
                 if (_player.Inventory[i] == null)
@@ -81,6 +89,8 @@ namespace WorldServer.core
 
                 foreach (var b in _player.Inventory[i].ActivateOnEquips)
                     IncrementBoost((StatDataType)b.Key, b.Value);
+                foreach (var c in _player.Inventory[i].ActivateOnEquipConditions)
+                    desiredConditions.Add(c);
             }
 
             for (var i = 20; i < 28; i++)
@@ -89,7 +99,25 @@ namespace WorldServer.core
                     continue;
                 foreach (var b in _player.Inventory[i].ActivateOnEquips)
                     IncrementBoost((StatDataType)b.Key, b.Value);
+                foreach (var c in _player.Inventory[i].ActivateOnEquipConditions)
+                    desiredConditions.Add(c);
             }
+
+            // Reconcile against what is currently applied: this is what stops
+            // an unequipped item's condition from staying on forever, and stops
+            // a re-equip from redundantly reapplying one that never left.
+            foreach (var effect in desiredConditions)
+            {
+                if (_equipConditions.Add(effect))
+                    _player.ApplyPermanentConditionEffect(effect);
+            }
+            _equipConditions.RemoveWhere(effect =>
+            {
+                if (desiredConditions.Contains(effect))
+                    return false;
+                _player.RemoveCondition(effect);
+                return true;
+            });
         }
 
         private void FixedStat(StatDataType stat, int value)

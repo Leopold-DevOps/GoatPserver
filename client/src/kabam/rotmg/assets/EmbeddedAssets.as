@@ -16,6 +16,7 @@ import kabam.rotmg.assets.custom.images.GothicWalls;
 import kabam.rotmg.assets.custom.images.GothicProps;
 import kabam.rotmg.assets.custom.images.AdventurerSwordGlow;
 import kabam.rotmg.assets.custom.images.AdventurerSwordProjectile;
+import kabam.rotmg.assets.custom.images.AdventurerHelmGlow;
 import kabam.rotmg.assets.custom.images.GuildPortalAnim;
 import kabam.rotmg.assets.custom.images.QuestBoardImg;
 import kabam.rotmg.assets.custom.images.EnterButton;
@@ -38,6 +39,7 @@ public class EmbeddedAssets
    public static var gothicProps:Class = GothicProps;
    public static var adventurerSwordGlow:Class = AdventurerSwordGlow;
    public static var adventurerSwordProjectile:Class = AdventurerSwordProjectile;
+   public static var adventurerHelmGlow:Class = AdventurerHelmGlow;
    public static var guildPortalAnim:Class = GuildPortalAnim;
    public static var questBoard:Class = QuestBoardImg;
    public static var enterButton:Class = EnterButton;

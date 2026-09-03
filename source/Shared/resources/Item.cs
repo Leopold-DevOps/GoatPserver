@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
+using Shared;
 
 namespace Shared.resources
 {
@@ -52,6 +53,15 @@ namespace Shared.resources
         public int SlotType;
         public bool Soulbound;
         public KeyValuePair<int, int>[] ActivateOnEquips;
+        /**
+         * Condition effects granted for as long as this item stays equipped -
+         * e.g. <ActivateOnEquipCondition effect="Armored"/> - reconciled every
+         * tick in BoostStatManager.ApplyEquipBonus, the same place the stat
+         * boosts above are recomputed. Self only: there is no equivalent of
+         * ConditionEffectAura's `range` here, by design - an equipped item's
+         * passive effect is not meant to buff nearby players.
+         */
+        public ConditionEffectIndex[] ActivateOnEquipConditions;
         public string SuccessorId;
         public int Texture1;
         public int Texture2;
@@ -99,6 +109,7 @@ namespace Shared.resources
             InvUse = e.HasElement("InvUse");
             TypeOfConsumable = InvUse || Consumable;
             ActivateOnEquips = e.Elements("ActivateOnEquip").Select(_ => new KeyValuePair<int, int>(_.GetAttribute<int>("stat"), _.GetAttribute<int>("amount"))).ToArray();
+            ActivateOnEquipConditions = e.Elements("ActivateOnEquipCondition").Select(_ => Utils.GetEffect(_.GetAttribute<string>("effect"))).ToArray();
             ActivateEffects = e.Elements("Activate").Select(_ => new ActivateEffect(_)).ToArray();
             OnPlayerHitActivateEffects = e.Elements("OnPlayerHitActivate").Select(_ => new ActivateEffect(_)).ToArray();
             OnPlayerAbilityActivateEffects = e.Elements("OnPlayerAbilityActivate").Select(_ => new ActivateEffect(_)).ToArray();

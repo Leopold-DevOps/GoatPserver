@@ -161,4 +161,24 @@
 		<OldSound>bladeSwing</OldSound>
 		<feedPower>950</feedPower>
 	</Object>
+	<Object type="0x49a5" id="Adventurer Helm" spritePeriod="8" spriteFile="adventurerHelmGlow" spriteArray="0-11">
+		<AdventurerGear/>
+		<Class>Equipment</Class>
+		<Item/>
+		<Texture>
+			<File>customUV128x128</File>
+			<Index>0x04</Index>
+		</Texture>
+		<SlotType>7</SlotType>
+		<Description>The helm every adventurer earns alongside their blade. Wards off harm and quickens the blood.</Description>
+		<!-- Self only, permanent while worn - reconciled every tick in
+		     BoostStatManager.ApplyEquipBonus, and removed the moment this
+		     leaves the armor slot. No `range`/aura: deliberately does not
+		     buff nearby players, only the wearer. -->
+		<ActivateOnEquipCondition effect="Armored"/>
+		<ActivateOnEquipCondition effect="Berserk"/>
+		<BagType>9</BagType>
+		<FameBonus>6</FameBonus>
+		<feedPower>950</feedPower>
+	</Object>
 </Objects>

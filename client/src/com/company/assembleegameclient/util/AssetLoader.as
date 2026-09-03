@@ -186,6 +186,7 @@ public class AssetLoader
          texture it is given to its fixed quad, so a non-square frame would be
          stretched unevenly. */
       AssetLibrary.addImageSet("adventurerSwordProjectile", new EmbeddedAssets.adventurerSwordProjectile().bitmapData, 288, 288);
+      AssetLibrary.addImageSet("adventurerHelmGlow", new EmbeddedAssets.adventurerHelmGlow().bitmapData, 156, 156);
       AssetLibrary.addImageSet("rankSecretaryAnim", new EmbeddedAssets.rankSecretaryAnim().bitmapData, 112, 143);
       AssetLibrary.addImageSet("guildPortalAnim", new EmbeddedAssets.guildPortalAnim().bitmapData, 87, 167);
       AssetLibrary.addImageSet("questBoard", new EmbeddedAssets.questBoard().bitmapData, 166, 164);
