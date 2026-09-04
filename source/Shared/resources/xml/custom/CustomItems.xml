@@ -277,7 +277,9 @@
 			<MinDamage>560</MinDamage>
 			<MaxDamage>700</MaxDamage>
 			<LifetimeMS>600</LifetimeMS>
-			<Size>350</Size>
+			<!-- Size maps to tiles: Projectile sets the quad to 8*(Size/100),
+			     where 8 units is one tile, so 500 is a five-tile slam. -->
+			<Size>500</Size>
 		</Projectile>
 		<BagType>9</BagType>
 		<FameBonus>6</FameBonus>
