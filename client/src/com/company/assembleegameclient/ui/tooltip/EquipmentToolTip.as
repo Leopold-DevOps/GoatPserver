@@ -165,7 +165,7 @@ public class EquipmentToolTip extends ToolTip
     */
    private static const PAD_X:int = TooltipFrameSkin.BORDER;
    private static const PAD_TOP:int = TooltipFrameSkin.BORDER + 15;
-   private static const PAD_BOTTOM:int = TooltipFrameSkin.BORDER + 15;
+   private static const PAD_BOTTOM:int = TooltipFrameSkin.BORDER + 30;
 
    override public function draw():void
    {
@@ -1123,7 +1123,12 @@ public class EquipmentToolTip extends ToolTip
             pattern - so it drew an icon on a line that reserved no indent for
             one, landing the icon on top of the text. */
          var offset:int = this.attributesText.getLineOffset(line);
-         var startsLine:Boolean = offset == 0 || plain.charCodeAt(offset - 1) == 10;
+         var before:Number = offset == 0 ? 10 : plain.charCodeAt(offset - 1);
+         // TextField.text reports line breaks as carriage returns (13), not
+         // line feeds (10) -
+         // checking only for 10 matched nothing but the first line, which
+         // silently dropped every icon below Shots. Accept both.
+         var startsLine:Boolean = before == 10 || before == 13;
          var cell:int = startsLine ? iconCellForLine(this.attributesText.getLineText(line)) : -1;
          if (cell >= 0)
          {
