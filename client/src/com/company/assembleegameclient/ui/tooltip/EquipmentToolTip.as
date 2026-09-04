@@ -50,6 +50,9 @@ public class EquipmentToolTip extends ToolTip
    private static const MAX_WIDTH:int = 230;
    private static const CSS_TEXT:String = ".in { margin-left:10px; text-indent: -10px; }";
    private var iconSize:Number = 100;
+   /** Outline width used for glow frames - see makeAnimation. */
+   private static const GLOW_OUTLINE:Number = 0.01;
+
    /** Matches ItemTileSprite.ADVENTURER_GEAR_SCALE, so the tooltip and the
        grid icon read as the same size. */
    private static const ADVENTURER_GEAR_SCALE:Number = 1.5;
@@ -1253,7 +1256,15 @@ public class EquipmentToolTip extends ToolTip
       {
          scale = (scale * 8) / frame.height;
       }
-      var bitmapData:BitmapData = TextureRedrawer.redraw(frame, this.iconSize, true, 0, true, scale);
+      /* Near-zero outline size on purpose. TextureRedrawer.redraw
+         always runs the result through GlowRedrawer's outline pass -
+         a black GlowFilter at full strength - which is what gives an
+         ordinary sprite its dark edge. Run over a glow's soft outer
+         falloff it instead lays a dark fringe along the whole ramp,
+         which is what made the halo look muddy rather than clean. The
+         art already carries its own black keyline, so nothing is lost
+         by asking for no outline here. */
+      var bitmapData:BitmapData = TextureRedrawer.redraw(frame, this.iconSize, true, 0, true, scale, 0, GLOW_OUTLINE);
 
       this.icon_.bitmapData = bitmapData;
       this.icon_.x = this.icon_.y = - 4;

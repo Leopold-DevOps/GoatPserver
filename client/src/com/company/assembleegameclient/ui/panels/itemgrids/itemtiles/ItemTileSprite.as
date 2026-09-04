@@ -1,4 +1,4 @@
-package com.company.assembleegameclient.ui.panels.itemgrids.itemtiles
+﻿package com.company.assembleegameclient.ui.panels.itemgrids.itemtiles
 {
    import com.company.assembleegameclient.objects.ObjectLibrary;
 import com.company.assembleegameclient.parameters.Parameters;
@@ -23,6 +23,9 @@ import kabam.rotmg.constants.UiMetrics;
    {
       
       protected static const DIM_FILTER:Array = [new ColorMatrixFilter([0.4,0,0,0,0,0,0.4,0,0,0,0,0,0.4,0,0,0,0,0,1,0])];
+
+      /** Outline width used for glow frames - see makeAnimation. */
+      private static const GLOW_OUTLINE:Number = 0.01;
 
       /** How much bigger Adventurer gear's icon renders than a normal item. */
       private static const ADVENTURER_GEAR_SCALE:Number = 1.5;
@@ -210,7 +213,15 @@ import kabam.rotmg.constants.UiMetrics;
            {
                scale = (scale * 8) / frame.height;
            }
-           var bitmapData:BitmapData = TextureRedrawer.redraw(frame, this.iconSizeOverride, true, 0, true, scale);
+           /* Near-zero outline size on purpose. TextureRedrawer.redraw
+              always runs the result through GlowRedrawer's outline pass -
+              a black GlowFilter at full strength - which is what gives an
+              ordinary sprite its dark edge. Run over a glow's soft outer
+              falloff it instead lays a dark fringe along the whole ramp,
+              which is what made the halo look muddy rather than clean. The
+              art already carries its own black keyline, so nothing is lost
+              by asking for no outline here. */
+           var bitmapData:BitmapData = TextureRedrawer.redraw(frame, this.iconSizeOverride, true, 0, true, scale, 0, GLOW_OUTLINE);
 
            this.itemBitmap.bitmapData = bitmapData;
            this.centreOnContent(bitmapData);
