@@ -340,7 +340,7 @@ public class EquipmentToolTip extends ToolTip
       for each (var condition:XML in conditions)
          names.push(String(condition.@effect));
 
-      this.attributes += "    " + TooltipHelper.wrapInFontTag(names.join(", "), TooltipHelper.BETTER_COLOR) + "\n";
+      this.attributes += "    " + TooltipHelper.wrapInBoldFontTag(names.join(", "), TooltipHelper.BETTER_COLOR) + "\n";
    }
 
    /**
@@ -365,7 +365,7 @@ public class EquipmentToolTip extends ToolTip
          }
 
          this.attributes += "    " + label + ": " +
-            TooltipHelper.wrapInFontTag(parts.join(", "), TooltipHelper.BETTER_COLOR) + "\n";
+            TooltipHelper.wrapInBoldFontTag(parts.join(", "), TooltipHelper.BETTER_COLOR) + "\n";
       }
    }
 
@@ -415,7 +415,7 @@ public class EquipmentToolTip extends ToolTip
       }
       else if (this.isEquippable_)
          color = TooltipHelper.BETTER_COLOR;
-      this.attributes += STAT_ICON_INDENT + "Shots: " + TooltipHelper.wrapInFontTag(String(count), color) + "\n";
+      this.attributes += STAT_ICON_INDENT + "Shots: " + TooltipHelper.wrapInBoldFontTag(String(count), color) + "\n";
    }
 
    private function makeProjEffects(proj:ProjectileDesc, proj2:ProjectileDesc):void {
@@ -454,7 +454,7 @@ public class EquipmentToolTip extends ToolTip
       }
       else if (this.isEquippable_)
          color = TooltipHelper.BETTER_COLOR;
-      this.attributes += STAT_ICON_INDENT + "Damage: " + TooltipHelper.wrapInFontTag(minD == maxD ? String(minD) : minD + " - " + maxD, color) + "\n";
+      this.attributes += STAT_ICON_INDENT + "Damage: " + TooltipHelper.wrapInBoldFontTag(minD == maxD ? String(minD) : minD + " - " + maxD, color) + "\n";
    }
 
    private function makeProjRange(proj:ProjectileDesc, proj2:ProjectileDesc):void {
@@ -466,7 +466,7 @@ public class EquipmentToolTip extends ToolTip
       }
       else if (this.isEquippable_)
          color = TooltipHelper.BETTER_COLOR;
-      this.attributes += STAT_ICON_INDENT + "Range: " + TooltipHelper.wrapInFontTag(String(range), color) + "\n";
+      this.attributes += STAT_ICON_INDENT + "Range: " + TooltipHelper.wrapInBoldFontTag(String(range), color) + "\n";
    }
 
    private function makeProjRoF(proj:ProjectileDesc, proj2:ProjectileDesc):void {
@@ -484,7 +484,7 @@ public class EquipmentToolTip extends ToolTip
       }
       else if (this.isEquippable_)
          color = TooltipHelper.BETTER_COLOR;
-      this.attributes += STAT_ICON_INDENT + "Rate of Fire: " + TooltipHelper.wrapInFontTag(rof.toFixed(0) + "%", color) + "\n";
+      this.attributes += STAT_ICON_INDENT + "Rate of Fire: " + TooltipHelper.wrapInBoldFontTag(rof.toFixed(0) + "%", color) + "\n";
    }
 
    private static function GetMatches(eff:String, effects:Vector.<ActivateEffect>):Vector.<ActivateEffect> {
@@ -939,7 +939,7 @@ public class EquipmentToolTip extends ToolTip
             amountColor = TooltipHelper.WORSE_COLOR;
          }
          this.attributes += STAT_ICON_INDENT;
-         this.attributes += TooltipHelper.wrapInFontTag(GetSign(amount) + amount, amountColor) + " " + TooltipHelper.wrapInFontTag(stat, amountColor) + "\n";
+         this.attributes += TooltipHelper.wrapInBoldFontTag(GetSign(amount) + amount, amountColor) + " " + TooltipHelper.wrapInFontTag(stat, amountColor) + "\n";
       }
    }
 
@@ -1005,7 +1005,7 @@ public class EquipmentToolTip extends ToolTip
       }
       else if (this.isEquippable_)
          color = TooltipHelper.BETTER_COLOR;
-      this.attributes += STAT_ICON_INDENT + "Fame Bonus: " + TooltipHelper.wrapInFontTag(fame + "%", color) + "\n";
+      this.attributes += STAT_ICON_INDENT + "Fame Bonus: " + TooltipHelper.wrapInBoldFontTag(fame + "%", color) + "\n";
    }
 
    private function makeItemMpCost():void {
@@ -1112,11 +1112,19 @@ public class EquipmentToolTip extends ToolTip
       if (this.attributesText == null)
          return;
 
+      var plain:String = this.attributesText.text;
       var y:Number = 2;
       for (var line:int = 0; line < this.attributesText.numLines; line++)
       {
          var metrics:TextLineMetrics = this.attributesText.getLineMetrics(line);
-         var cell:int = iconCellForLine(this.attributesText.getLineText(line));
+         /* Only the first visual line of a logical line may carry an icon.
+            getLineText returns WRAPPED lines too, and a continuation such as
+            "+10 Attack" spilled from a By Health band matches the boost
+            pattern - so it drew an icon on a line that reserved no indent for
+            one, landing the icon on top of the text. */
+         var offset:int = this.attributesText.getLineOffset(line);
+         var startsLine:Boolean = offset == 0 || plain.charCodeAt(offset - 1) == 10;
+         var cell:int = startsLine ? iconCellForLine(this.attributesText.getLineText(line)) : -1;
          if (cell >= 0)
          {
             icon = new Bitmap(StatIconLibrary.getIcon(cell));
@@ -1134,11 +1142,17 @@ public class EquipmentToolTip extends ToolTip
 
    override protected function alignUI():void {
       this.titleText_.x = (this.icon_.width + 4);
-      this.titleText_.y = ((this.icon_.height / 2) - (this.titleText_.height / 2));
       if (this.tierText_) {
-         this.tierText_.y = this.icon_.height / 2 - (this.tierText_.height / 2);
          this.tierText_.x = (MAX_WIDTH - 10) - (this.tierText_.width);
+         /* The title's wrap width was a fixed guess that did not know how
+            wide the tag actually is, so a long name ran on under it. Give it
+            exactly the room left before the tag starts, then re-measure -
+            the name may now take an extra line, which moves its centring. */
+         this.titleText_.width = Math.max(40, this.tierText_.x - this.titleText_.x - 8);
+         this.titleText_.updateMetrics();
+         this.tierText_.y = this.icon_.height / 2 - (this.tierText_.height / 2);
       }
+      this.titleText_.y = ((this.icon_.height / 2) - (this.titleText_.height / 2));
 
       // Header divider, then the lore, with matching air on both sides of it.
       this.headerDivider_.x = 4;

@@ -1,4 +1,4 @@
-package com.company.assembleegameclient.ui.tooltip {
+﻿package com.company.assembleegameclient.ui.tooltip {
 import com.company.util.MathUtil2;
 
 import kabam.rotmg.constants.ItemConstants;
@@ -17,6 +17,15 @@ public class TooltipHelper {
    public static function wrapInFontTag(text:String, color:String):String {
       var tagStr:String = "<font color=\"" + color + "\">" + text + "</font>";
       return tagStr;
+   }
+
+   /**
+    * Same, but bold. The tooltip's display face is a thin serif, which loses
+    * legibility at value sizes - the numbers are what people actually read
+    * off a tooltip, so they get the weight.
+    */
+   public static function wrapInBoldFontTag(text:String, color:String):String {
+      return "<b>" + wrapInFontTag(text, color) + "</b>";
    }
 
    public static function getFormattedRangeString(range:Number):Number {
