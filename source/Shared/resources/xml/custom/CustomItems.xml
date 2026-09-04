@@ -261,15 +261,23 @@
 		     it while every individual hit is far larger. -->
 		<RateOfFire>0.55</RateOfFire>
 		<Sound>weapon/blunt_sword</Sound>
+		<!-- Not a travelling shot: the slam lands in front of the player and
+		     stays put while its animation plays out.
+		       Speed 0        - stationary, so positionAt holds it where it spawned
+		       StartOffset    - tiles ahead of the player to land, instead of on them
+		       MultiHit       - survives contact, so it is not consumed by the first
+		                        enemy it touches and keeps hitting for its lifetime
+		       LifetimeMS     - the animation is spread across exactly this, so it
+		                        doubles as the slam's duration -->
 		<Projectile>
 			<ObjectId>Paladin Shot</ObjectId>
-			<Speed>80</Speed>
+			<Speed>0</Speed>
+			<StartOffset>1.6</StartOffset>
+			<MultiHit/>
 			<MinDamage>560</MinDamage>
 			<MaxDamage>700</MaxDamage>
-			<!-- speed*lifetime matches the Adventurer Blade, so the range is the
-			     same while the shot visibly travels slower. -->
-			<LifetimeMS>440</LifetimeMS>
-			<Size>160</Size>
+			<LifetimeMS>600</LifetimeMS>
+			<Size>350</Size>
 		</Projectile>
 		<BagType>9</BagType>
 		<FameBonus>6</FameBonus>

@@ -53,6 +53,16 @@ namespace WorldServer.core.objects
                 var x = 0.0;
                 var y = 0.0;
 
+                // Mirrors Projectile.positionAt on the client: a projectile can
+                // spawn ahead of the shooter instead of on them. Must match, or
+                // hit validation is done against a different position than the
+                // one the player can see.
+                if (desc.StartOffset != 0)
+                {
+                    x += desc.StartOffset * Math.Cos(angle);
+                    y += desc.StartOffset * Math.Sin(angle);
+                }
+
                 var dist = elapsedTicks * (desc.Speed / 10000.0) * speedMult;
                 var period = projId % 2 == 0 ? 0 : Math.PI;
 
@@ -100,6 +110,12 @@ namespace WorldServer.core.objects
 
                 var pX = (double)StartX;
                 var pY = (double)StartY;
+                // See the note in the static overload above.
+                if (desc.StartOffset != 0)
+                {
+                    pX += desc.StartOffset * Math.Cos(Angle);
+                    pY += desc.StartOffset * Math.Sin(Angle);
+                }
                 var dist = elapsed * (desc.Speed / 10000.0) * speedMult;
                 var phase = bulletId % 2 == 0 ? 0 : Math.PI;
 

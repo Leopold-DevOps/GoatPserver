@@ -194,6 +194,11 @@ public class AssetLoader
       AssetLibrary.addImageSet("adventurerBagGlow", new EmbeddedAssets.adventurerBagGlow().bitmapData, 156, 156);
       /* Same 12-frame treatment for the Paladin Hammer, gold instead of blue. */
       AssetLibrary.addImageSet("paladinHammerGlow", new EmbeddedAssets.paladinHammerGlow().bitmapData, 156, 156);
+      /* 10-frame hammer slam, played over the projectile's lifetime by
+         Projectile.draw (projAnimFile_/projAnimFrames_). Square cells for
+         the same reason as the Adventurer Shot - Point3D rescales to a
+         fixed quad, so a non-square frame would be stretched. */
+      AssetLibrary.addImageSet("paladinHammerBlast", new EmbeddedAssets.paladinHammerBlast().bitmapData, 256, 256);
       /* Stat icons drawn in front of the tooltip stat lines, in the order
          EquipmentToolTip.STAT_ICON_LABELS expects. */
       AssetLibrary.addImageSet("statIcons", new EmbeddedAssets.statIcons().bitmapData, 18, 18);

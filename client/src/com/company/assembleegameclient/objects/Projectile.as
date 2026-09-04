@@ -207,6 +207,15 @@ public class Projectile extends BasicObject
       var deflection:Number = NaN;
       p.x = this.startX_;
       p.y = this.startY_;
+      /* Spawn ahead of the shooter rather than on them. Applied before the
+         motion branches so it holds for the whole lifetime, which is what a
+         stationary effect (speed 0) needs - a slam landing in front of the
+         player rather than centred on them. */
+      if(this.projProps_.startOffset_ != 0)
+      {
+         p.x += this.projProps_.startOffset_ * Math.cos(this.angle_);
+         p.y += this.projProps_.startOffset_ * Math.sin(this.angle_);
+      }
       var dist:Number = elapsed * (this.projProps_.speed_ / 10000) * this.speedMul_;
       var phase:Number = this.bulletId_ % 2 == 0?Number(0):Number(Math.PI);
       if(this.projProps_.wavy_)

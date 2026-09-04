@@ -22,6 +22,9 @@ public class ProjectileProperties
    public var particleTrailColor_:int = 0xFF00FF;
    public var wavy_:Boolean;
    public var parametric_:Boolean;
+   /** Tiles ahead of the shooter to spawn at. 0 keeps the vanilla
+       behaviour of starting on the shooter. */
+   public var startOffset_:Number;
    public var boomerang_:Boolean;
    public var amplitude_:Number;
    public var frequency_:Number;
@@ -61,6 +64,7 @@ public class ProjectileProperties
       this.particleTrail_ = projectileXML.hasOwnProperty("ParticleTrail");
       this.wavy_ = projectileXML.hasOwnProperty("Wavy");
       this.parametric_ = projectileXML.hasOwnProperty("Parametric");
+      this.startOffset_ = Boolean(projectileXML.hasOwnProperty("StartOffset"))?Number(Number(projectileXML.StartOffset)):Number(0);
       this.boomerang_ = projectileXML.hasOwnProperty("Boomerang");
       this.amplitude_ = Boolean(projectileXML.hasOwnProperty("Amplitude"))?Number(Number(projectileXML.Amplitude)):Number(0);
       this.frequency_ = Boolean(projectileXML.hasOwnProperty("Frequency"))?Number(Number(projectileXML.Frequency)):Number(1);

@@ -20,6 +20,9 @@ namespace Shared.resources
         public bool MultiHit;
         public string ObjectId;
         public bool Parametric;
+        /// <summary>Tiles ahead of the shooter to spawn at; 0 keeps the
+        /// vanilla behaviour of starting on the shooter.</summary>
+        public float StartOffset;
         public bool PassesCover;
         public float Speed;
         public bool Wavy;
@@ -55,6 +58,7 @@ namespace Shared.resources
             Wavy = e.HasElement("Wavy");
             Parametric = e.HasElement("Parametric");
             Boomerang = e.HasElement("Boomerang");
+            StartOffset = e.GetValue<float>("StartOffset", 0);
             Amplitude = e.GetValue<float>("Amplitude", 0);
             Frequency = e.GetValue<float>("Frequency", 1);
             Magnitude = e.GetValue<float>("Magnitude", 3);
