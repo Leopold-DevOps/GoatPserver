@@ -1,4 +1,4 @@
-// Decompiled by AS3 Sorcerer 6.08
+﻿// Decompiled by AS3 Sorcerer 6.08
 // www.as3sorcerer.com
 
 //com.company.assembleegameclient.util.TextureRedrawer
@@ -91,7 +91,17 @@ public class TextureRedrawer
       _local_10.scale((_local_8 / _arg_1.width), (_local_9 / _arg_1.height));
       _local_10.translate(magic, magic);
       var _local_11:BitmapData = new BitmapDataSpy((_local_8 + minSize), ((_local_9 + ((_arg_4) ? magic : 1)) + magic), true, 0);
-      _local_11.draw(_arg_1, _local_10);
+      /* Smoothing is deliberately conditional rather than simply on.
+         The classic 8x8 art is UPSCALED here (scale 5, so 8px -> 40px), and
+         point sampling is exactly what keeps it crisp pixel art - smoothing
+         it would turn every sprite in the game to mush.
+         High resolution art goes the other way: a 128px sword is normalised
+         down to roughly 28px, and point sampling a reduction that steep just
+         drops about nine of every ten pixels and aliases what is left, which
+         is what makes detailed art read as noisy instead of detailed.
+         So: sample properly only when the image is actually shrinking. */
+      var _local_12:Boolean = (_local_8 < _arg_1.width) || (_local_9 < _arg_1.height);
+      _local_11.draw(_arg_1, _local_10, null, null, null, _local_12);
       return (_local_11);
    }
 
