@@ -1,12 +1,14 @@
-package kabam.rotmg.ascendancy {
+﻿package kabam.rotmg.ascendancy {
 
 import com.company.assembleegameclient.game.GameSprite;
+import com.company.ui.SimpleText;
 
 import flash.display.Bitmap;
 import flash.display.Sprite;
 import flash.events.Event;
 import flash.events.MouseEvent;
 import flash.filters.DropShadowFilter;
+import flash.text.TextFormat;
 
 import kabam.rotmg.assets.EmbeddedAssets;
 
@@ -42,6 +44,18 @@ public class AscendancyModal extends Sprite {
     public static const RING:Array       = [0.1120, 0.8720, 0.0470];
     private static const CLOSE_BOX:Array = [0.9557, 0.0195, 0.9870, 0.0625];
 
+    /** Width the medallion is drawn at; the art is twice this. */
+    private static const MEDAL_W:int = 62;
+    /** Centre of the medallion's orb, as a fraction of the medallion art. */
+    private static const MEDAL_ORB:Array = [0.4995, 0.2999];
+
+    /** One ascendancy point per two character levels: 2, 4, 6 and so on. */
+    public static const LEVELS_PER_POINT:int = 2;
+
+    public static function pointsForLevel(level:int):int {
+        return int(level / LEVELS_PER_POINT);
+    }
+
     private var gs:GameSprite;
 
     public function AscendancyModal(gs:GameSprite) {
@@ -55,6 +69,7 @@ public class AscendancyModal extends Sprite {
         addChild(art);
 
         buildCloseHit();
+        buildPointsRail();
         addEventListener(Event.ADDED_TO_STAGE, onAdded);
     }
 
@@ -82,6 +97,71 @@ public class AscendancyModal extends Sprite {
             AscendancyModalController.close();
         });
         addChild(hit);
+    }
+
+    /** Centred text sized to the rail, since the rail is narrow enough that
+        everything in it has to wrap. */
+    private function railText(size:int, color:uint, bold:Boolean, width:Number):SimpleText {
+        var t:SimpleText = new SimpleText(size, color, false, width, 0);
+        t.wordWrap = true;
+        if (bold)
+            t.setBold(true);
+        var fmt:TextFormat = t.defaultTextFormat;
+        fmt.align = "center";
+        t.defaultTextFormat = fmt;
+        t.mouseEnabled = false;
+        return t;
+    }
+
+    /**
+     * Left rail: how many points are unspent, and where they come from.
+     *
+     * Points are read from the character's level when the window opens - there
+     * is nothing to spend them on yet, so earned and available are the same
+     * number for now.
+     */
+    private function buildPointsRail():void {
+        var x0:Number = rx(LEFT_RAIL[0]);
+        var w:Number = rx(LEFT_RAIL[2]) - x0;
+        var inner:Number = w - 8;
+        var y:Number = ry(LEFT_RAIL[1]) + 8;
+
+        var title:SimpleText = railText(11, 0xE8D9B0, true, inner);
+        title.text = "Points Available";
+        title.useTextDimensions();
+        title.x = x0 + 4;
+        title.y = y;
+        addChild(title);
+        y += title.height + 6;
+
+        var medal:Bitmap = new Bitmap(new EmbeddedAssets.pointsMedal().bitmapData);
+        medal.smoothing = true;
+        var medalH:Number = MEDAL_W * medal.bitmapData.height / medal.bitmapData.width;
+        medal.width = MEDAL_W;
+        medal.height = medalH;
+        medal.x = x0 + (w - MEDAL_W) / 2;
+        medal.y = y;
+        addChild(medal);
+
+        var level:int = (this.gs != null && this.gs.map != null && this.gs.map.player_ != null)
+            ? this.gs.map.player_.level_ : 0;
+        var value:SimpleText = railText(19, 0xFFFFFF, true, MEDAL_W);
+        value.text = String(pointsForLevel(level));
+        value.useTextDimensions();
+        value.width = MEDAL_W;
+        value.x = medal.x;
+        value.y = medal.y + medalH * MEDAL_ORB[1] - value.height / 2;
+        value.filters = [new DropShadowFilter(0, 0, 0, 0.9, 4, 4)];
+        addChild(value);
+        y += medalH + 10;
+
+        var note:SimpleText = railText(9, 0x9A9FAC, false, inner);
+        note.text = "Earn a point every " + LEVELS_PER_POINT
+            + " levels on this character.";
+        note.useTextDimensions();
+        note.x = x0 + 4;
+        note.y = y;
+        addChild(note);
     }
 
     public function close():void {
